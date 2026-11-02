@@ -1,0 +1,15 @@
+{
+    "success": true,
+    "config": {
+        "enabled": true,
+        "minBonusAmount": 2500,
+        "maxBonusAmount": 2500,
+        "triggerDayOfMonth": 23,
+        "triggerHour": 18,
+        "minBetRequired": 500,
+        "promoCode": "",
+        "wageringTurnover": 1,
+        "autoCreditEnabled": false
+    },
+    "configured": false
+}
