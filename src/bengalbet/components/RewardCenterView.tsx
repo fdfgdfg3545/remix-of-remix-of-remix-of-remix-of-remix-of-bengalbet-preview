@@ -3108,7 +3108,7 @@ export const RewardCenterView: React.FC<RewardCenterViewProps> = ({
                 </div>
                 <div className="flex flex-col text-left">
                   <h4 className="text-xs font-bold text-gray-900 font-bengali group-hover:text-amber-600 transition-colors flex items-center gap-1">
-                    <span>২৩ তারিখ ড্রপ</span>
+                    <span>{mDayBn} তারিখ ড্রপ</span>
                     <Sparkles className="w-3 h-3 text-amber-500" />
                   </h4>
                   <span className="text-[9.5px] text-purple-700 font-bengali font-bold">
