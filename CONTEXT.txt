@@ -107,3 +107,5 @@ R13. অ্যাডমিনের সব মেনু একটা ট্য�
 2026-11-02: Referral deposit/bet commissions now logged as bonus transactions (bbLogReferralCommission in reward_grants.php, called from admin.php and game_rounds.php) so turnover_guard counts them under otherBonusTurnover. NEEXT_MASTER_KEY secret saved. Live server upload pending.
 - 2026-11-02: Referral commission rule uploaded live (backups in dbserver/data/backup_*), verified 0.7% deposit + 1% bet counted. Removed fake 500 welcome-bonus tx from auth.php register (live).
 - 2026-11-02: Time-based offers live-tested with temporary promo_rules/mystery config changes (all restored). NoticeAnnouncementModal titles aligned with plan; GoldenEggModal: removed fake 500/500 progress and fake winners, countdown to 00:00 BD time, prize range from server chance table.
+
+- ২০২৬-১১-০২: সাইড মেনু লাইভ পাস; ভিআইপি ক্র্যাশ ঠিক, চাকা/পুরস্কার কেন্দ্র/রহস্য কার্ডের নকল বা ভুল লেখা প্ল্যান ও সার্ভার সেটিং অনুযায়ী।

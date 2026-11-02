@@ -384,7 +384,7 @@ export const VipSectionView: React.FC<VipSectionViewProps> = ({
                     <Trophy className="w-5 h-5 text-amber-600" />
                   </div>
                   <div className="text-2xl font-black text-amber-700 font-mono mt-2">
-                    ৳ {currentTier.upgradeBonus.toLocaleString()}
+                    ৳ {Number(currentTier.upgradeBonus ?? 0).toLocaleString()}
                   </div>
                   <p className="text-xs text-amber-800/80 mt-1">
                     লেভেল অর্জনের পর এককালীন পুরস্কার
@@ -421,7 +421,7 @@ export const VipSectionView: React.FC<VipSectionViewProps> = ({
                     <Calendar className="w-5 h-5 text-emerald-600" />
                   </div>
                   <div className="text-2xl font-black text-emerald-700 font-mono mt-2">
-                    ৳ {currentTier.weeklyBonus.toLocaleString()}
+                    ৳ {Number(currentTier.weeklyBonus ?? 0).toLocaleString()}
                   </div>
                   <p className="text-xs text-emerald-800/80 mt-1">
                     প্রতি {weekdayName(liveRules?.promoRules?.vip?.weeklyClaimDay)} দাবি করা যায়
@@ -454,7 +454,7 @@ export const VipSectionView: React.FC<VipSectionViewProps> = ({
                     <Crown className="w-5 h-5 text-indigo-600" />
                   </div>
                   <div className="text-2xl font-black text-indigo-700 font-mono mt-2">
-                    ৳ {currentTier.monthlyBonus.toLocaleString()}
+                    ৳ {Number(currentTier.monthlyBonus ?? 0).toLocaleString()}
                   </div>
                   <p className="text-xs text-indigo-800/80 mt-1">
                     প্রতি মাসের ১ তারিখ দুপুর ৩টায় প্রদান করা হয়
@@ -484,10 +484,10 @@ export const VipSectionView: React.FC<VipSectionViewProps> = ({
             <div className="mt-4 p-4 rounded-xl bg-gray-50 border border-gray-100 flex flex-wrap items-center justify-between text-xs text-gray-600 gap-3">
               <div className="flex items-center gap-2 font-medium">
                 <ShieldCheck className="w-4 h-4 text-emerald-600" />
-                <span>রিবেট অনুপাত সুবিধা:</span>
-                <span className="font-bold text-gray-900">স্লট গেমস {currentTier.slotRebate}%</span>
+                <span>রিয়েল-টাইম রিবেট:</span>
+                <span className="font-bold text-gray-900">প্রতিটি নতুন বাজির উপর, যতবার খুশি দাবি</span>
                 <span>•</span>
-                <span className="font-bold text-gray-900">লাইভ ক্যাসিনো {currentTier.liveRebate}%</span>
+                <span className="font-bold text-gray-900">হার রিবেট পেইজে দেখুন</span>
               </div>
               <div className="text-emerald-700 font-bold">
                 ✓ ১ গুণ বেট সম্পন্ন করে অবিলম্বে প্রত্যাহারযোগ্য
