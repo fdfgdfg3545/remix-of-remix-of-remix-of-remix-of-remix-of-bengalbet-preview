@@ -70,6 +70,7 @@ if ($action === 'round') {
             $c = !empty($rs['enabled']) ? round($bet * (float)$rs['betTurnoverRebateRate'] / 100, 2) : 0.0;
             Database::update('referrals', ['total_bet' => (float)$ref['total_bet'] + $bet, 'bet_commission' => (float)$ref['bet_commission'] + $c, 'total_commission_earned' => (float)$ref['total_commission_earned'] + $c], 'id = ?', [$ref['id']]);
             if ($c > 0) Database::execute('UPDATE users SET balance = balance + ?, total_earnings = total_earnings + ? WHERE id = ?', [$c, $c, $ref['referrer_id']]);
+            bbLogReferralCommission($ref['referrer_id'], $c, "রেফারেল বাজি কমিশন: {$ref['referred_username']}");
             bbReferralQualify($userId);
         }
         $pdo->commit();
