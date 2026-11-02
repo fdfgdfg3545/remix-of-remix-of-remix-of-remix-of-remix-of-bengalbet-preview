@@ -135,7 +135,9 @@ export const GoldenEggModal: React.FC<GoldenEggModalProps> = ({
 
   // Dynamic live countdown timer ticking down to renew timestamp
   const [timeLeft, setTimeLeft] = useState<{ days: number; hours: number; minutes: number; seconds: number }>(() => {
-    const target = renewTimestamp || (Date.now() + 24 * 60 * 60 * 1000);
+    // Plan: hammers renew at 00:00 Bangladesh time (UTC+6)
+    const bdNow = Date.now() + 6 * 3600 * 1000;
+    const target = renewTimestamp || (bdNow - (bdNow % 86400000) + 86400000 - 6 * 3600 * 1000);
     const diff = Math.max(0, target - Date.now());
     return {
       days: Math.floor(diff / (1000 * 60 * 60 * 24)),
@@ -193,6 +195,14 @@ export const GoldenEggModal: React.FC<GoldenEggModalProps> = ({
 
   // Rotating winner ticker
   const [winners, setWinners] = useState<WinnerLog[]>(INITIAL_WINNERS.slice(0, 3));
+  // Prize range comes from the admin prize table on the server
+  const [prizeRange, setPrizeRange] = useState<[number, number] | null>(null);
+  useEffect(() => {
+    api.rewards.chanceTable('golden_egg').then((r: any) => {
+      const a = (r?.prizes || []).map((p: any) => Number(p.amount)).filter((n: number) => n > 0);
+      if (a.length) setPrizeRange([Math.min(...a), Math.max(...a)]);
+    }).catch(() => {});
+  }, []);
 
   useEffect(() => {
     const ticker = setInterval(() => {
@@ -406,7 +416,7 @@ export const GoldenEggModal: React.FC<GoldenEggModalProps> = ({
                   : 'bg-[#374151]/60 text-gray-300 hover:text-white'
               }`}
             >
-              <span>মোট রিচার্জের পরিমাণ ৫০০</span>
+              <span>জমায় +১ হাতুড়ি (দিনে ৩)</span>
               <span className="text-amber-400 text-xs">▶</span>
             </button>
           </div>
@@ -543,18 +553,8 @@ export const GoldenEggModal: React.FC<GoldenEggModalProps> = ({
               <span>{hasSmashedAny ? 'পুরস্কার সংগৃহীত (৳ ' + (wonPrize || 888) + ')' : 'দাবি করুন'}</span>
             </button>
 
-            {/* Dark Progress Bar showing 100.00% based on 500 recharge sample */}
-            <div className="w-full h-5 rounded-full bg-[#1e293b]/90 border border-gray-600 mt-2 flex items-center justify-end px-3 shadow-inner relative overflow-hidden">
-              <div 
-                className="absolute left-0 top-0 bottom-0 bg-gradient-to-r from-amber-600 via-yellow-400 to-amber-500 transition-all duration-1000 shadow-sm"
-                style={{ width: '100%' }}
-              />
-              <span className="relative z-10 text-[10px] font-black text-gray-900 font-mono drop-shadow-[0_1px_1px_rgba(255,255,255,0.8)]">
-                100.00%
-              </span>
-            </div>
-            <span className="text-[9px] text-amber-200/80 font-bold mt-0.5">
-              মোট রিচার্জ ৫০০/৫০০ সম্পন্ন (১০০%)
+            <span className="text-[10px] text-amber-200/80 font-bold mt-2 text-center">
+              {language === 'bn' ? `বাকি হাতুড়ি: ${eggsLeft} · প্রতিদিন লগইনে ১টি, প্রতিটি অনুমোদিত জমায় +১ (দিনে সর্বোচ্চ ৩)` : `Hammers left: ${eggsLeft} · 1 per daily login, +1 per approved deposit (max 3/day)`}
             </span>
           </div>
 
@@ -585,16 +585,9 @@ export const GoldenEggModal: React.FC<GoldenEggModalProps> = ({
 
               {/* Winners 3-row List */}
               <div className="pl-6 space-y-1">
-                {winners.map((w) => (
-                  <div key={w.id} className="flex items-center justify-between text-xs py-0.5 border-b border-yellow-900/40 last:border-none">
-                    <span className="text-yellow-100/90 font-mono font-bold text-[11px] sm:text-xs">
-                      {w.username}
-                    </span>
-                    <span className="text-amber-400 font-mono font-black text-[11px] sm:text-xs">
-                      {w.amount}
-                    </span>
-                  </div>
-                ))}
+                <div className="text-xs py-1 text-yellow-100/90 font-bold">
+                  {(() => { const r = prizeRange ? `৳${prizeRange[0].toLocaleString()} – ৳${prizeRange[1].toLocaleString()}` : '…'; return language === 'bn' ? `পুরস্কার ${r} · সার্ভার বাছাই করে, সঙ্গে সঙ্গে ব্যালেন্সে` : `Prize ${r} · picked by the server, credited instantly`; })()}
+                </div>
               </div>
 
             </div>
