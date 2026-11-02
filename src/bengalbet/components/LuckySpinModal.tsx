@@ -42,11 +42,9 @@ const SECTOR_SUBTITLES = [
 ];
 
 const RECENT_WINNERS = [
-  { user: 'md_ak***9', prize: '৳ ৮,৮৮৮ মেগা জ্যাকপট' },
-  { user: 'tanvir***', prize: 'iPhone 17 ড্র টিকিট' },
-  { user: 'shakil***8', prize: '৳ ২,০০০ নগদ ক্যাশ' },
-  { user: 'rubel***2', prize: '১০ ফ্রি স্পিন' },
-  { user: 'hasan***4', prize: '৳ ১,০০০ লাকি বোনাস' },
+  { text: '≥৳১,০০০ অনুমোদিত জমায় দিনে ১টি টিকিট' },
+  { text: 'পুরস্কার ৳৫–৳১,৫০,০০০ বা iPhone, সার্ভার বাছে' },
+  { text: 'জেতা টাকা সঙ্গে সঙ্গে ব্যালেন্সে' },
 ];
 
 export const LuckySpinModal: React.FC<LuckySpinModalProps> = ({
@@ -287,7 +285,7 @@ export const LuckySpinModal: React.FC<LuckySpinModalProps> = ({
             <span>সাম্প্রতিক জয়:</span>
           </span>
           <span className="text-yellow-200 font-medium truncate ml-2">
-            ★ {RECENT_WINNERS[tickerIndex].user} জিতেছেন {RECENT_WINNERS[tickerIndex].prize}
+            ★ {RECENT_WINNERS[tickerIndex].text}
           </span>
         </div>
 
