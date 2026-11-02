@@ -484,10 +484,10 @@ export const VipSectionView: React.FC<VipSectionViewProps> = ({
             <div className="mt-4 p-4 rounded-xl bg-gray-50 border border-gray-100 flex flex-wrap items-center justify-between text-xs text-gray-600 gap-3">
               <div className="flex items-center gap-2 font-medium">
                 <ShieldCheck className="w-4 h-4 text-emerald-600" />
-                <span>রিবেট অনুপাত সুবিধা:</span>
-                <span className="font-bold text-gray-900">স্লট গেমস {currentTier.slotRebate}%</span>
+                <span>রিয়েল-টাইম রিবেট:</span>
+                <span className="font-bold text-gray-900">প্রতিটি নতুন বাজির উপর, যতবার খুশি দাবি</span>
                 <span>•</span>
-                <span className="font-bold text-gray-900">লাইভ ক্যাসিনো {currentTier.liveRebate}%</span>
+                <span className="font-bold text-gray-900">হার রিবেট পেইজে দেখুন</span>
               </div>
               <div className="text-emerald-700 font-bold">
                 ✓ ১ গুণ বেট সম্পন্ন করে অবিলম্বে প্রত্যাহারযোগ্য
