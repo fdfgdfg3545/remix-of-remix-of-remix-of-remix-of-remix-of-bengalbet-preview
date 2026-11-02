@@ -1,0 +1,10 @@
+{
+    "success": true,
+    "offer": {
+        "enabled": true,
+        "firstDepositOnly": true,
+        "bonusPercent": 47,
+        "maxBonus": 20000,
+        "minDepositForBonus": 500
+    }
+}

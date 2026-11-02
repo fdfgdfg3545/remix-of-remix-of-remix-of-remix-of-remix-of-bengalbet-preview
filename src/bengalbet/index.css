@@ -1,0 +1,521 @@
+
+
+@layer base {
+  body {
+    font-family: 'Hind Siliguri', 'Outfit', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    background-color: #052117;
+    color: #e6f7ef;
+    overflow-x: hidden;
+  }
+
+  /* Custom scrollbar */
+  ::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+  ::-webkit-scrollbar-track {
+    background: #041a12;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: #0d6844;
+    border-radius: 9999px;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: #ffd200;
+  }
+}
+
+/* Scrollable container styling for Sidebar */
+.sidebar-scroll {
+  scrollbar-width: thin;
+  scrollbar-color: #107c51 rgba(3, 26, 17, 0.7);
+  -webkit-overflow-scrolling: touch;
+}
+.sidebar-scroll::-webkit-scrollbar {
+  width: 5px;
+}
+.sidebar-scroll::-webkit-scrollbar-track {
+  background: rgba(2, 22, 14, 0.5);
+}
+.sidebar-scroll::-webkit-scrollbar-thumb {
+  background: #12744c;
+  border-radius: 9999px;
+}
+.sidebar-scroll::-webkit-scrollbar-thumb:hover {
+  background: #facc15;
+}
+
+/* Utility to hide scrollbars where appropriate */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.font-game {
+  font-family: 'Teko', 'Outfit', sans-serif;
+}
+
+.font-bengali {
+  font-family: 'Hind Siliguri', sans-serif;
+}
+
+/* 3D Sweet Golden Glossy Button for BengalBet */
+.btn-bdt-gold,
+.btn-bengal-gold {
+  background: linear-gradient(180deg, #fff176 0%, #ffc107 42%, #e69500 80%, #ffb300 100%);
+  box-shadow: 0 3px 8px rgba(0,0,0,0.45), inset 0 1px 0 rgba(255,255,255,0.8), inset 0 -2px 0 rgba(163, 88, 0, 0.7);
+  color: #3b2000;
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.5);
+  font-weight: 700;
+  transition: all 0.15s ease-in-out;
+}
+
+.btn-bdt-gold:hover,
+.btn-bengal-gold:hover {
+  filter: brightness(1.08);
+  transform: translateY(-1px);
+  box-shadow: 0 5px 14px rgba(255, 193, 7, 0.45), inset 0 1px 0 rgba(255,255,255,0.9);
+}
+
+.btn-bdt-gold:active,
+.btn-bengal-gold:active {
+  transform: translateY(1px);
+  box-shadow: 0 1px 2px rgba(0,0,0,0.5), inset 0 2px 3px rgba(0,0,0,0.3);
+}
+
+/* Sweet Royal Emerald Action Buttons */
+.btn-bdt-green,
+.btn-bengal-green {
+  background: linear-gradient(180deg, #2fd882 0%, #0fa95e 55%, #087f45 100%);
+  box-shadow: 0 2px 6px rgba(0,0,0,0.35), inset 0 1px 0 rgba(255,255,255,0.45);
+  color: #ffffff;
+  font-weight: 600;
+  transition: all 0.15s ease;
+}
+
+.btn-bdt-green:hover,
+.btn-bengal-green:hover {
+  filter: brightness(1.1);
+  box-shadow: 0 4px 12px rgba(16, 185, 129, 0.4);
+}
+
+/* Sweet Ruby Crimson Action Buttons */
+.btn-bengal-ruby {
+  background: linear-gradient(180deg, #ff4d6d 0%, #e6194b 55%, #ba0d37 100%);
+  box-shadow: 0 2px 6px rgba(0,0,0,0.35), inset 0 1px 0 rgba(255,255,255,0.45);
+  color: #ffffff;
+  font-weight: 700;
+  transition: all 0.15s ease;
+}
+
+.btn-bengal-ruby:hover {
+  filter: brightness(1.12);
+  box-shadow: 0 4px 12px rgba(230, 25, 75, 0.45);
+}
+
+/* Golden text gradient */
+.text-gold-gradient {
+  background: linear-gradient(180deg, #fff7b3 0%, #ffca28 50%, #f57f17 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* Sweet Bengal Tiger Metallic Text */
+.text-bengal-gradient {
+  background: linear-gradient(180deg, #ffffff 0%, #ffecb3 35%, #ffa000 85%, #ff6f00 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* Card Glow Effect */
+.card-bdt-glow,
+.card-bengal-glow {
+  border: 1px solid rgba(255, 215, 0, 0.25);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+  transition: all 0.25s ease;
+}
+
+.card-bdt-glow:hover,
+.card-bengal-glow:hover {
+  border-color: rgba(255, 215, 0, 0.65);
+  box-shadow: 0 8px 30px rgba(255, 204, 0, 0.25), 0 0 18px rgba(16, 185, 129, 0.25);
+  transform: translateY(-2px);
+}
+
+@keyframes pulse-glow {
+  0%, 100% {
+    opacity: 0.8;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.03);
+  }
+}
+
+.animate-pulse-glow {
+  animation: pulse-glow 2.5s infinite ease-in-out;
+}
+
+/* Running Marquee Text Animation */
+@keyframes marquee-scroll {
+  0% {
+    transform: translateX(0%);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+.animate-marquee-infinite {
+  display: flex;
+  width: max-content;
+  animation: marquee-scroll 25s linear infinite;
+}
+
+.animate-marquee-infinite:hover {
+  animation-play-state: paused;
+}
+
+/* 3D Jackpot Bulb Letters */
+.jackpot-bulb-text {
+  font-family: 'Teko', 'Outfit', sans-serif;
+  letter-spacing: 0.08em;
+  color: #fffae0;
+  text-shadow: 
+    0 0 10px #ffe600,
+    0 0 20px #ff9900,
+    0 0 35px #ff5500,
+    2px 2px 0px #803000,
+    -2px -2px 0px #803000,
+    2px -2px 0px #803000,
+    -2px 2px 0px #803000;
+}
+
+/* Notice Auto-slide Progress Bar Animation */
+@keyframes notice-progress {
+  0% {
+    width: 0%;
+  }
+  100% {
+    width: 100%;
+  }
+}
+
+.animate-notice-progress {
+  animation: notice-progress 3500ms linear forwards;
+}
+
+/* SweetFun Premium Animations */
+@keyframes sweetfun-bounce {
+  0%, 100% {
+    transform: scale(1) translateY(0);
+  }
+  20% {
+    transform: scale(1.09, 0.93) translateY(-2px);
+  }
+  40% {
+    transform: scale(0.95, 1.05) translateY(-4px);
+  }
+  60% {
+    transform: scale(1.04, 0.97) translateY(-1px);
+  }
+  80% {
+    transform: scale(0.98, 1.02) translateY(0);
+  }
+}
+
+@keyframes sweetfun-gold-ring {
+  0% {
+    box-shadow: 0 0 0 0 rgba(250, 204, 21, 0.8), 0 0 10px rgba(250, 204, 21, 0.6);
+  }
+  50% {
+    box-shadow: 0 0 0 6px rgba(250, 204, 21, 0), 0 0 18px rgba(250, 204, 21, 0.9);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(250, 204, 21, 0), 0 0 10px rgba(250, 204, 21, 0.6);
+  }
+}
+
+@keyframes sweetfun-share-pulse {
+  0%, 100% {
+    transform: scale(1) translateY(0);
+    box-shadow: 0 0 0 0 rgba(52, 211, 153, 0.8), 0 0 15px rgba(52, 211, 153, 0.5), 0 6px 16px rgba(0, 0, 0, 0.85);
+  }
+  30% {
+    transform: scale(1.08) translateY(-3px);
+    box-shadow: 0 0 0 8px rgba(52, 211, 153, 0), 0 0 24px rgba(52, 211, 153, 0.85), 0 10px 20px rgba(0, 0, 0, 0.7);
+  }
+  60% {
+    transform: scale(0.97) translateY(1px);
+    box-shadow: 0 0 0 0 rgba(52, 211, 153, 0), 0 0 12px rgba(52, 211, 153, 0.5), 0 4px 12px rgba(0, 0, 0, 0.9);
+  }
+}
+
+@keyframes sweetfun-shimmer {
+  0% {
+    transform: translateX(-150%) skewX(-25deg);
+  }
+  28%, 100% {
+    transform: translateX(250%) skewX(-25deg);
+  }
+}
+
+@keyframes sweetfun-arrow-bob {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(2.5px);
+  }
+}
+
+@keyframes sweetfun-icon-swing {
+  0%, 100% {
+    transform: rotate(0deg) scale(1);
+  }
+  25% {
+    transform: rotate(-12deg) scale(1.12);
+  }
+  75% {
+    transform: rotate(12deg) scale(1.12);
+  }
+}
+
+.animate-sweetfun-btn {
+  animation: sweetfun-bounce 2.6s cubic-bezier(0.34, 1.56, 0.64, 1) infinite, sweetfun-gold-ring 2.6s ease-in-out infinite;
+}
+
+.animate-sweetfun-share {
+  animation: sweetfun-share-pulse 2.8s cubic-bezier(0.34, 1.56, 0.64, 1) infinite;
+}
+
+.animate-sweetfun-shimmer {
+  animation: sweetfun-shimmer 2.8s ease-in-out infinite;
+}
+
+.animate-sweetfun-arrow {
+  animation: sweetfun-arrow-bob 1.3s ease-in-out infinite;
+}
+
+.animate-sweetfun-icon {
+  animation: sweetfun-icon-swing 2.8s ease-in-out infinite;
+}
+
+/* ========================================================================= */
+/* GLOSSY & ANIMATED GOLDEN EGG ANIMATIONS */
+/* ========================================================================= */
+@keyframes egg-wobble {
+  0%, 100% {
+    transform: translateY(0) rotate(0deg) scale(1, 1);
+  }
+  20% {
+    transform: translateY(-3px) rotate(-3.5deg) scale(0.98, 1.02);
+  }
+  40% {
+    transform: translateY(-5px) rotate(3deg) scale(1.02, 0.98);
+  }
+  60% {
+    transform: translateY(-2px) rotate(-2deg) scale(0.99, 1.01);
+  }
+  80% {
+    transform: translateY(0px) rotate(1.5deg) scale(1.01, 0.99);
+  }
+}
+
+@keyframes egg-wobble-fast {
+  0%, 100% {
+    transform: translateY(0) rotate(0deg) scale(1.1, 1.1);
+  }
+  25% {
+    transform: translateY(-4px) rotate(-6deg) scale(1.08, 1.14);
+  }
+  50% {
+    transform: translateY(-6px) rotate(0deg) scale(1.12, 1.08);
+  }
+  75% {
+    transform: translateY(-4px) rotate(6deg) scale(1.08, 1.14);
+  }
+}
+
+@keyframes egg-gloss-sweep {
+  0% {
+    transform: translateX(-150%) translateY(-30%) rotate(25deg);
+    opacity: 0;
+  }
+  15% {
+    opacity: 0.85;
+  }
+  50% {
+    transform: translateX(180%) translateY(30%) rotate(25deg);
+    opacity: 0.85;
+  }
+  60%, 100% {
+    transform: translateX(200%) translateY(40%) rotate(25deg);
+    opacity: 0;
+  }
+}
+
+@keyframes egg-glow-pulse {
+  0%, 100% {
+    opacity: 0.45;
+    transform: scale(0.95);
+  }
+  50% {
+    opacity: 0.9;
+    transform: scale(1.15);
+  }
+}
+
+@keyframes egg-sparkle-twinkle {
+  0%, 100% {
+    transform: scale(0.6) rotate(0deg);
+    opacity: 0.25;
+  }
+  50% {
+    transform: scale(1.25) rotate(90deg);
+    opacity: 1;
+  }
+}
+
+.animate-egg-wobble {
+  animation: egg-wobble 3.2s cubic-bezier(0.36, 0.07, 0.19, 0.97) infinite;
+  transform-origin: bottom center;
+}
+
+.animate-egg-wobble-fast {
+  animation: egg-wobble-fast 1.2s ease-in-out infinite;
+  transform-origin: bottom center;
+}
+
+.animate-egg-gloss {
+  animation: egg-gloss-sweep 3s ease-in-out infinite;
+}
+
+.animate-egg-aura {
+  animation: egg-glow-pulse 2.4s ease-in-out infinite;
+}
+
+.animate-egg-sparkle {
+  animation: egg-sparkle-twinkle 1.8s ease-in-out infinite;
+}
+
+/* ==========================================================================
+   Real Moving Bengal Tiger Animations
+   ========================================================================== */
+@keyframes realTigerLiving {
+  0% {
+    transform: scale(1.08) translate(0px, 0px) rotate(0deg);
+  }
+  20% {
+    transform: scale(1.12) translate(-0.8px, -1.2px) rotate(-1deg);
+  }
+  40% {
+    transform: scale(1.15) translate(0.6px, -2px) rotate(0.8deg);
+  }
+  60% {
+    transform: scale(1.11) translate(1px, -0.8px) rotate(1.2deg);
+  }
+  80% {
+    transform: scale(1.14) translate(-0.5px, -1.6px) rotate(-0.6deg);
+  }
+  100% {
+    transform: scale(1.08) translate(0px, 0px) rotate(0deg);
+  }
+}
+
+@keyframes realTigerBlink {
+  0%, 88%, 100% {
+    opacity: 0.9;
+    transform: scaleY(1) scaleX(1);
+  }
+  90% {
+    opacity: 0.05;
+    transform: scaleY(0.1) scaleX(1.2);
+  }
+  92% {
+    opacity: 0.9;
+    transform: scaleY(1) scaleX(1);
+  }
+  94% {
+    opacity: 0.05;
+    transform: scaleY(0.1) scaleX(1.2);
+  }
+  96% {
+    opacity: 0.95;
+    transform: scaleY(1) scaleX(1);
+  }
+}
+
+@keyframes realTigerShimmer {
+  0%, 100% {
+    opacity: 0.15;
+    transform: translateX(-15%) translateY(-10%);
+  }
+  50% {
+    opacity: 0.45;
+    transform: translateX(15%) translateY(10%);
+  }
+}
+
+@keyframes tigerFaceAnimated {
+  0%, 100% {
+    transform: scale(1) translateY(0px) rotate(0deg);
+    filter: drop-shadow(0 0 8px rgba(255, 170, 0, 0.75)) drop-shadow(0 4px 12px rgba(255, 80, 0, 0.5));
+  }
+  35% {
+    transform: scale(1.08) translateY(-1px) rotate(1deg);
+    filter: drop-shadow(0 0 16px rgba(255, 210, 0, 0.95)) drop-shadow(0 6px 18px rgba(255, 90, 0, 0.75));
+  }
+  70% {
+    transform: scale(1.04) translateY(0.5px) rotate(-1deg);
+    filter: drop-shadow(0 0 11px rgba(255, 160, 0, 0.8)) drop-shadow(0 4px 14px rgba(255, 60, 0, 0.55));
+  }
+}
+
+@keyframes tigerFilledIconPulse {
+  0%, 100% {
+    transform: scale(1) rotate(0deg);
+    filter: drop-shadow(0 0 5px rgba(255, 170, 0, 0.25)) drop-shadow(0 2px 7px rgba(255, 80, 0, 0.15));
+  }
+  50% {
+    transform: scale(1.03) rotate(0.8deg);
+    filter: drop-shadow(0 0 9px rgba(255, 200, 0, 0.35)) drop-shadow(0 3px 10px rgba(255, 90, 0, 0.22));
+  }
+}
+
+@keyframes tigerFilledLoaderPulse {
+  0%, 100% {
+    transform: scale(1) rotate(0deg);
+    filter: drop-shadow(0 0 10px rgba(255, 180, 0, 0.28)) drop-shadow(0 0 18px rgba(255, 100, 0, 0.18));
+  }
+  50% {
+    transform: scale(1.04) rotate(1deg);
+    filter: drop-shadow(0 0 14px rgba(255, 215, 0, 0.35)) drop-shadow(0 0 24px rgba(255, 80, 0, 0.24));
+  }
+}
+
+@keyframes tigerFaceZoomBreathe {
+  0%, 100% {
+    transform: scale(1.15) translate(0px, 0px);
+  }
+  50% {
+    transform: scale(1.26) translate(0.4px, -0.6px);
+  }
+}
+
+@keyframes tigerFaceLoaderAnimated {
+  0%, 100% {
+    transform: scale(1) translateY(0px) rotate(0deg);
+    filter: drop-shadow(0 0 16px rgba(255, 180, 0, 0.85)) drop-shadow(0 0 30px rgba(255, 100, 0, 0.6));
+  }
+  50% {
+    transform: scale(1.12) translateY(-2px) rotate(1.5deg);
+    filter: drop-shadow(0 0 28px rgba(255, 215, 0, 1)) drop-shadow(0 0 48px rgba(255, 80, 0, 0.85));
+  }
+}
+
+

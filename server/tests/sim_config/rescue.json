@@ -1,0 +1,104 @@
+{
+    "success": true,
+    "tiers": [
+        {
+            "id": 1,
+            "minLoss": 500,
+            "percentage": 3,
+            "maxBonus": 100,
+            "nameBn": "টিয়ার ১ উদ্ধার তহবিল (৩%)",
+            "description": "ন্যূনতম লস ৳৫০০",
+            "status": "inactive"
+        },
+        {
+            "id": 9,
+            "minLoss": 1000,
+            "percentage": 3,
+            "maxBonus": 1,
+            "nameBn": "Audit inactive tier",
+            "description": "Inactive audit-only tier",
+            "status": "inactive"
+        },
+        {
+            "id": 10,
+            "minLoss": 1000,
+            "percentage": 3,
+            "maxBonus": 3000,
+            "nameBn": "উদ্ধার তহবিল ৩%",
+            "description": "স্লট\/ফিশিং দৈনিক লস ৳১,০০০+",
+            "status": "active"
+        },
+        {
+            "id": 2,
+            "minLoss": 2000,
+            "percentage": 5,
+            "maxBonus": 300,
+            "nameBn": "টিয়ার ২ উদ্ধার তহবিল (৫%)",
+            "description": "ন্যূনতম লস ৳২,০০০",
+            "status": "inactive"
+        },
+        {
+            "id": 3,
+            "minLoss": 5000,
+            "percentage": 8,
+            "maxBonus": 888,
+            "nameBn": "টিয়ার ৩ উদ্ধার তহবিল (৮%)",
+            "description": "ন্যূনতম লস ৳৫,০০০",
+            "status": "inactive"
+        },
+        {
+            "id": 4,
+            "minLoss": 10000,
+            "percentage": 10,
+            "maxBonus": 2000,
+            "nameBn": "টিয়ার ৪ উদ্ধার তহবিল (১০%)",
+            "description": "ন্যূনতম লস ৳১০,০০০",
+            "status": "inactive"
+        },
+        {
+            "id": 11,
+            "minLoss": 10000,
+            "percentage": 5,
+            "maxBonus": 20000,
+            "nameBn": "উদ্ধার তহবিল ৫%",
+            "description": "স্লট\/ফিশিং দৈনিক লস ৳১০,০০০+",
+            "status": "active"
+        },
+        {
+            "id": 5,
+            "minLoss": 25000,
+            "percentage": 12,
+            "maxBonus": 5000,
+            "nameBn": "টিয়ার ৫ উদ্ধার তহবিল (১২%)",
+            "description": "ন্যূনতম লস ৳২৫,০০০",
+            "status": "inactive"
+        },
+        {
+            "id": 6,
+            "minLoss": 50000,
+            "percentage": 15,
+            "maxBonus": 15000,
+            "nameBn": "টিয়ার ৬ সুপার উদ্ধার (১৫%)",
+            "description": "ন্যূনতম লস ৳৫০,০০০",
+            "status": "inactive"
+        },
+        {
+            "id": 7,
+            "minLoss": 100000,
+            "percentage": 20,
+            "maxBonus": 50000,
+            "nameBn": "টিয়ার ৭ ভিআইপি মেগা উদ্ধার (২০%)",
+            "description": "ন্যূনতম লস ৳১,০০,০০০",
+            "status": "inactive"
+        },
+        {
+            "id": 12,
+            "minLoss": 100000,
+            "percentage": 8,
+            "maxBonus": 88888,
+            "nameBn": "উদ্ধার তহবিল ৮%",
+            "description": "স্লট\/ফিশিং দৈনিক লস ৳১,০০,০০০+ (সর্বোচ্চ ৳৮৮,৮৮৮)",
+            "status": "active"
+        }
+    ]
+}
