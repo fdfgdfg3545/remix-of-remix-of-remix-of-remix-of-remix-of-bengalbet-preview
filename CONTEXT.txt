@@ -103,3 +103,5 @@ R13. অ্যাডমিনের সব মেনু একটা ট্য�
 - ২০২৬-১১-০২: রেফার/পুরস্কার কেন্দ্র/মেইল নমুনা তথ্য সরানো, হোমের জ্যাকপট বিজয়ী আসল বড় জয় থেকে, অ্যাডমিনে ব্যানার ছবি আপলোড (সার্ভারে লাইভ), Super Ace সার্ভার রাউন্ড লাইভ পরীক্ষা। ৫৯ টেস্ট পাস।
 - ২০২৬-১১-০২: অ্যাডমিন ব্রাউজার পরীক্ষা পাস; সদস্যের নোটিশ পপআপ এখন অ্যাডমিনের সাইট নোটিশ প্রথমে দেখায়।
 - ২০২৬-১১-০২: ২ মাসের পূর্ণ পরীক্ষা (server/tests/sim_60days.ts) পাস। নতুন সদস্য VIP0, ৳০ ব্যালেন্স, কোনো ফ্রি স্পিন/খাম/ডিম নয়; ভিআইপি লেভেল সার্ভারে নিজে বাড়ে (vip_progress.php: বাজি ও জমা দুই লক্ষ্য পূরণ, শুধু বাড়ে) — খেলা, জমা অনুমোদন, ব্যালেন্স, ভিআইপি দাবিতে মেলানো হয়।
+
+2026-11-02: Referral deposit/bet commissions now logged as bonus transactions (bbLogReferralCommission in reward_grants.php, called from admin.php and game_rounds.php) so turnover_guard counts them under otherBonusTurnover. NEEXT_MASTER_KEY secret saved. Live server upload pending.
