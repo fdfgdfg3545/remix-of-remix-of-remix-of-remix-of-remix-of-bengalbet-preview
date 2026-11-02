@@ -98,21 +98,6 @@ switch ($path) {
 
         Database::insert('users', $userData);
 
-        // Record welcome bonus transaction
-        Database::insert('transactions', [
-            'id' => 'tx-' . uniqid(),
-            'user_id' => $newUserId,
-            'username' => $username,
-            'user_phone' => $phone,
-            'type' => 'bonus',
-            'amount' => 500.00,
-            'channel' => 'system',
-            'trx_id' => 'REG' . strtoupper(substr(md5(uniqid()), 0, 10)),
-            'status' => 'success',
-            'description' => 'নতুন রেজিস্ট্রেশন স্পেশাল ওয়েলকাম বোনাস',
-            'created_at' => date('Y-m-d H:i:s')
-        ]);
-
         // Process referral link if provided
         if (!empty($referralCode)) {
             $referrer = Database::fetchOne("SELECT * FROM `users` WHERE `referral_code` = ?", [$referralCode]);
