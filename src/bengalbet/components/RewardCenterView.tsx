@@ -845,7 +845,7 @@ export const RewardCenterView: React.FC<RewardCenterViewProps> = ({
           {/* VIP Ribbon badge */}
           <div className="absolute top-2 right-2 sm:right-auto sm:left-2 z-10 px-2 py-0.5 rounded-full bg-gradient-to-r from-amber-400 to-yellow-300 text-black font-black text-[9.5px] uppercase tracking-wider shadow-sm flex items-center gap-1">
             <Sparkles className="w-3 h-3 text-purple-900" />
-            <span>VIP ২৩ তারিখ ক্যাশ ড্রপ</span>
+            <span>VIP {mDayBn} তারিখ ক্যাশ ড্রপ</span>
           </div>
 
           {/* Left / Main Section */}
