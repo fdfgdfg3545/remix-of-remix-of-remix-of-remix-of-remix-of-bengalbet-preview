@@ -384,7 +384,7 @@ export const VipSectionView: React.FC<VipSectionViewProps> = ({
                     <Trophy className="w-5 h-5 text-amber-600" />
                   </div>
                   <div className="text-2xl font-black text-amber-700 font-mono mt-2">
-                    ৳ {currentTier.upgradeBonus.toLocaleString()}
+                    ৳ {Number(currentTier.upgradeBonus ?? 0).toLocaleString()}
                   </div>
                   <p className="text-xs text-amber-800/80 mt-1">
                     লেভেল অর্জনের পর এককালীন পুরস্কার
@@ -421,7 +421,7 @@ export const VipSectionView: React.FC<VipSectionViewProps> = ({
                     <Calendar className="w-5 h-5 text-emerald-600" />
                   </div>
                   <div className="text-2xl font-black text-emerald-700 font-mono mt-2">
-                    ৳ {currentTier.weeklyBonus.toLocaleString()}
+                    ৳ {Number(currentTier.weeklyBonus ?? 0).toLocaleString()}
                   </div>
                   <p className="text-xs text-emerald-800/80 mt-1">
                     প্রতি {weekdayName(liveRules?.promoRules?.vip?.weeklyClaimDay)} দাবি করা যায়
@@ -454,7 +454,7 @@ export const VipSectionView: React.FC<VipSectionViewProps> = ({
                     <Crown className="w-5 h-5 text-indigo-600" />
                   </div>
                   <div className="text-2xl font-black text-indigo-700 font-mono mt-2">
-                    ৳ {currentTier.monthlyBonus.toLocaleString()}
+                    ৳ {Number(currentTier.monthlyBonus ?? 0).toLocaleString()}
                   </div>
                   <p className="text-xs text-indigo-800/80 mt-1">
                     প্রতি মাসের ১ তারিখ দুপুর ৩টায় প্রদান করা হয়
