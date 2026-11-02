@@ -195,6 +195,14 @@ export const GoldenEggModal: React.FC<GoldenEggModalProps> = ({
 
   // Rotating winner ticker
   const [winners, setWinners] = useState<WinnerLog[]>(INITIAL_WINNERS.slice(0, 3));
+  // Prize range comes from the admin prize table on the server
+  const [prizeRange, setPrizeRange] = useState<[number, number] | null>(null);
+  useEffect(() => {
+    api.rewards.chanceTable('golden_egg').then((r: any) => {
+      const a = (r?.prizes || []).map((p: any) => Number(p.amount)).filter((n: number) => n > 0);
+      if (a.length) setPrizeRange([Math.min(...a), Math.max(...a)]);
+    }).catch(() => {});
+  }, []);
 
   useEffect(() => {
     const ticker = setInterval(() => {
@@ -578,7 +586,7 @@ export const GoldenEggModal: React.FC<GoldenEggModalProps> = ({
               {/* Winners 3-row List */}
               <div className="pl-6 space-y-1">
                 <div className="text-xs py-1 text-yellow-100/90 font-bold">
-                  {language === 'bn' ? 'পুরস্কার ৳২০ – ৳১৮,২২২ · সার্ভার বাছাই করে, সঙ্গে সঙ্গে ব্যালেন্সে' : 'Prize ৳20 – ৳18,222 · picked by the server, credited instantly'}
+                  {(() => { const r = prizeRange ? `৳${prizeRange[0].toLocaleString()} – ৳${prizeRange[1].toLocaleString()}` : '…'; return language === 'bn' ? `পুরস্কার ${r} · সার্ভার বাছাই করে, সঙ্গে সঙ্গে ব্যালেন্সে` : `Prize ${r} · picked by the server, credited instantly`; })()}
                 </div>
               </div>
 
