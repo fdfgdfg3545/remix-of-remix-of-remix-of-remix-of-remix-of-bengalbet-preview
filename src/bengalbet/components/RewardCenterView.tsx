@@ -101,6 +101,12 @@ export const RewardCenterView: React.FC<RewardCenterViewProps> = ({
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [isMysteryModalOpen, setIsMysteryModalOpen] = useState(false);
   const [mysteryStatus, setMysteryStatus] = useState<any>(null);
+  const bnNum = (n: number) => Number(n || 0).toLocaleString('en-IN').replace(/[0-9]/g, (d) => '০১২৩৪৫৬৭৮৯'[Number(d)]);
+  const mCfg = mysteryStatus?.config || {};
+  const mDayBn = bnNum(mCfg.triggerDayOfMonth ?? 23);
+  const mHourNum = Number(mCfg.triggerHour ?? 18);
+  const mHourBn = `${mHourNum >= 17 ? 'সন্ধ্যা' : mHourNum >= 12 ? 'দুপুর/বিকাল' : 'সকাল'} ${bnNum(mHourNum % 12 === 0 ? 12 : mHourNum % 12)}টা`;
+  const mRangeBn = `৳${bnNum(mCfg.minBonusAmount ?? 1000)}–৳${bnNum(mCfg.maxBonusAmount ?? 50000)}`;
   
   // Active main view mode on the right panel
   // 'coupons' | 'temu_chest' (Capture 1) | 'signin' (Capture 2 & 5) | 'rescue' (Capture 3) | 'promo' (Capture 4) | 'ticket_records'
@@ -741,7 +747,7 @@ export const RewardCenterView: React.FC<RewardCenterViewProps> = ({
                 লাকি স্পিন
               </span>
               <span className="text-[9px] text-rose-100 font-bengali mt-0.5">
-                বোনাস: ৳১৫০ পর্যন্ত
+                পুরস্কার: ৳৫–৳১,৫০,০০০ বা iPhone
               </span>
             </div>
             <div className="bg-[#fff1f2] px-3.5 py-2.5 flex flex-col items-center justify-center border-l-2 border-dashed border-rose-300 min-w-[120px]">
@@ -849,30 +855,28 @@ export const RewardCenterView: React.FC<RewardCenterViewProps> = ({
                 <span className="px-2 py-0.5 rounded-md bg-purple-900/80 text-purple-200 text-[10px] font-bold border border-purple-500/40">
                   ক্যাশ কার্ড কুপন
                 </span>
-                <span className="px-2 py-0.5 rounded-md bg-amber-500/20 text-amber-300 text-[10px] font-mono font-bold border border-amber-500/40">
-                  কোড: BENGALBETVIP
-                </span>
+                {mCfg.promoCode ? <span className="px-2 py-0.5 rounded-md bg-amber-500/20 text-amber-300 text-[10px] font-mono font-bold border border-amber-500/40">কোড: {mCfg.promoCode}</span> : null}
                 <span className="px-2 py-0.5 rounded-md bg-emerald-500/20 text-emerald-300 text-[10px] font-bold border border-emerald-500/40">
                   ১ গুণ (1x) ভেগারিং
                 </span>
               </div>
 
               <h3 className="text-sm sm:text-base font-black text-yellow-300 font-bengali mt-1.5 group-hover:text-yellow-200 transition-colors flex items-center gap-1.5">
-                <span>রহস্যময় পুরস্কার প্রতি মাসের ২৩ তারিখ</span>
+                <span>রহস্যময় পুরস্কার প্রতি মাসের {mDayBn} তারিখ</span>
                 <Flame className="w-4 h-4 text-orange-400 animate-pulse" />
               </h3>
 
               <p className="text-[11px] text-purple-200/90 font-bengali mt-1 leading-relaxed">
-                সর্বোচ্চ বোনাস <strong className="text-yellow-400 font-mono font-bold text-xs">৳ ১,০০০ - ৳ ৫০,০০০</strong> • 
-                ২৩ তারিখ সন্ধ্যা ৬টায় অটোমেটিক অ্যাকাউন্টে ক্রেডিট বা ক্যাশ কার্ড ড্রপ!
+                সর্বোচ্চ বোনাস <strong className="text-yellow-400 font-mono font-bold text-xs">{mRangeBn}</strong> •
+                {mDayBn} তারিখ {mHourBn} থেকে দাবি করা যায় (সার্ভার পরিমাণ বাছে, মাসে একবার)
               </p>
             </div>
 
             {/* Bottom Requirements Checklist & Description */}
             <div className="flex flex-wrap items-center justify-between gap-2 mt-2 pt-2 border-t border-purple-900/60 text-[10px]">
               <div className="flex items-center gap-3 text-purple-300">
-                <span>• ১-২২ তারিখ ন্যূনতম ৫০০৳ বেট</span>
-                <span>• ফোন ও ইমেল ভেরিফাইড</span>
+                <span>• এই মাসে ন্যূনতম ৳{bnNum(mCfg.minBetRequired ?? 500)} বাজি</span>
+                
                 <span>• সমস্ত স্লট ও লাইভ গেমসে প্রযোজ্য</span>
               </div>
               <button
@@ -899,10 +903,10 @@ export const RewardCenterView: React.FC<RewardCenterViewProps> = ({
           >
             <div className="flex flex-col items-center">
               <span className="text-[10px] font-bold text-amber-300 font-bengali uppercase tracking-wider">
-                {mysteryStatus?.hasClaimed ? 'দাবি সম্পন্ন' : mysteryStatus?.isUnlocked ? 'আনলকড ক্যাশ কার্ড' : '২৩ তারিখ ড্রপ'}
+                {mysteryStatus?.hasClaimed ? 'দাবি সম্পন্ন' : mysteryStatus?.isUnlocked ? 'আনলকড ক্যাশ কার্ড' : `${mDayBn} তারিখ ড্রপ`}
               </span>
               <span className="text-sm sm:text-base font-black font-mono text-yellow-400 mt-0.5">
-                {mysteryStatus?.card?.bonusAmount ? `৳ ${mysteryStatus.card.bonusAmount.toLocaleString()}` : '৳১,০০০-৫০,০০০'}
+                {mysteryStatus?.card?.bonusAmount ? `৳ ${mysteryStatus.card.bonusAmount.toLocaleString()}` : mRangeBn}
               </span>
             </div>
 
@@ -2657,14 +2661,14 @@ export const RewardCenterView: React.FC<RewardCenterViewProps> = ({
                   <div className="flex flex-col text-left">
                     <div className="flex items-center gap-1.5">
                       <span className="text-xs font-black text-yellow-300 font-bengali">
-                        ২৩ তারিখ রহস্যময় পুরস্কার
+                        {mDayBn} তারিখ রহস্যময় পুরস্কার
                       </span>
                       <span className="px-1.5 py-0.2 rounded text-[8.5px] font-mono font-bold bg-amber-400 text-black">
                         1x বাজি
                       </span>
                     </div>
                     <span className="text-[10px] text-purple-200 font-bengali font-semibold mt-0.5">
-                      সর্বোচ্চ বোনাস ৳ ১,০০০ - ৳ ৫০,০০০ • সন্ধ্যা ৬টায় ড্রপ
+                      {mRangeBn} • {mHourBn} থেকে
                     </span>
                   </div>
                 </div>
@@ -3108,7 +3112,7 @@ export const RewardCenterView: React.FC<RewardCenterViewProps> = ({
                     <Sparkles className="w-3 h-3 text-amber-500" />
                   </h4>
                   <span className="text-[9.5px] text-purple-700 font-bengali font-bold">
-                    {mysteryStatus?.card?.bonusAmount ? `৳ ${mysteryStatus.card.bonusAmount.toLocaleString()}` : '৳১,০০০-৫০,০০০'}
+                    {mysteryStatus?.card?.bonusAmount ? `৳ ${mysteryStatus.card.bonusAmount.toLocaleString()}` : mRangeBn}
                   </span>
                 </div>
               </div>
