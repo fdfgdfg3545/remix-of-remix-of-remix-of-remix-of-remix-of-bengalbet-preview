@@ -1,7 +1,7 @@
 <?php
 /**
  * Bonus/deposit wagering requirement before withdrawal (admin promo rules -> withdrawal).
- * Counts approved deposits, their bonus and other credited bonuses since the member's last
+ * Counts approved deposits, their bonus and other credited bonuses (including referral commissions) since the member's last
  * non-rejected withdrawal, and the valid bets placed in that same period.
  */
 require_once __DIR__ . '/promo_rules.php';

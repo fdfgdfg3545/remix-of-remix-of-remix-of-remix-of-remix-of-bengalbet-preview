@@ -39,6 +39,14 @@ function bbReferralSettings(): array {
     foreach (['enabled','autoCreditInstantBonus'] as $k) $out[$k] = (bool)$out[$k];
     return $out;
 }
+/** Logs a referral commission as a bonus transaction so it counts toward the withdrawal wagering rule. */
+function bbLogReferralCommission(string $referrerId, float $amount, string $desc): void {
+    if ($amount <= 0) return;
+    $r = Database::fetchOne('SELECT username, phone FROM users WHERE id = ?', [$referrerId]);
+    if (!$r) return;
+    Database::insert('transactions', ['id' => 'tx-' . bin2hex(random_bytes(8)), 'user_id' => $referrerId, 'username' => $r['username'], 'user_phone' => $r['phone'], 'type' => 'bonus', 'amount' => $amount, 'channel' => 'system', 'trx_id' => 'RFC' . date('YmdHis') . random_int(100, 999), 'status' => 'success', 'description' => $desc, 'created_at' => date('Y-m-d H:i:s')]);
+}
+
 /** Pays the referrer's instant bonus once when the referred friend qualifies. Call inside a DB transaction. */
 function bbReferralQualify(string $referredUid): float {
     $s = bbReferralSettings();

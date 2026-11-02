@@ -52,6 +52,7 @@ function bbApproveDeposit(array $tx): void {
             'total_commission_earned' => (float)$ref['total_commission_earned'] + $c
         ], "`id` = ?", [$ref['id']]);
         Database::execute("UPDATE `users` SET `balance` = `balance` + ?, `total_earnings` = `total_earnings` + ? WHERE `id` = ?", [$c, $c, $ref['referrer_id']]);
+        bbLogReferralCommission($ref['referrer_id'], $c, "রেফারেল জমা কমিশন: {$ref['referred_username']}");
         bbReferralQualify($tx['user_id']);
     }
     // deposit row is marked success by the caller; count this amount now
