@@ -312,7 +312,7 @@ export const VipMobileView: React.FC<VipMobileViewProps> = ({
                 </div>
                 <div className="text-right">
                   <div className="text-sm font-black text-emerald-600 font-mono">
-                    +৳{claim.bonus.toLocaleString()}
+                    +৳{Number(claim.bonus ?? 0).toLocaleString()}
                   </div>
                   <span className="text-[10px] font-bold text-emerald-500">
                     ক্লেইম সফল
@@ -595,7 +595,7 @@ export const VipMobileView: React.FC<VipMobileViewProps> = ({
                   <Trophy className="w-3.5 h-3.5 text-amber-500" />
                 </div>
                 <div className="text-lg font-black text-amber-600 font-mono mt-1">
-                  ৳{currentTier.upgradeBonus.toLocaleString()}
+                  ৳{Number(currentTier.upgradeBonus ?? 0).toLocaleString()}
                 </div>
               </div>
 
@@ -627,7 +627,7 @@ export const VipMobileView: React.FC<VipMobileViewProps> = ({
                   <Calendar className="w-3.5 h-3.5 text-emerald-500" />
                 </div>
                 <div className="text-lg font-black text-emerald-600 font-mono mt-1">
-                  ৳{currentTier.weeklyBonus.toLocaleString()}
+                  ৳{Number(currentTier.weeklyBonus ?? 0).toLocaleString()}
                 </div>
               </div>
 
@@ -655,7 +655,7 @@ export const VipMobileView: React.FC<VipMobileViewProps> = ({
                   <Crown className="w-3.5 h-3.5 text-cyan-500" />
                 </div>
                 <div className="text-lg font-black text-cyan-600 font-mono mt-1">
-                  ৳{currentTier.monthlyBonus.toLocaleString()}
+                  ৳{Number(currentTier.monthlyBonus ?? 0).toLocaleString()}
                 </div>
               </div>
 
@@ -728,7 +728,7 @@ export const VipMobileView: React.FC<VipMobileViewProps> = ({
                       <span className="font-semibold text-gray-600">
                         {userBet > 0 ? (userBet >= targetBet ? tier.targetBetDisplay : userBet.toLocaleString()) : '0.00'}
                       </span>
-                      <div className="text-[10px]">/{tier.targetBetDisplay || tier.targetBet.toLocaleString()}</div>
+                      <div className="text-[10px]">/{tier.targetBetDisplay || Number(tier.targetBet ?? 0).toLocaleString()}</div>
                     </div>
 
                     {/* Percentage */}
@@ -783,7 +783,7 @@ export const VipMobileView: React.FC<VipMobileViewProps> = ({
 
               {/* Value */}
               <div className="text-sm font-black text-gray-900 font-mono">
-                ৳ {userBet.toLocaleString()} /{selectedLevelForUpgrade.targetBetDisplay || selectedLevelForUpgrade.targetBet.toLocaleString()}
+                ৳ {userBet.toLocaleString()} /{selectedLevelForUpgrade.targetBetDisplay || Number(selectedLevelForUpgrade.targetBet ?? 0).toLocaleString()}
               </div>
 
               {/* Progress & 'যাও' button */}
@@ -821,7 +821,7 @@ export const VipMobileView: React.FC<VipMobileViewProps> = ({
               {selectedLevelForUpgrade.upgradeBonus > 0 && (
                 <div className="pt-2 border-t border-gray-100 text-xs text-gray-600 flex justify-between items-center">
                   <span>আপগ্রেড বোনাস পুরস্কার:</span>
-                  <span className="font-bold text-amber-600 font-mono">+৳{selectedLevelForUpgrade.upgradeBonus.toLocaleString()}</span>
+                  <span className="font-bold text-amber-600 font-mono">+৳{Number(selectedLevelForUpgrade.upgradeBonus ?? 0).toLocaleString()}</span>
                 </div>
               )}
             </div>
