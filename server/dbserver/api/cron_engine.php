@@ -1,6 +1,7 @@
 <?php
 /** Prepare member snapshots and issue VIP salary cards; never credit wallet or approve payments. */
 require_once __DIR__ . '/vip_salary.php';
+require_once __DIR__ . '/mystery_cards.php';
 function bbCronWindows(array $rules, array $mystery, int $timestamp): array {
     $now = (new DateTimeImmutable('@' . $timestamp))->setTimezone(new DateTimeZone('Asia/Dhaka'));
     $hour = (int)$now->format('G'); $minute = (int)$now->format('i');
@@ -42,6 +43,7 @@ function bbCronStatus(): array {
         'lastSuccess' => $s['last_success'], 'status' => $s['status'],
         'processed' => (int)$s['processed'], 'cycleComplete' => (bool)$s['cycle_complete'],
         'salaryPendingJobs' => (int)Database::fetchOne('SELECT COUNT(*) c FROM vip_salary_jobs WHERE complete=0')['c'],
+        'mysteryPendingJobs' => (int)Database::fetchOne('SELECT COUNT(*) c FROM mystery_card_jobs WHERE complete=0')['c'],
         'lastError' => $s['last_error'], 'windows' => json_decode($s['windows_json'] ?? '{}', true),
         'serverTime' => date('Y-m-d H:i:s'), 'timezone' => 'Asia/Dhaka',
         'stale' => !$s['last_started'] || time() - strtotime($s['last_started']) > 180,
@@ -63,12 +65,14 @@ function bbCronRun(): array {
         $live = bbPromoLiveRules(); $now = time(); $minute = date('Y-m-d H:i', $now);
         $windows = bbCronWindows($live['promoRules'], $live['mystery'], $now);
         $deadline=microtime(true)+15;
-        bbSalaryPrepare($live,date('Y-m-d',$now));
-        $salaryCount=bbSalaryProcess($deadline);
         Database::execute("UPDATE cron_engine_state SET last_started=?, status='running', last_error=NULL, windows_json=? WHERE id=1", [date('Y-m-d H:i:s', $now), json_encode($windows)]);
+        bbSalaryPrepare($live,date('Y-m-d',$now));
+        bbMysteryPrepare($live['mystery'],date('Y-m-d H:i:s',$now));
+        $salaryCount=bbSalaryProcess(min($deadline,microtime(true)+5));
+        $mysteryCount=bbMysteryProcess(min($deadline,microtime(true)+5));
         if ((bool)$s['cycle_complete']) {
             if ($s['cycle_minute'] === $minute) {
-                $pending=(int)Database::fetchOne('SELECT COUNT(*) c FROM vip_salary_jobs WHERE complete=0')['c'];
+                $pending=(int)Database::fetchOne('SELECT COUNT(*) c FROM vip_salary_jobs WHERE complete=0')['c']+(int)Database::fetchOne('SELECT COUNT(*) c FROM mystery_card_jobs WHERE complete=0')['c'];
                 Database::execute("UPDATE cron_engine_state SET status=?, last_finished=?, last_success=? WHERE id=1", [$pending?'pending':'idle',date('Y-m-d H:i:s'), date('Y-m-d H:i:s')]);
                 return ['success' => true, 'status' => $pending?'pending':'idle', 'processedThisCall' => 0, 'salaryProcessedThisCall'=>$salaryCount, 'state' => bbCronStatus()];
             }
@@ -81,8 +85,8 @@ function bbCronRun(): array {
         $unit = function ($uid) use ($today, $yesterday, $now, $live) {
             $y = Database::fetchAll('SELECT category, COALESCE(SUM(bet_amount),0) bet, COALESCE(SUM(reward),0) win FROM bets WHERE user_id=? AND date=? GROUP BY category', [$uid, $yesterday]);
             $t = Database::fetchAll('SELECT category, COALESCE(SUM(valid_bet),0) bet FROM bets WHERE user_id=? AND date=? GROUP BY category', [$uid, $today]);
-            $end = date('Y-m', $now) . '-' . sprintf('%02d', max(1, (int)$live['mystery']['triggerDayOfMonth'] - 1));
-            $month = Database::fetchOne('SELECT COALESCE(SUM(bet_amount),0) total FROM bets WHERE user_id=? AND date BETWEEN ? AND ?', [$uid, date('Y-m-01', $now), $end]);
+            $mp=bbMysteryPeriod($live['mystery'],date('Y-m',$now));
+            $month = Database::fetchOne('SELECT COALESCE(SUM(bet_amount),0) total FROM bets WHERE user_id=? AND date>=? AND date<?', [$uid, $mp['start'], $mp['cutoff']]);
             return ['asOf' => date('Y-m-d H:i:s'), 'day' => $today, 'yesterday' => $y, 'today' => $t, 'mysteryPeriodBet' => (float)$month['total']];
         };
         $commit = function ($uid, $data) use ($pdo) {
@@ -96,10 +100,10 @@ function bbCronRun(): array {
         $count = bbCronProcessBatch($ids, $unit, $commit, $deadline);
         $current = Database::fetchOne('SELECT cursor_id,upper_id FROM cron_engine_state WHERE id=1');
         $more = Database::fetchOne("SELECT id FROM users WHERE status='active' AND id>? AND id<=? ORDER BY id LIMIT 1", [$current['cursor_id'], $current['upper_id']]);
-        $pendingSalary=(int)Database::fetchOne('SELECT COUNT(*) c FROM vip_salary_jobs WHERE complete=0')['c'];
+        $pendingSalary=(int)Database::fetchOne('SELECT COUNT(*) c FROM vip_salary_jobs WHERE complete=0')['c']+(int)Database::fetchOne('SELECT COUNT(*) c FROM mystery_card_jobs WHERE complete=0')['c'];
         $status=$more||$pendingSalary?'pending':'complete';
         Database::execute('UPDATE cron_engine_state SET cycle_complete=?, status=?, last_finished=?, last_success=? WHERE id=1', [$more ? 0 : 1, $status, date('Y-m-d H:i:s'), date('Y-m-d H:i:s')]);
-        return ['success' => true, 'status' => $status, 'processedThisCall' => $count, 'salaryProcessedThisCall'=>$salaryCount, 'state' => bbCronStatus()];
+        return ['success' => true, 'status' => $status, 'processedThisCall' => $count, 'salaryProcessedThisCall'=>$salaryCount, 'mysteryProcessedThisCall'=>$mysteryCount, 'state' => bbCronStatus()];
     } catch (Throwable $e) {
         if ($pdo->inTransaction()) $pdo->rollBack();
         Database::execute("UPDATE cron_engine_state SET status='error', last_error=?, last_finished=? WHERE id=1", ['Scheduled work failed; the unchanged checkpoint will retry on the next call.', date('Y-m-d H:i:s')]);

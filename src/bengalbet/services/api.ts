@@ -1515,17 +1515,20 @@ export const api = {
       if (category && category !== 'all') params.append('category', category);
       if (status && status !== 'all') params.append('status', status);
       const query = params.toString() ? `?${params.toString()}` : '';
-      const [legacy, salary] = await Promise.allSettled([
+      const [legacy, salary, mystery] = await Promise.allSettled([
         request<{ success: boolean; tickets: any[]; total: number }>(`/api/tickets${query}`),
         request<{ success: boolean; tickets: any[] }>('/api/rewards.php?action=vip-salary-cards'),
+        request<{ success: boolean; tickets: any[] }>('/api/rewards.php?action=mystery-cards'),
       ]);
-      if (legacy.status === 'rejected' && salary.status === 'rejected') throw legacy.reason;
+      if (legacy.status === 'rejected' && salary.status === 'rejected' && mystery.status === 'rejected') throw legacy.reason;
       const cards = salary.status === 'fulfilled' && salary.value.success ? salary.value.tickets.filter(t => (!category || category === 'all' || category === 'vip_salary') && (!status || status === 'all' || t.status === status)) : [];
-      const tickets = [...(legacy.status === 'fulfilled' && legacy.value.success ? legacy.value.tickets : []), ...cards];
+      const mysteryCards = mystery.status === 'fulfilled' && mystery.value.success ? mystery.value.tickets.filter(t => (!category || category === 'all' || category === 'mystery_cash') && (!status || status === 'all' || t.status === status)) : [];
+      const tickets = [...(legacy.status === 'fulfilled' && legacy.value.success ? legacy.value.tickets : []), ...cards, ...mysteryCards].filter((t, i, rows) => rows.findIndex(x => x.id === t.id) === i);
       return { success: true, tickets, total: tickets.length };
     },
 
     async useTicket(ticketId: string) {
+      if (ticketId.startsWith('mcc-')) return request('/api/rewards.php?action=mystery-redeem', { method: 'POST', body: JSON.stringify({ ticketId }) });
       if (ticketId.startsWith('vips-')) return request('/api/rewards.php?action=vip-salary-redeem', { method: 'POST', body: JSON.stringify({ ticketId }) });
       return request<{ success: boolean; message: string; ticket: any }>('/api/tickets/use', {
         method: 'POST',

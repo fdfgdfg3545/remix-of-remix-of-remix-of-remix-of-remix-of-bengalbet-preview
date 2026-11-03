@@ -109,6 +109,10 @@ export const MysteryRewardModal: React.FC<MysteryRewardModalProps> = ({
   if (!isOpen) return null;
 
   const config = status?.config;
+  const bn = (value: number) => Number(value).toLocaleString('bn-BD');
+  const dropDay = config?.triggerDayOfMonth ?? 23;
+  const dropHour = `${String(config?.triggerHour ?? 18).padStart(2, '0')}:00`;
+  const baseMultiplier = config?.wageringTurnover ?? 1;
   const isEligible = status?.isEligible === true;
   const isUnlocked = status?.isUnlocked === true;
   const hasClaimed = status?.hasClaimed || Boolean(revealedBonus);
@@ -140,11 +144,11 @@ export const MysteryRewardModal: React.FC<MysteryRewardModalProps> = ({
                 </span>
                 <span className="text-[10px] font-bold text-amber-300 flex items-center gap-1">
                   <Flame className="w-3 h-3 text-orange-400 animate-pulse" />
-                  প্রতি মাসের ২৩ তারিখ
+                  প্রতি মাসের {bn(dropDay)} তারিখ
                 </span>
               </div>
               <h2 className="text-base sm:text-lg font-black font-bengali text-white tracking-wide">
-                ২৩ তারিখ রহস্যময় পুরস্কার
+                রহস্যময় নগদ কার্ড
               </h2>
             </div>
           </div>
@@ -200,7 +204,7 @@ export const MysteryRewardModal: React.FC<MysteryRewardModalProps> = ({
                     </span>
                   </div>
                   <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-purple-900/80 border border-purple-400/30 text-purple-200">
-                    ২৩ তারিখ সন্ধ্যা ৬টা
+                    {bn(dropDay)} তারিখ {dropHour}
                   </span>
                 </div>
 
@@ -223,15 +227,15 @@ export const MysteryRewardModal: React.FC<MysteryRewardModalProps> = ({
                   ) : (
                     <div className="mt-1 flex items-baseline justify-center gap-1.5">
                       <span className="text-2xl sm:text-3xl font-black text-transparent bg-clip-text bg-gradient-to-r from-yellow-300 via-amber-300 to-yellow-100 font-mono tracking-tight">
-                        ৳ ১,০০০ - ৳ ৫০,০০০
+                        ৳ {bn(config?.minBonusAmount ?? 1000)} - ৳ {bn(config?.maxBonusAmount ?? 50000)}
                       </span>
                     </div>
                   )}
 
                   <p className="text-[11px] text-purple-200/70 font-bengali mt-1">
                     {hasClaimed 
-                      ? 'মাত্র ১ গুণ (1x) ভেগারিং টার্নওভার সম্পন্ন করে ক্যাশআউট করুন।' 
-                      : 'প্রতি মাসের ২৩ তারিখ অটোমেটিক অ্যাকাউন্টে ক্রেডিট বা ক্যাশ কার্ড হিসেবে জমা।'}
+                      ? `নতুন বোনাসে ${baseMultiplier}× বাজির শর্ত; উত্তোলনে চলতি মাসে অনুমোদিত জমা প্রয়োজন।`
+                      : `${bn(dropDay)} তারিখ ${dropHour}-এ নগদ কার্ড পুরস্কারের টিকিটে আসে; গ্রহণ করলে টাকা যোগ হয়।`}
                   </p>
                 </div>
 
@@ -250,7 +254,7 @@ export const MysteryRewardModal: React.FC<MysteryRewardModalProps> = ({
                   </div>
 
                   <div className="text-amber-400 font-mono font-bold">
-                    1x টার্নওভার
+                    {baseMultiplier}× টার্নওভার
                   </div>
                 </div>
               </div>
@@ -282,7 +286,7 @@ export const MysteryRewardModal: React.FC<MysteryRewardModalProps> = ({
                 {/* 1. Monthly Bet Progress */}
                 <div>
                   <div className="flex items-center justify-between text-[11px] mb-1 font-bengali">
-                    <span className="text-gray-300">১-২২ তারিখ মোট বাজি:</span>
+                    <span className="text-gray-300">{bn(dropDay)} তারিখের আগে এই মাসের বাজি:</span>
                     <span className="font-mono font-bold text-amber-300">
                       ৳{userBet.toLocaleString('en-US')} / ৳{minBet.toLocaleString('en-US')}
                     </span>
@@ -296,7 +300,7 @@ export const MysteryRewardModal: React.FC<MysteryRewardModalProps> = ({
                 </div>
 
                 {/* 2. Verification Badges */}
-                <div className="grid grid-cols-2 gap-2 pt-1 text-[11px]">
+                <div className="hidden">
                   <div className="flex items-center gap-1.5 p-2 rounded-xl bg-purple-900/30 border border-purple-800/30">
                     <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
                     <span className="text-gray-300 font-bengali">{status?.isPhoneVerified ? 'মোবাইল ভেরিফাইড' : 'মোবাইল যাচাই বাকি'}</span>
@@ -353,15 +357,15 @@ export const MysteryRewardModal: React.FC<MysteryRewardModalProps> = ({
                 <ul className="space-y-2 text-gray-200">
                   <li className="flex items-start gap-2">
                     <span className="text-amber-400 font-bold">•</span>
-                    <span>মাসের ১ তারিখ থেকে ২২ তারিখ পর্যন্ত মোট ন্যূনতম ৫০০ টাকা বাজি ধরতে হবে।</span>
+                    <span>মাসের শুরু থেকে {bn(dropDay)} তারিখ শুরু হওয়ার আগে মোট ন্যূনতম ৳{bn(minBet)} বাজি থাকতে হবে।</span>
                   </li>
                   <li className="flex items-start gap-2">
                     <span className="text-amber-400 font-bold">•</span>
-                    <span>অ্যাকাউন্টে মোবাইল নম্বর ও ইমেল ভেরিফাইড থাকতে হবে।</span>
+                    <span>সক্রিয় সদস্যের নিজের সার্ভার-প্রদত্ত নগদ কার্ড একবার গ্রহণ করা যায়।</span>
                   </li>
                   <li className="flex items-start gap-2">
                     <span className="text-amber-400 font-bold">•</span>
-                    <span>২৩ তারিখ সন্ধ্যা ৬টায় অটোমেটিক অ্যাকাউন্টে ক্রেডিট করা হবে বা রিওয়ার্ড সেন্টারে ক্যাশ কার্ড ওপেন করা যাবে।</span>
+                    <span>{bn(dropDay)} তারিখ {dropHour}-এ নগদ কার্ড টিকিটে আসে; কার্ড গ্রহণের আগে ব্যালেন্স বাড়ে না।</span>
                   </li>
                 </ul>
               </div>
@@ -375,11 +379,11 @@ export const MysteryRewardModal: React.FC<MysteryRewardModalProps> = ({
                 <ul className="space-y-2 text-gray-200">
                   <li className="flex items-start gap-2">
                     <span className="text-emerald-400 font-bold">✓</span>
-                    <span>বোনাসটির সাথে মাত্র ১ গুণ (1x) ভেগারিং টার্নওভার প্রযোজ্য।</span>
+                    <span>নগদ গ্রহণ করলে সাধারণ {baseMultiplier}× বাজির শর্ত যোগ হয়।</span>
                   </li>
                   <li className="flex items-start gap-2">
                     <span className="text-emerald-400 font-bold">✓</span>
-                    <span>কোনো অতিরিক্ত রেজিস্ট্রেশন বা ডিপোজিট স্লিপ লাগবে না।</span>
+                    <span>উত্তোলনের অনুরোধে চলতি বাংলাদেশি মাসে অনুমোদিত জমা থাকতে হবে।</span>
                   </li>
                   <li className="flex items-start gap-2">
                     <span className="text-emerald-400 font-bold">✓</span>

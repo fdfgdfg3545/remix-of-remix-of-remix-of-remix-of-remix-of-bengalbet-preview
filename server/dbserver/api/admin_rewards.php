@@ -1,6 +1,16 @@
 <?php
 /** Read-only reward admin contracts. Invoked by authenticated admin.php. */
 Database::requireAdmin();
+require_once __DIR__.'/promo_rules.php';
+require_once __DIR__.'/mystery_rules.php';
+if($section==='mystery-reward' && $action==='config') {
+ if($method==='GET')Database::jsonResponse(['success'=>true,'config'=>bbMysteryConfig()]);
+ if($method==='DELETE'){Database::execute('DELETE FROM mystery_reward_config WHERE id=1');Database::jsonResponse(['success'=>true,'config'=>bbMysteryConfig()]);}
+ if($method!=='POST')Database::errorResponse('Method Not Allowed',405);
+ try{$config=bbValidateMystery($input);}catch(InvalidArgumentException $e){Database::errorResponse($e->getMessage(),422);}
+ Database::execute('INSERT INTO mystery_reward_config (id,config_json) VALUES (1,?) ON DUPLICATE KEY UPDATE config_json=VALUES(config_json)',[json_encode($config,JSON_UNESCAPED_UNICODE)]);
+ Database::jsonResponse(['success'=>true,'config'=>bbMysteryConfig()]);
+}
 require_once __DIR__ . '/daily_signin_rules.php';
 if ($section === 'daily-signin' && $action === 'config' && $method === 'POST') {
     try { $config=bbSigninValidatedConfig($input); }
@@ -124,10 +134,7 @@ case 'promos':
     break;
 case 'mystery-reward':
     if ($action === 'config') {
-        $row=Database::fetchOne('SELECT config_json FROM mystery_reward_config WHERE id = 1');
-        $config=$row ? json_decode($row['config_json'],true) : null;
-        if (!$config) $config=['enabled'=>true,'minBonusAmount'=>2500,'maxBonusAmount'=>2500,'triggerDayOfMonth'=>23,'triggerHour'=>18,'minBetRequired'=>500,'promoCode'=>'','wageringTurnover'=>1,'autoCreditEnabled'=>false];
-        Database::jsonResponse(['success'=>true,'config'=>$config,'configured'=>(bool)$row]);
+        Database::jsonResponse(['success'=>true,'config'=>bbMysteryConfig()]);
     }
     if ($action === 'cards') {
         $rows=bbRewardRows('mystery_cash_cards','`unlocked_at` DESC',['status'=>$_GET['status'] ?? '', 'month_year'=>$_GET['monthYear'] ?? '']);

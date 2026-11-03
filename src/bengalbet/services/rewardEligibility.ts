@@ -5,10 +5,14 @@ export interface MysteryClaimStatus {
   is23rdToday?: boolean;
   isPast6PM?: boolean;
   config?: { enabled?: boolean };
+  unlockedCard?: { id?: string; status?: string };
 }
 
 /** Missing or failed eligibility reads must never enable a reward claim. */
 export function mayClaimMysteryReward(status: MysteryClaimStatus | null, busy = false): boolean {
+  if (status?.unlockedCard?.id) return !busy && status.isEligible === true &&
+    status.isUnlocked === true && status.hasClaimed === false &&
+    status.config?.enabled !== false && status.unlockedCard.status === 'unlocked';
   return !busy && status?.isEligible === true && status.isUnlocked === true &&
     status.hasClaimed === false && status.config?.enabled !== false &&
     status.is23rdToday === true && status.isPast6PM === true;

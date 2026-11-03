@@ -1,4 +1,5 @@
 <?php
+require_once __DIR__.'/withdraw_month.php';
 if($action!=='withdraw')return;
 if($method!=='POST')Database::errorResponse('Method Not Allowed',405);
 $raw=$input['amount']??null;
@@ -12,6 +13,7 @@ if($amount<(float)$settings['min_withdraw']||$amount>(float)$settings['max_withd
 $pdo=Database::getConnection();try {
     $pdo->beginTransaction();$user=Database::fetchOne('SELECT * FROM users WHERE id=? FOR UPDATE',[$userId]);
     if(!$user||$user['status']!=='active')throw new RuntimeException('Active account required');
+    if(!bbWithdrawalHasMonthlyDeposit($userId))throw new RuntimeException('Deposit first to activate your withdrawal');
     $turnover=bbTurnoverStatus($userId);
     if($turnover['remaining']>0)throw new RuntimeException('উত্তোলনের আগে আরও ৳'.number_format($turnover['remaining'],2).' বাজি সম্পন্ন করতে হবে।');
     if((float)$user['balance']<$amount)throw new RuntimeException('Insufficient balance');

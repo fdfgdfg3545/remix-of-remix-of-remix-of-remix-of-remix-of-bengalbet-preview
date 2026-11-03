@@ -40,7 +40,7 @@ export function usePromotions(): any[] {
     const lines = liveRulesFor(p.iconType, r.live);
     // Printed banner numbers cannot track admin changes. Keep originals in the editor,
     // but show current server copy to members instead of incompatible printed terms.
-    return lines.length ? { ...p, titleBn: lines[0], subtitleBn: lines[1] || '', requirementsBn: lines, rulesBn: lines, bannerImage: '' } : p;
+    return lines.length ? { ...p, titleBn: lines[0], titleEn: '', subtitleBn: lines[1] || '', subtitleEn: '', requirementsBn: lines, rulesBn: lines, bannerImage: '', highlightNumber: '', claimableAmount: '', validUntil: '', badge: '', badgeBn: '' } : p;
   })); }); return () => { on = false; }; }, []);
   return list;
 }

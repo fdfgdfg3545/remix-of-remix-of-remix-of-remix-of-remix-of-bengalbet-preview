@@ -382,7 +382,7 @@ export const RewardCenterView: React.FC<RewardCenterViewProps> = ({
   };
 
   const handleUseTicketRecord = async (item: any) => {
-    if (item.targetAction === 'vip_salary') {
+    if (['vip_salary', 'mystery_cash'].includes(item.targetAction)) {
       if (item.status !== 'active') return;
       try {
         const result = await api.tickets.useTicket(item.id);
@@ -2368,8 +2368,8 @@ export const RewardCenterView: React.FC<RewardCenterViewProps> = ({
                           {item.usedTime}
                         </td>
                         <td className="p-3.5 text-right">
-                          {item.targetAction === 'vip_salary' && <Button size="sm" disabled={item.status !== 'active'} onClick={() => handleUseTicketRecord(item)}><Coins />{item.status === 'active' ? 'নগদ গ্রহণ' : 'গৃহীত'}</Button>}
-                          {item.targetAction !== 'vip_salary' && item.status === 'claimed' && (
+                          {['vip_salary', 'mystery_cash'].includes(item.targetAction) && <Button size="sm" disabled={item.status !== 'active'} onClick={() => handleUseTicketRecord(item)}><Coins />{item.status === 'active' ? 'নগদ গ্রহণ' : 'গৃহীত'}</Button>}
+                          {!['vip_salary', 'mystery_cash'].includes(item.targetAction) && item.status === 'claimed' && (
                             <button
                               onClick={() => handleUseTicketRecord(item)}
                               className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-emerald-50 hover:bg-emerald-100 border border-emerald-200 text-emerald-700 font-bold text-[11px] cursor-pointer transition-all active:scale-95 shadow-2xs"
@@ -2384,7 +2384,7 @@ export const RewardCenterView: React.FC<RewardCenterViewProps> = ({
                               ব্যবহৃত
                             </span>
                           )}
-                          {item.targetAction !== 'vip_salary' && item.status === 'active' && (
+                          {!['vip_salary', 'mystery_cash'].includes(item.targetAction) && item.status === 'active' && (
                             <button
                               onClick={() => handleUseTicketRecord(item)}
                               className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-amber-50 hover:bg-amber-100 border border-amber-300 text-amber-700 font-bold text-[11px] animate-pulse cursor-pointer transition-all active:scale-95 shadow-2xs"
@@ -2435,8 +2435,8 @@ export const RewardCenterView: React.FC<RewardCenterViewProps> = ({
                         {item.type}
                       </span>
 
-                      {item.targetAction === 'vip_salary' && <Button size="sm" disabled={item.status !== 'active'} onClick={() => handleUseTicketRecord(item)}><Coins />{item.status === 'active' ? 'নগদ গ্রহণ' : 'গৃহীত'}</Button>}
-                      {item.targetAction !== 'vip_salary' && item.status === 'claimed' && (
+                      {['vip_salary', 'mystery_cash'].includes(item.targetAction) && <Button size="sm" disabled={item.status !== 'active'} onClick={() => handleUseTicketRecord(item)}><Coins />{item.status === 'active' ? 'নগদ গ্রহণ' : 'গৃহীত'}</Button>}
+                      {!['vip_salary', 'mystery_cash'].includes(item.targetAction) && item.status === 'claimed' && (
                         <button
                           onClick={() => handleUseTicketRecord(item)}
                           className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-emerald-50 hover:bg-emerald-100 border border-emerald-200 text-emerald-700 font-bold text-[10px] font-bengali cursor-pointer active:scale-95 transition-all shadow-2xs"
@@ -2450,7 +2450,7 @@ export const RewardCenterView: React.FC<RewardCenterViewProps> = ({
                           ব্যবহৃত
                         </span>
                       )}
-                      {item.targetAction !== 'vip_salary' && item.status === 'active' && (
+                      {!['vip_salary', 'mystery_cash'].includes(item.targetAction) && item.status === 'active' && (
                         <button
                           onClick={() => handleUseTicketRecord(item)}
                           className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-amber-50 hover:bg-amber-100 border border-amber-300 text-amber-700 font-bold text-[10px] font-bengali cursor-pointer active:scale-95 transition-all shadow-2xs"

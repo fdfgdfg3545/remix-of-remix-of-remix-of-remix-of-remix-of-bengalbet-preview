@@ -11,6 +11,15 @@ require_once __DIR__ . '/reward_grants.php';
 
 $userId = Database::requireUser();
 $input = Database::getJsonInput();
+if(in_array($_GET['action']??'', ['mystery-cards','mystery-redeem'],true)) {
+ require_once __DIR__.'/mystery_cards.php';
+ if($_GET['action']==='mystery-cards' && $_SERVER['REQUEST_METHOD']==='GET')Database::jsonResponse(['success'=>true,'tickets'=>array_map('bbMysteryTicket',Database::fetchAll('SELECT * FROM mystery_cash_cards WHERE user_id=? ORDER BY unlocked_at DESC',[$userId]))]);
+ if($_GET['action']==='mystery-redeem' && $_SERVER['REQUEST_METHOD']==='POST'){
+  try{Database::jsonResponse(bbMysteryRedeem($userId,(string)($input['ticketId']??'')));}
+  catch(Throwable $e){Database::errorResponse($e instanceof RuntimeException && !($e instanceof PDOException)?$e->getMessage():'রহস্য কার্ড গ্রহণ করা যায়নি।',400);}
+ }
+ Database::errorResponse('Method Not Allowed',405);
+}
 if (in_array($_GET['action'] ?? '', ['vip-salary-cards','vip-salary-redeem'], true)) {
     require_once __DIR__.'/vip_salary.php';
     if($_GET['action']==='vip-salary-cards' && $_SERVER['REQUEST_METHOD']==='GET') {
