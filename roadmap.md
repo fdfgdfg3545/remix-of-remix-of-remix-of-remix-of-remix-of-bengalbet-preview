@@ -1,10 +1,11 @@
 # Remaining work
 
 ## 2026-11-03 02:22 priority: detailed v5 and card/withdrawal audit
-- [ ] Expand and deliver v5 using actual member/admin/server/image rules, including detailed mystery eligibility and scheduled cash cards.
-- [ ] Enforce current-Dhaka-month approved-deposit requirement at withdrawal submission with member-facing error and regression tests.
-- [ ] Extend resumable cron to mystery card issuance and once-only redemption; preserve configured VIP amounts.
-- [ ] Execute desktop/mobile checks and local two-month boundary tests; record each result separately from remote/live evidence.
+- [x] Expand and deliver v5 using actual member/admin/server/image rules, including detailed mystery eligibility and scheduled cash cards (22 sections).
+- [x] Local PHP withdrawal guard rejects missing current-month deposits before financial writes; regression and approval-month boundary tests pass. Remote deployment unverified.
+- [x] Local mystery queue/card issuance and owned-card redemption implemented; memory-backed rollback/once/1x tests pass. Remote schema, queue/concurrency and live UI redemption remain blocked by connection.
+- [x] Desktop/mobile home and promotion navigation checked; 71 frontend tests, PHP helper/settlement tests, 60-day period checks and existing 18,000-member model passed. None substitutes for signed-in/MySQL end-to-end verification.
+- [ ] Remaining local audit: salary historical entitlement and statistics, second-resolution wagering cutoff, legacy manual mystery controls, source dependencies, ticket partial-load status, all remaining pages/actions and baked-image corrections.
 - [ ] Remote admin mutation/deployment and clock-controlled two-month browser tests need the DBServer connection restored (previous setup declined).
 
 ## 2026-11-03 wagering and automatic VIP cards
