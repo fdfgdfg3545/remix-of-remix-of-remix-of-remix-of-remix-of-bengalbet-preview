@@ -13,6 +13,10 @@ $section = $_GET['section'] ?? '';
 $action = $_GET['action'] ?? '';
 $targetId = $_GET['id'] ?? '';
 $input = Database::getJsonInput();
+if ($section === 'cron') {
+    require __DIR__ . '/cron_admin.php';
+    exit();
+}
 // Admin banner upload: base64 PNG/JPG/WEBP up to 2 MB, saved with a random name, returns a public https URL.
 if ($section === 'upload-image') {
     if ($_SERVER['REQUEST_METHOD'] !== 'POST') Database::errorResponse('Method Not Allowed', 405);

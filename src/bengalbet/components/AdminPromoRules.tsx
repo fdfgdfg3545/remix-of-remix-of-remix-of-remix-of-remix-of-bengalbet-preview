@@ -4,6 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Switch } from '@/components/ui/switch';
 import { api } from '../services/api';
+import { AdminCronEngine } from './AdminCronEngine';
 import { GAME_CATEGORIES, savePromoRules, validatePromoRules, PROMO_RULE_DEFAULTS, type PromoRules } from '../services/promoRules';
 
 const DAYS = ['', 'সোমবার', 'মঙ্গলবার', 'বুধবার', 'বৃহস্পতিবার', 'শুক্রবার', 'শনিবার', 'রবিবার'];
@@ -160,5 +161,6 @@ export function AdminPromoRules() {
     </fieldset>}
     <footer className="flex flex-wrap items-center justify-between gap-3"><p role="status" className="text-sm break-words">{message}</p>
       <Button disabled={busy || !rules} onClick={save}>{busy ? <Loader2 className="animate-spin" /> : <Save />}নিয়ম সংরক্ষণ</Button></footer>
+    <AdminCronEngine />
   </section>;
 }

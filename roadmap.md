@@ -1,5 +1,11 @@
 # Remaining work
 
+## 2026-11-03 priority: every-minute resumable cron
+- [ ] Add authenticated external PHP scheduler, durable checkpoints, exclusive runner lock and bounded batches.
+- [ ] Show URL, cPanel command setup and last-run/progress/error status in admin promotion rules.
+- [ ] Verify time windows, interruption/resume, repeat/overlapping requests and authentication; deploy only through an available secure master connection.
+- [ ] Continue remaining full 1:1 audit after this priority; do not mark untested flows complete.
+
 ## 2026-11-03 full plan alignment request
 - [x] Inventory member/admin views, promotions, rewards and 44 bundled images; detailed scope and discrepancies documented.
 - [x] Detailed versioned marketing/site-rules text file v4 delivered; project plan expanded with evidence and gaps.
