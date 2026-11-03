@@ -41,6 +41,7 @@ import { JackpotWinnersSection } from './JackpotWinnersSection';
 import { GameProvidersSection } from './GameProvidersSection';
 import { AppDownloadSection } from './AppDownloadSection';
 import { useFavorites } from '../hooks/useFavorites';
+import { useLiveRules, liveRulesFor } from '../services/promoLive';
 import firstDepositBanner from '../assets/images/bengal_deposit_banner_1790008299014.jpg';
 import vipExclusiveBanner from '../assets/images/bengal_vip_banner_1790008315416.jpg';
 import inviteFriendsBanner from '../assets/images/bengal_invite_banner_1790008327090.jpg';
@@ -99,6 +100,7 @@ export const CasinoLobby: React.FC<CasinoLobbyProps> = ({
   onOpenAppDownload,
   onOpenDailySignIn
 }) => {
+  const live = useLiveRules();
   const { favorites: hookFavorites, toggleFavorite: hookToggleFavorite } = useFavorites();
   const favorites = propFavorites || hookFavorites;
   const toggleFavorite = (gameId: string, e: React.MouseEvent) => {
@@ -403,14 +405,14 @@ export const CasinoLobby: React.FC<CasinoLobbyProps> = ({
           <div className="animate-marquee-infinite flex gap-12 items-center shrink-0 text-emerald-100 text-[11px] sm:text-xs">
             <span className="whitespace-nowrap font-medium">
               {language === 'bn' 
-                ? '👑 বেঙ্গলবেটে ১ জনকে আমন্ত্রণ জানালেই ৩০০ টাকা ক্যাশ বোনাস 👑' 
-                : '👑 Welcome to BengalBet: Invite 1 friend & earn ৳300 instant cash reward 👑'}
+                ? liveRulesFor('referral', live)[0] || 'যোগ্য বন্ধুদের আমন্ত্রণে রেফার বোনাস'
+                : 'Referral bonus for qualified friends; see current promotion terms'}
             </span>
             <span className="whitespace-nowrap text-yellow-300 font-bold">
-              🎉 {language === 'bn' ? 'প্রতিদিন ডিপোজিটে ক্যাশব্যাক ও ফ্রি স্পিন ড্রপ!' : 'Daily Free Spin & Cashback Drops!'}
+              🎉 {language === 'bn' ? liveRulesFor('golden_egg', live)[0] || 'দৈনিক লগইন ও অনুমোদিত জমায় হাতুড়ি' : 'Daily login and approved deposits earn hammers'}
             </span>
             <span className="whitespace-nowrap text-cyan-300 font-bold">
-              ⚡ {language === 'bn' ? 'রিয়েল টাইম ৩% রিবেট স্বয়ংক্রিয়ভাবে প্রদান করা হয়' : 'Real-time 3% instant rebate cashback'}
+              ⚡ {language === 'bn' ? liveRulesFor('rebate', live)[0] || 'রিয়েল-টাইম রিবেট' : 'Real-time rebate; claim on the rebate page'}
             </span>
             <span className="whitespace-nowrap text-amber-200 font-semibold">
               🏆 {language === 'bn' ? 'বেঙ্গলবেট ভিআইপি মেম্বারশিপে এক্সক্লুসিভ রিওয়ার্ড ও সাপ্তাহিক বোনাস' : 'BengalBet VIP Membership Exclusive Rewards & Weekly Drops'}
@@ -421,14 +423,14 @@ export const CasinoLobby: React.FC<CasinoLobbyProps> = ({
           <div className="animate-marquee-infinite flex gap-12 items-center shrink-0 text-emerald-100 text-[11px] sm:text-xs" aria-hidden="true">
             <span className="whitespace-nowrap font-medium">
               {language === 'bn' 
-                ? '👑 বেঙ্গলবেটে ১ জনকে আমন্ত্রণ জানালেই ৩০০ টাকা ক্যাশ বোনাস 👑' 
-                : '👑 Welcome to BengalBet: Invite 1 friend & earn ৳300 instant cash reward 👑'}
+                ? liveRulesFor('referral', live)[0] || 'যোগ্য বন্ধুদের আমন্ত্রণে রেফার বোনাস'
+                : 'Referral bonus for qualified friends; see current promotion terms'}
             </span>
             <span className="whitespace-nowrap text-yellow-300 font-bold">
-              🎉 {language === 'bn' ? 'প্রতিদিন ডিপোজিটে ক্যাশব্যাক ও ফ্রি স্পিন ড্রপ!' : 'Daily Free Spin & Cashback Drops!'}
+              🎉 {language === 'bn' ? liveRulesFor('golden_egg', live)[0] || 'দৈনিক লগইন ও অনুমোদিত জমায় হাতুড়ি' : 'Daily login and approved deposits earn hammers'}
             </span>
             <span className="whitespace-nowrap text-cyan-300 font-bold">
-              ⚡ {language === 'bn' ? 'রিয়েল টাইম ৩% রিবেট স্বয়ংক্রিয়ভাবে প্রদান করা হয়' : 'Real-time 3% instant rebate cashback'}
+              ⚡ {language === 'bn' ? liveRulesFor('rebate', live)[0] || 'রিয়েল-টাইম রিবেট' : 'Real-time rebate; claim on the rebate page'}
             </span>
             <span className="whitespace-nowrap text-amber-200 font-semibold">
               🏆 {language === 'bn' ? 'বেঙ্গলবেট ভিআইপি মেম্বারশিপে এক্সক্লুসিভ রিওয়ার্ড ও সাপ্তাহিক বোনাস' : 'BengalBet VIP Membership Exclusive Rewards & Weekly Drops'}

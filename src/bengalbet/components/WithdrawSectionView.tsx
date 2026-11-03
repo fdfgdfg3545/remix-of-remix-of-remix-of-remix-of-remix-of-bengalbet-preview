@@ -1001,7 +1001,7 @@ export const WithdrawSectionView: React.FC<WithdrawSectionViewProps> = ({
 
               <div className="p-3 bg-gray-50 rounded-xl border border-gray-200 space-y-1">
                 <div className="font-bold text-gray-900">২. টার্নওভার শর্তাবলী:</div>
-                <p>উত্তোলন করার পূর্বে ডিপোজিট বা বোনাসের প্রয়োজনীয় টার্নওভার অবশ্যই ১০০% পূরণ করতে হবে। অপূর্ণ টার্নওভার থাকলে স্বয়ংক্রিয়ভাবে অনুরোধ মুলতুবি থাকবে।</p>
+                <p>উত্তোলন করার পূর্বে ডিপোজিট বা বোনাসের প্রয়োজনীয় টার্নওভার অবশ্যই ১০০% পূরণ করতে হবে। অপূর্ণ টার্নওভার থাকলে উত্তোলনের অনুরোধ করা যাবে না।</p>
               </div>
 
               <div className="p-3 bg-gray-50 rounded-xl border border-gray-200 space-y-1">

@@ -45,6 +45,7 @@ import {
   ArrowRight
 } from 'lucide-react';
 import { api } from '../services/api';
+import { saveVerifiedSettings } from '../services/settingsPersistence';
 
 export interface InstantBonusRangeItem {
   id: number;
@@ -317,7 +318,8 @@ export const NeextHubAdminReferralsManager: React.FC<NeextHubAdminReferralsManag
     e.preventDefault();
     setIsSavingSettings(true);
     try {
-      const res = await api.admin.referrals.updateSettings(settings);
+      await saveVerifiedSettings(settings, api.admin.referrals);
+      const res = { success: true };
       if (res.success) {
         showToast('রেফারেল ও কমিশন পলিসি সফলভাবে সংরক্ষিত হয়েছে!');
         loadReferralData();
@@ -598,10 +600,11 @@ export const NeextHubAdminReferralsManager: React.FC<NeextHubAdminReferralsManag
           id: t.id || (index + 1)
         }));
 
-      const res = await api.admin.referrals.updateSettings({
+      await saveVerifiedSettings({
         ...settings,
         customTiers: sorted
-      });
+      }, api.admin.referrals);
+      const res = { success: true };
 
       if (res.success) {
         showToast('আমন্ত্রণ বোনাস রেঞ্জ ও স্তর সফলভাবে সংরক্ষিত হয়েছে!');
@@ -638,10 +641,11 @@ export const NeextHubAdminReferralsManager: React.FC<NeextHubAdminReferralsManag
           instantBonus: Number(r.instantBonus)
         }));
 
-      const res = await api.admin.referrals.updateSettings({
+      await saveVerifiedSettings({
         ...settings,
         instantBonusRanges: sanitized
-      });
+      }, api.admin.referrals);
+      const res = { success: true };
 
       if (res.success) {
         showToast('তাৎক্ষণিক বোনাস স্কেল রেঞ্জ সফলভাবে সংরক্ষিত হয়েছে!');
@@ -778,10 +782,11 @@ export const NeextHubAdminReferralsManager: React.FC<NeextHubAdminReferralsManag
           rewardAmount: Number(l.rewardAmount)
         }));
 
-      const res = await api.admin.referrals.updateSettings({
+      await saveVerifiedSettings({
         ...settings,
         poroskarLevels: sanitized
-      });
+      }, api.admin.referrals);
+      const res = { success: true };
 
       if (res.success) {
         showToast('পুরস্কার ধারাবাহিক লেভেল মাইলস্টোন সফলভাবে সংরক্ষিত হয়েছে!');

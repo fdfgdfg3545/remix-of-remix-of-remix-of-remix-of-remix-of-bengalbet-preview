@@ -145,9 +145,9 @@ export const ReferSectionView: React.FC<ReferSectionViewProps> = ({ user, onClos
     breakdown: { instantRewardTotal: 0, milestoneRewardTotal: 0, depositCommissionTotal: 0, betRebateTotal: 0 } as any,
     referralCode: user.referralCode || '',
     commissionRates: {
-      instantBonus: 300,
-      depositRate: 0.70,
-      betRate: 1.00
+      instantBonus: 0,
+      depositRate: 0,
+      betRate: 0
     }
   });
 
@@ -200,7 +200,7 @@ export const ReferSectionView: React.FC<ReferSectionViewProps> = ({ user, onClos
           depositedFriends: Number((statsRes as any).depositedFriends ?? 0),
           breakdown: (statsRes as any).breakdown || {},
           referralCode: statsRes.referralCode || user.referralCode || '',
-          commissionRates: statsRes.commissionRates || { instantBonus: 300, depositRate: 0.70, betRate: 1.00 }
+          commissionRates: statsRes.commissionRates || { instantBonus: 0, depositRate: 0, betRate: 0 }
         });
 
         if (statsRes.poroskarLevels && statsRes.poroskarLevels.length > 0) {
@@ -867,13 +867,7 @@ export const ReferSectionView: React.FC<ReferSectionViewProps> = ({ user, onClos
                     <span className="text-[11px] text-emerald-200 block font-medium">বর্তমান সক্রিয় তাৎক্ষণিক রেট</span>
                     {(() => {
                       const userCount = liveStats.totalFriends;
-                      const activeRange = (instantBonusRanges.length > 0 ? instantBonusRanges : [
-                        { minCount: 1, maxCount: 5, instantBonus: 300, label: '১ - ৫ জন বন্ধু' },
-                        { minCount: 6, maxCount: 10, instantBonus: 1500, label: '৬ - ১০ জন বন্ধু' },
-                        { minCount: 11, maxCount: 20, instantBonus: 2000, label: '১১ - ২০ জন বন্ধু' },
-                        { minCount: 21, maxCount: 50, instantBonus: 3000, label: '২১ - ৫০ জন বন্ধু' },
-                        { minCount: 51, maxCount: 999999, instantBonus: 5000, label: '৫১+ জন বন্ধু' }
-                      ]).find(r => userCount >= r.minCount && (r.maxCount >= 999999 ? true : userCount <= r.maxCount)) || { instantBonus: 300 };
+                      const activeRange = { instantBonus: Number(liveStats.commissionRates?.instantBonus ?? 0) };
 
                       return (
                         <span className="text-base sm:text-lg font-black text-yellow-300 font-mono">
@@ -896,13 +890,7 @@ export const ReferSectionView: React.FC<ReferSectionViewProps> = ({ user, onClos
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-gray-100">
-                      {(instantBonusRanges.length > 0 ? instantBonusRanges : [
-                        { id: '1', minCount: 1, maxCount: 5, instantBonus: 300, label: '১ - ৫ জন বন্ধু' },
-                        { id: '2', minCount: 6, maxCount: 10, instantBonus: 1500, label: '৬ - ১০ জন বন্ধু' },
-                        { id: '3', minCount: 11, maxCount: 20, instantBonus: 2000, label: '১১ - ২০ জন বন্ধু' },
-                        { id: '4', minCount: 21, maxCount: 50, instantBonus: 3000, label: '২১ - ৫০ জন বন্ধু' },
-                        { id: '5', minCount: 51, maxCount: 999999, instantBonus: 5000, label: '৫১+ জন বন্ধু (সর্বোচ্চ)' }
-                      ]).map((range, idx) => {
+                      {([{ id: 'flat', minCount: 1, maxCount: 999999, instantBonus: Number(liveStats.commissionRates?.instantBonus ?? 0), label: 'প্রতিটি যোগ্য বন্ধু' }]).map((range, idx) => {
                         const userCount = liveStats.totalFriends;
                         const isCurrentActive = userCount >= range.minCount && (range.maxCount >= 999999 ? true : userCount <= range.maxCount);
                         const isCompleted = userCount > range.maxCount && range.maxCount < 999999;
@@ -975,8 +963,8 @@ export const ReferSectionView: React.FC<ReferSectionViewProps> = ({ user, onClos
                   </div>
                   <div>
                     <span className="text-xs text-gray-500 font-medium">সাফল্য পুরস্কার</span>
-                    <p className="text-sm sm:text-base font-black font-game text-gray-900 mt-0.5">৳ 2,721,700.00</p>
-                    <span className="text-[11px] text-gray-400 font-mono">6429 দাবিত</span>
+                    <p className="text-sm sm:text-base font-black font-game text-gray-900 mt-0.5">৳ {Number(liveStats.breakdown?.milestoneRewardTotal ?? 0).toLocaleString('en-US', { minimumFractionDigits: 2 })}</p>
+                    
                   </div>
                 </div>
 
@@ -987,8 +975,8 @@ export const ReferSectionView: React.FC<ReferSectionViewProps> = ({ user, onClos
                   </div>
                   <div>
                     <span className="text-xs text-gray-500 font-medium">ডিপোজিট রিবেট</span>
-                    <p className="text-sm sm:text-base font-black font-game text-gray-900 mt-0.5">৳ 20,475,362,179.64</p>
-                    <span className="text-[11px] text-gray-400 font-mono">585452 দাবিত</span>
+                    <p className="text-sm sm:text-base font-black font-game text-gray-900 mt-0.5">৳ {Number(liveStats.breakdown?.depositCommissionTotal ?? 0).toLocaleString('en-US', { minimumFractionDigits: 2 })}</p>
+                    
                   </div>
                 </div>
 
@@ -999,8 +987,8 @@ export const ReferSectionView: React.FC<ReferSectionViewProps> = ({ user, onClos
                   </div>
                   <div>
                     <span className="text-xs text-gray-500 font-medium">বেটিং রিবেট</span>
-                    <p className="text-sm sm:text-base font-black font-game text-gray-900 mt-0.5">৳ 34,703,183,753.63</p>
-                    <span className="text-[11px] text-gray-400 font-mono">593046 দাবিত</span>
+                    <p className="text-sm sm:text-base font-black font-game text-gray-900 mt-0.5">৳ {Number(liveStats.breakdown?.betRebateTotal ?? 0).toLocaleString('en-US', { minimumFractionDigits: 2 })}</p>
+                    
                   </div>
                 </div>
               </div>
