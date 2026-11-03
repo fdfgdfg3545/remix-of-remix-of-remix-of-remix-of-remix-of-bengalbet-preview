@@ -29,7 +29,7 @@ const DAYS = ['', 'সোমবার', 'মঙ্গলবার', 'বুধ�
 
 const BN_DIGITS = '০১২৩৪৫৬৭৮৯';
 /** Member copy uses Bengali digits throughout so printed and live numbers read the same way. */
-export const toBnDigits = (s: string) => String(s).replace(/[0-9]/g, (d) => BN_DIGITS[Number(d)]);
+export const toBnDigits = (s: string) => String(s).replace(/[0-9]/g, (d) => BN_DIGITS.charAt(Number(d)));
 
 /** Rule lines the server actually enforces for a promotion type (iconType). Empty when unknown. */
 export function liveRulesFor(iconType: string, live: LiveRules | null | undefined): string[] {
