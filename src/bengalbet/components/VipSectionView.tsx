@@ -19,7 +19,7 @@ import {
 } from 'lucide-react';
 import { UserAccount, VipTierConfig, VipRewardRecord } from '../types';
 import { api } from '../services/api';
-import { useLiveRules, weekdayName } from '../services/promoLive';
+import { useLiveRules, weekdayName, toBnDigits } from '../services/promoLive';
 
 interface VipSectionViewProps {
   user: UserAccount;
