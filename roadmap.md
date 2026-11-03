@@ -1,5 +1,12 @@
 # Remaining work
 
+## 2026-11-03 02:22 priority: detailed v5 and card/withdrawal audit
+- [ ] Expand and deliver v5 using actual member/admin/server/image rules, including detailed mystery eligibility and scheduled cash cards.
+- [ ] Enforce current-Dhaka-month approved-deposit requirement at withdrawal submission with member-facing error and regression tests.
+- [ ] Extend resumable cron to mystery card issuance and once-only redemption; preserve configured VIP amounts.
+- [ ] Execute desktop/mobile checks and local two-month boundary tests; record each result separately from remote/live evidence.
+- [ ] Remote admin mutation/deployment and clock-controlled two-month browser tests need the DBServer connection restored (previous setup declined).
+
 ## 2026-11-03 wagering and automatic VIP cards
 - [ ] Revise plan: all new non-game-win wallet credits require base 1x; first-deposit bonus additionally requires 8x (total 9x), both admin-editable.
 - [ ] Implement and test ledger accounting and admin/member rule presentation.
