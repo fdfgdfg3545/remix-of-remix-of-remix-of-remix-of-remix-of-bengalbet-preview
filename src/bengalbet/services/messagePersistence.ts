@@ -11,11 +11,11 @@ export interface MessageDraft {
 }
 
 export function normalizeMessage(row: Record<string, any>) {
-  let content = row.content;
-  if (!content && typeof row.content_json === 'string') {
-    try { content = JSON.parse(row.content_json); } catch { content = {}; }
+  let content = row['content'];
+  if (!content && typeof row['content_json'] === 'string') {
+    try { content = JSON.parse(row['content_json']); } catch { content = {}; }
   }
-  return { ...row, userId: row.userId ?? row.user_id, claimableBonus: Number(row.claimableBonus ?? row.claimable_bonus ?? 0), displayTime: row.displayTime ?? row.display_time, dateFull: row.dateFull ?? row.date_full, content: content ?? {} };
+  return { ...row, id: row['id'], title: row['title'], sender: row['sender'], category: row['category'], userId: row['userId'] ?? row['user_id'], claimableBonus: Number(row['claimableBonus'] ?? row['claimable_bonus'] ?? 0), displayTime: row['displayTime'] ?? row['display_time'], dateFull: row['dateFull'] ?? row['date_full'], content: content ?? {} };
 }
 
 type MessageApi = {

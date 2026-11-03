@@ -7,7 +7,7 @@ const makeApi = () => ({ getMessages: vi.fn(), createBroadcastMessage: vi.fn().m
 describe('Message persistence confirmation', () => {
   it('confirms a newly stored targeted zero-bonus message', async () => {
     const api = makeApi(); api.getMessages.mockResolvedValueOnce({ success: true, messages: [] }).mockResolvedValueOnce({ success: true, messages: [row] });
-    expect((await createVerifiedMessage(draft, api))[0].userId).toBe('isolated-test');
+    expect((await createVerifiedMessage(draft, api))[0]?.userId).toBe('isolated-test');
   });
   it('does not mistake an old identical message for a new save', async () => {
     const api = makeApi(); api.getMessages.mockResolvedValue({ success: true, messages: [row] });
