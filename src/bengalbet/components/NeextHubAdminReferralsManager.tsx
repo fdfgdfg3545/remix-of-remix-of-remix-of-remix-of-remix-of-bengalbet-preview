@@ -623,7 +623,7 @@ export const NeextHubAdminReferralsManager: React.FC<NeextHubAdminReferralsManag
   const handleResetDefaultTiers = () => {
     setCustomTiers(DEFAULT_LADDER_TIERS);
     setHasTiersChanged(true);
-    showToast('ডিফল্ট ২৪টি স্তরে রিসেট করা হয়েছে। স্থায়ী করতে সংরক্ষণ করুন।');
+    showToast('সম্পাদনার জন্য ডিফল্ট স্তর বসানো হয়েছে; সার্ভারে এখনো বদলায়নি।');
   };
 
   // INSTANT BONUS RANGES HANDLERS (User-count based instant referral bonus scale)
@@ -664,7 +664,7 @@ export const NeextHubAdminReferralsManager: React.FC<NeextHubAdminReferralsManag
   const handleResetDefaultRanges = () => {
     setInstantBonusRanges(DEFAULT_INSTANT_BONUS_RANGES);
     setHasRangesChanged(true);
-    showToast('ডিফল্ট ৫টি তাৎক্ষণিক বোনাস স্কেলে রিসেট করা হয়েছে। স্থায়ী করতে সংরক্ষণ করুন।');
+    showToast('সম্পাদনার জন্য ডিফল্ট স্কেল বসানো হয়েছে; সার্ভারে এখনো বদলায়নি।');
   };
 
   const handleApplyUserRequestedRanges = () => {
@@ -805,7 +805,7 @@ export const NeextHubAdminReferralsManager: React.FC<NeextHubAdminReferralsManag
   const handleResetDefaultPoroskar = () => {
     setPoroskarLevels(DEFAULT_POROSKAR_LEVELS);
     setHasPoroskarChanged(true);
-    showToast('ডিফল্ট ১০টি পুরস্কার লেভেলে রিসেট করা হয়েছে। স্থায়ী করতে সংরক্ষণ করুন।');
+    showToast('সম্পাদনার জন্য ডিফল্ট পদক বসানো হয়েছে; সার্ভারে এখনো বদলায়নি।');
   };
 
   const handleApplyUserRequestedPoroskar = () => {

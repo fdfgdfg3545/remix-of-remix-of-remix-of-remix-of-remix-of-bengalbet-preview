@@ -21,6 +21,8 @@ import {
   ChevronDown
 } from 'lucide-react';
 import { api } from '../services/api';
+import { createVerifiedMessage, deleteVerifiedMessage, normalizeMessage } from '../services/messagePersistence';
+import { useLiveRules, liveRulesFor } from '../services/promoLive';
 import confetti from 'canvas-confetti';
 
 interface NeextHubAdminMessagesManagerProps {
@@ -34,6 +36,7 @@ export const NeextHubAdminMessagesManager: React.FC<NeextHubAdminMessagesManager
   showToast,
   onRefreshSiteUser
 }) => {
+  const live = useLiveRules();
   const [messages, setMessages] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [searchQuery, setSearchQuery] = useState<string>('');
@@ -64,7 +67,7 @@ export const NeextHubAdminMessagesManager: React.FC<NeextHubAdminMessagesManager
     try {
       const res = await api.admin.getMessages();
       if (res.success && res.messages) {
-        setMessages(res.messages);
+        setMessages(res.messages.map(normalizeMessage));
       }
     } catch (err) {
       console.warn('Admin Messages load error:', err);
@@ -82,36 +85,36 @@ export const NeextHubAdminMessagesManager: React.FC<NeextHubAdminMessagesManager
     if (presetType === 'mission') {
       setFormCategory('mission');
       setFormSender('মিশন সেন্টার');
-      setFormTitle('🏆 নতুন মিশন সম্পন্ন রিওয়ার্ড নোটিশ – এখনই সংগ্রহ করুন!');
-      setFormHeadline('অভিনন্দন! আপনার দৈনিক মিশন রিওয়ার্ড প্রস্তুত 🎁');
-      setFormDescription('আপনি সফলভাবে আজকের গেমিং মিশন সম্পন্ন করেছেন। আপনার বিশেষ ক্যাশ রিওয়ার্ড ইনবক্সে পাঠানো হলো। ক্লেইম বাটনে ক্লিক করে সরাসরি ব্যালেন্সে যোগ করুন।');
-      setFormClaimableBonus(100);
-      setFormSteps('১. নিচে "বোনাস দাবি করুন" বাটনে ক্লিক করুন।\n২. টাকা সাথে সাথে আপনার মেইন অ্যাকাউন্টে যোগ হবে।');
-      setFormRules('১. মিশন রিওয়ার্ড ২৪ ঘণ্টার মধ্যে ক্লেইম করতে হবে।\n২. মাত্র ১x টার্নওভার সম্পন্ন করলেই উত্তোলনযোগ্য।');
+      setFormTitle('দৈনিক মিশনের অগ্রগতি');
+      setFormHeadline('আজকের মিশন');
+      setFormDescription('মিশন পেইজে আজকের বাজি, ধাপ ও প্রাপ্য পুরস্কার দেখুন।');
+      setFormClaimableBonus(0);
+      setFormSteps('মিশন পেইজে যোগ্য ধাপের পুরস্কার দাবি করুন।');
+      setFormRules('সার্ভারের বর্তমান মিশন ও উত্তোলনের শর্ত প্রযোজ্য।');
     } else if (presetType === 'deposit') {
       setFormCategory('bonus');
       setFormSender('প্রমোশন টিম');
-      setFormTitle('🔥 প্রথম ডিপোজিট বোনাস – সর্বোচ্চ ৪৭% ক্যাশব্যাক!');
-      setFormHeadline('BengalBet স্পেশাল ডিপোজিট বোনাস উৎসব');
-      setFormDescription('প্রতিদিন ন্যূনতম ৳১০০ ডিপোজিট করলেই পান অতিরিক্ত ৪৭% পর্যন্ত ক্যাশ বোনাস। স্লট, ক্র্যাশ এবং লাইভ ক্যাসিনোতে বাজি ধরে বড় অঙ্কের জ্যাকপট জিতুন!');
-      setFormClaimableBonus(50);
-      setFormSteps('১. বিকাশ/নগদে ডিপোজিট করুন।\n২. প্রমোশন পেজ থেকে ডিপোজিট অফার নির্বাচন করুন।');
-      setFormRules('১. প্রতি একাউন্টে দিনে একবার গ্রহণযোগ্য।\n২. নিয়ম অমান্য করলে বোনাস বাতিল হতে পারে।');
+      setFormTitle('বর্তমান জমা অফার');
+      setFormHeadline('BengalBet জমা বোনাস');
+      setFormDescription(liveRulesFor('deposit', live).join('\n') || 'জমা পেইজে বর্তমান অফার ও শর্ত দেখুন।');
+      setFormClaimableBonus(0);
+      setFormSteps('জমা পেইজে বর্তমান অফার অনুযায়ী বোনাস নির্বাচন করুন।');
+      setFormRules('জমা ও বোনাস সার্ভারের বর্তমান শর্ত অনুযায়ী অনুমোদিত হয়।');
     } else if (presetType === 'vip') {
       setFormCategory('vip');
       setFormSender('VIP লাউঞ্জ');
-      setFormTitle('💎 এক্সক্লুসিভ VIP রিওয়ার্ড ও উইকলি ক্যাশব্যাক ক্রেডিট');
+      setFormTitle('ভিআইপি পুরস্কারের বর্তমান নিয়ম');
       setFormHeadline('আপনার ভিআইপি ক্লাবের বিশেষ উপহার!');
-      setFormDescription('প্রিয় ভিআইপি মেম্বার, আপনার নিয়মিত বাজির জন্য প্ল্যাটফর্ম থেকে বিশেষ কৃতজ্ঞতা উপহার পাঠানো হয়েছে। এই বোনাস দিয়ে যেকোনো গেম খেলুন।');
-      setFormClaimableBonus(250);
-      setFormSteps('১. বোনাস দাবি বাটনে ক্লিক করে ব্যালেন্স গ্রহণ করুন।\n২. VIP সেন্টারে গিয়ে আপনার বর্তমান র‍্যাংক চেক করুন।');
-      setFormRules('১. VIP ১ থেকে VIP ১০ স্তরের সদস্যদের জন্য প্রযোজ্য।\n২. উত্তোলন সীমা প্রযোজ্য নয়।');
+      setFormDescription(liveRulesFor('vip', live).join('\n') || 'ভিআইপি পেইজে আপনার লেভেল ও বর্তমান পুরস্কারের শর্ত দেখুন।');
+      setFormClaimableBonus(0);
+      setFormSteps('ভিআইপি পেইজে আপনার যোগ্য পুরস্কার দাবি করুন।');
+      setFormRules('ভিআইপি যোগ্যতা, দাবির সময় ও উত্তোলনের বর্তমান শর্ত প্রযোজ্য।');
     } else if (presetType === 'system') {
       setFormCategory('system');
       setFormSender('নিরাপত্তা বিভাগ');
       setFormTitle('🛡️ অ্যাকাউন্ট সিকিউরিটি ও সার্ভিস আপডেট নোটিশ');
       setFormHeadline('গুরুত্বপূর্ণ নিরাপত্তা নির্দেশিকা ও আপডেট');
-      setFormDescription('আমাদের সার্ভারে নতুন সিকিউরিটি প্যাচ যুক্ত করা হয়েছে। আপনার ডিপোজিট ও উইথড্রল এখন আরও দ্রুত ৩ মিনিটে প্রসেস হবে। কারো সাথে আপনার পাসওয়ার্ড বা OTP শেয়ার করবেন না।');
+      setFormDescription('কারো সাথে আপনার পাসওয়ার্ড বা OTP শেয়ার করবেন না। জমা ও উত্তোলনের বর্তমান অবস্থা লেনদেন রেকর্ডে দেখুন।');
       setFormClaimableBonus(0);
       setFormSteps('১. আপনার ফোন নম্বর ও বিকাশ নম্বর সঠিক আছে কিনা প্রোফাইলে যাচাই করুন।');
       setFormRules('১. BengalBet কাস্টমার সাপোর্ট কখনোই আপনার অ্যাকাউন্টের পাসওয়ার্ড চাইবে না।');
@@ -123,6 +126,10 @@ export const NeextHubAdminMessagesManager: React.FC<NeextHubAdminMessagesManager
     e.preventDefault();
     if (!formTitle.trim()) {
       alert('অনুগ্রহ করে বার্তার শিরোনাম লিখুন');
+      return;
+    }
+    if (formTargetType === 'specific' && !formSelectedUserId) {
+      alert('বার্তা পাঠাতে নির্দিষ্ট প্লেয়ার নির্বাচন করুন।');
       return;
     }
 
@@ -143,8 +150,10 @@ export const NeextHubAdminMessagesManager: React.FC<NeextHubAdminMessagesManager
         rules: rulesArray
       };
 
-      const res = await api.admin.createBroadcastMessage(payload);
+      const confirmedMessages = await createVerifiedMessage(payload, api.admin);
+      const res = { success: true };
       if (res.success) {
+        setMessages(confirmedMessages);
         if (showToast) showToast('অভ্যন্তরীণ বার্তা সফলভাবে পাঠানো হয়েছে!');
         confetti({ particleCount: 50, spread: 60, origin: { y: 0.6 } });
         setIsCreateModalOpen(false);
@@ -153,7 +162,6 @@ export const NeextHubAdminMessagesManager: React.FC<NeextHubAdminMessagesManager
         setFormHeadline('');
         setFormDescription('');
         setFormClaimableBonus(0);
-        loadMessages();
         if (onRefreshSiteUser) onRefreshSiteUser();
       } else {
         alert(res.message || 'বার্তা পাঠাতে সমস্যা হয়েছে');
@@ -168,9 +176,10 @@ export const NeextHubAdminMessagesManager: React.FC<NeextHubAdminMessagesManager
   // Handle Delete Message
   const handleDeleteMessage = async (id: string) => {
     try {
-      const res = await api.admin.deleteMessage(id);
+      const confirmedMessages = await deleteVerifiedMessage(id, api.admin);
+      const res = { success: true };
       if (res.success) {
-        setMessages(prev => prev.filter(m => m.id !== id));
+        setMessages(confirmedMessages);
         if (showToast) showToast('বার্তা সফলভাবে মুছে ফেলা হয়েছে');
         if (viewingMessage && viewingMessage.id === id) {
           setViewingMessage(null);
@@ -179,7 +188,7 @@ export const NeextHubAdminMessagesManager: React.FC<NeextHubAdminMessagesManager
         alert('বার্তা মুছে ফেলা সম্ভব হয়নি');
       }
     } catch (err) {
-      console.warn(err);
+      alert(err instanceof Error ? err.message : 'বার্তা মুছে ফেলা যাচাই করা যায়নি।');
     } finally {
       setDeletingId(null);
     }
@@ -520,14 +529,14 @@ export const NeextHubAdminMessagesManager: React.FC<NeextHubAdminMessagesManager
                     onClick={() => applyPreset('mission')}
                     className="px-2.5 py-1.5 rounded-lg bg-emerald-900/60 hover:bg-emerald-800 text-emerald-200 border border-emerald-700/50 text-[11px] font-bold flex items-center gap-1 cursor-pointer transition-colors"
                   >
-                    🏆 মিশন রিওয়ার্ড (৳১০০)
+                    🏆 মিশন নোটিশ
                   </button>
                   <button
                     type="button"
                     onClick={() => applyPreset('deposit')}
                     className="px-2.5 py-1.5 rounded-lg bg-amber-900/40 hover:bg-amber-800 text-yellow-200 border border-amber-700/50 text-[11px] font-bold flex items-center gap-1 cursor-pointer transition-colors"
                   >
-                    🔥 প্রথম ডিপোজিট বোনাস
+                    🔥 বর্তমান জমা অফার
                   </button>
                   <button
                     type="button"
