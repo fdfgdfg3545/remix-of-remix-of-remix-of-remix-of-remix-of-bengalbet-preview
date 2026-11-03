@@ -20,8 +20,8 @@ function bbTurnoverStatus($uid){return ['remaining'=>0];}
 $action='withdraw';$method='POST';$userId='isolated';$input=['amount'=>500,'walletType'=>'bkash','accountNumber'=>'test-destination'];
 try {require __DIR__.'/../api/withdraw_guard.php';}catch(Reply $r){$result=$r->payload;}
 if(($result['success']??true)!==false || ($result['message']??'')!=='Deposit first to activate your withdrawal' || Database::$writes!==0)throw new RuntimeException('No current-month deposit must reject submission before balance/transaction writes');
-echo "No monthly deposit blocks submission without financial writes passed\n";
+echo "No lifetime deposit blocks submission without financial writes passed\n";
 Database::$deposit=true;
 try {require __DIR__.'/../api/withdraw_guard.php';}catch(Reply $r){$result=$r->payload;}
-if(empty($result['success'])||Database::$writes!==2)throw new RuntimeException('Approved current-month deposit should allow otherwise eligible withdrawal');
+if(empty($result['success'])||Database::$writes!==2)throw new RuntimeException('Recent approved deposit should allow otherwise eligible withdrawal');
 echo "Approved current-month deposit allows submission passed\n";
