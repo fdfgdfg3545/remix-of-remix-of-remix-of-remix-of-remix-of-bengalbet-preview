@@ -14,6 +14,10 @@ BENGALBET কাজের তালিকা — প্রতিটি কাজ
 [x] তিনটি প্ল্যান ফাইল মূল ফোল্ডারে — ২০২৬-১১-০২
 
 বাকি (উপর থেকে ক্রমে করো)
+[ ] ১৮. v6 confirmed last-deposit calendar-month expiry + fixed blocked-balance target cumulative new deposits + lifetime-approved-deposit prerequisite all bonuses; direct master deployment and live verification.
+[x] ১৮-ক. v6 plan অংশ ২৩ ও conflicting মাসিক gate সংশোধন; sandbox secret master ping success।
+[ ] ১৮-খ. Durable activation state/deposit approval/cron/withdraw guard/member error ও সব bonus gates, concrete tests।
+[ ] ১৮-গ. Remote backups/schema/source readback এবং isolated API/mobile/desktop/admin tests; whole-site 1:1 matrix পৃথক অসম্পূর্ণ।
 [ ] ১৭. ২০২৬-১১-০৩ ০২:২২ UTC: আগে বিস্তারিত v5 পরিকল্পনা; mystery শর্ত/ছবি audit ও cron নগদ কার্ড; এই বাংলাদেশি মাসে অনুমোদিত জমা না থাকলে withdrawal submit-এ “Deposit first to activate your withdrawal”; সব credit base ১× ও প্রথম bonus extra ৮×; desktop/mobile/member/admin/server ও দুই মাসের boundary matrix আলাদা evidence-সহ ধাপে পরীক্ষা। Remote mutation/deployment connection বর্তমানে unlinked (setup declined)।
 [x] ১৭-ক. v5 ২২ অংশে সম্প্রসারিত: mystery actual defaults/period/card নিয়ম, monthly-deposit gate, সব অর্থের শ্রেণি, ২৪ artwork অমিল, বিস্তারিত desktop/mobile/admin/server/৬০-day checklist; Files versioned text প্রস্তুত।
 [x] ১৭-খ. Local PHP withdrawal deposit gate-এর failing reproduction→fix→same test pass; মাস শুরু/শেষ, pending/rejected/zero/foreign/bonus/previous-month/delayed approval tests pass। Live upload নয়।
