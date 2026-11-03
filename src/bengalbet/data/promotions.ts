@@ -3,14 +3,14 @@ import { Promotion } from '../types';
 
 import promoMystery from '../assets/images/bn_promo_mystery_1790173769456.jpg';
 import promoReferral from '../assets/images/bn_promo_invite_1790173787979.jpg';
-import promoFirstDeposit from '../assets/images/bn_promo_first_dep_1790173806277.jpg';
+import promoFirstDeposit from '../assets/images/bn_promo_first_dep_47.jpg';
 import promoVipExclusive from '../assets/images/bn_promo_vip_1790173825343.jpg';
 import promoDailySlot from '../assets/images/bn_promo_slots_1790173843512.jpg';
 import promoAppDownload from '../assets/images/bn_promo_app_1790173858946.jpg';
 import promoLossRescue from '../assets/images/bn_promo_rescue_1790173874285.jpg';
 import promoGoldenEgg from '../assets/images/bn_promo_egg_1790173893915.jpg';
 import promoRedPacket from '../assets/images/bn_promo_packet_1790173911880.jpg';
-import promoIphone17 from '../assets/images/bn_promo_iphone_1790173931015.jpg';
+import promoIphone17 from '../assets/images/bn_promo_iphone_clean_wheel.jpg';
 import promoMemberDay from '../assets/images/bn_promo_member_1790173950780.jpg';
 import promoRebate from '../assets/images/bn_promo_rebate_1790173969832.jpg';
 
@@ -28,18 +28,18 @@ export const PROMOTIONS_DATA: Promotion[] = [
     bannerImage: promoMystery,
     iconType: 'mystery',
     accentColor: '#f59e0b',
-    highlightNumber: '৮৬৭৫০ কোটি ৳',
+    highlightNumber: '৳১,০০০ – ৳৫০,০০০',
     claimableAmount: '৳ ১,০০০ - ৳ ৫০,০০০',
     validUntil: 'প্রতি মাসের ২৩ তারিখ',
     requirementsBn: [
       'মাসের ১ তারিখ থেকে ২২ তারিখ পর্যন্ত মোট ন্যূনতম ৫০০ টাকা বাজি ধরতে হবে।',
-      'অ্যাকাউন্টে মোবাইল নম্বর ও ইমেল ভেরিফাইড থাকতে হবে।',
+      'আপনার অন্তত একটি জমা অনুমোদিত থাকতে হবে।',
       '২৩ তারিখ সন্ধ্যা ৬টায় অটোমেটিক অ্যাকাউন্টে ক্রেডিট করা হবে।'
     ],
     requirementsEn: [
       'Accumulate a minimum bet turnover of ৳500 from the 1st to 22nd of the month.',
-      'Verified mobile number and basic profile required.',
-      'Bonus is automatically credited on the 23rd at 18:00 BST.'
+      'At least one approved deposit is required.',
+      'A cash card arrives in the Reward Center on the 23rd at 18:00 BST; open it to add the money.'
     ],
     rulesBn: [
       'বোনাসটির সাথে মাত্র ১ গুণ (1x) ভেগারিং টার্নওভার প্রযোজ্য।',
@@ -57,13 +57,13 @@ export const PROMOTIONS_DATA: Promotion[] = [
   },
   {
     id: 'promo-referral-300',
-    titleBn: '১ জনকে আমন্ত্রণ করুন, আয় করুন ৩০০ টাকা। এজেন্ট সুবিধা',
+    titleBn: '১ জনকে আমন্ত্রণ করুন, আয় করুন ৩০০ টাকা + ০.৭% জমা + ১% বাজি কমিশন',
     titleEn: 'Invite 1 Friend, Earn ৳300 + 0.7% Deposit + 1% Bet',
-    subtitleBn: '১ জনকে আমন্ত্রণ করুন, আয় করুন ৩০০ টাকা। এজেন্ট...',
-    subtitleEn: 'Referral Agent Commission',
+    subtitleBn: 'বন্ধু আমন্ত্রণ বোনাস ও কমিশন',
+    subtitleEn: 'Referral Bonus & Commission',
     category: 'hot',
-    badge: '3-TIER',
-    badgeBn: '৩-স্তরীয়',
+    badge: 'REFER',
+    badgeBn: 'রেফার',
     bannerGradient: 'from-emerald-900 via-teal-950 to-amber-950',
     bannerImage: promoReferral,
     iconType: 'referral',
@@ -123,12 +123,12 @@ export const PROMOTIONS_DATA: Promotion[] = [
     ],
     rulesBn: [
       'টার্নওভার রিকোয়ারমেন্ট: ৮ গুণ (8x) স্লট বা ফিশিং গেমে।',
-      'ডিপোজিটের ৩০ দিনের মধ্যে রোলওভার পূরণ করতে হবে।',
+      'শেষ জমার এক মাস পর উত্তোলন বন্ধ হলে, ব্লকের সময়ের ব্যালেন্সের সমান নতুন জমায় আবার চালু হয়।',
       'প্রতি সদস্য ও প্রতি আইপি অ্যাড্রেসে কেবল একবারই প্রযোজ্য।'
     ],
     rulesEn: [
-      'Wagering turnover: 8x on eligible slot & fishing games.',
-      'Valid for 30 days from deposit date.',
+      'Wagering: 1x on deposits and bonuses, plus an extra 8x on the first deposit bonus.',
+      'Withdrawal locks one month after the last deposit; a new deposit equal to the locked balance reopens it.',
       'Strictly 1 claim per player account/IP.'
     ],
     actionTextBn: 'এখনই ডিপোজিট করুন',
@@ -158,7 +158,7 @@ export const PROMOTIONS_DATA: Promotion[] = [
     ],
     requirementsEn: [
       'Earn VIP EXP points automatically by playing any real money games.',
-      'Get 1 EXP for every ৳1,000 wagering volume.',
+      'Get 1 VIP point for every ৳1 wagered.',
       'Climb from VIP 1 to VIP 10 for increasingly prestigious rewards.'
     ],
     rulesBn: [
@@ -168,8 +168,8 @@ export const PROMOTIONS_DATA: Promotion[] = [
     ],
     rulesEn: [
       'Instant upgrade gift on reaching every new VIP rank.',
-      'Weekly reload bonuses distributed every Monday morning.',
-      'Monthly loyalty allowance deposited on the 1st of every month.'
+      'Weekly salary arrives as a cash card every Monday at 00:00.',
+      'Monthly salary arrives as a cash card on the 1st at 15:00.'
     ],
     actionTextBn: 'ভিআইপি স্ট্যাটাস দেখুন',
     actionTextEn: 'View VIP Tier Status',
@@ -239,7 +239,7 @@ export const PROMOTIONS_DATA: Promotion[] = [
     ],
     rulesBn: [
       '১টি ডিভাইসে কেবল ১ বারই এই বোনাস দেওয়া হবে।',
-      'যেকোনো গেম খেলে মাত্র ১০০ টাকা টার্নওভার শেষ করলেই উত্তোলনযোগ্য।'
+      'বোনাসের ১ গুণ বাজি শেষ করলেই উত্তোলনযোগ্য; আগে একটি জমা অনুমোদিত থাকতে হবে।'
     ],
     rulesEn: [
       'Strictly one claim per unique mobile device ID.',
@@ -347,11 +347,11 @@ export const PROMOTIONS_DATA: Promotion[] = [
     ],
     rulesBn: [
       'প্রথম ৫০ জন দ্রুত সংগ্রাহক সর্বোচ্চ ৳৭৭,৭৭৭ পর্যন্ত মেগা জ্যাকপট পাবেন।',
-      'সংগ্রহের সাথে সাথেই নগদ টাকা একাউন্টে যোগ হবে।'
+      'সংগ্রহের সাথে সাথেই নগদ টাকা যোগ হবে, ১ গুণ বাজির শর্তে।'
     ],
     rulesEn: [
       'Fastest tappers claim the highest cash bags up to ৳77,777.',
-      'Instant credit to wallet with zero delayed approvals.'
+      'Instant credit to wallet with 1x rollover.'
     ],
     actionTextBn: 'রেড প্যাকেট সংগ্রহ করুন',
     actionTextEn: 'Grab Red Packet',
@@ -395,9 +395,9 @@ export const PROMOTIONS_DATA: Promotion[] = [
   },
   {
     id: 'promo-member-day-13',
-    titleBn: 'সদস্য দিবস প্রতি মাসের ১৩ তারিখে মোট পুরষ্কার: ৳১০,০০০ বিলিয়ন',
-    titleEn: 'Super Member Day 13th Total Prize ৳10,000 Billion Pool',
-    subtitleBn: 'সদস্য দিবস প্রতি মাসের ১৩ তারিখে মোট পুরস্কার: ৳১০,০০...',
+    titleBn: 'সদস্য দিবস প্রতি মাসের ১৩ তারিখে সদস্যপ্রতি সর্বোচ্চ ৳১,০০,০০০',
+    titleEn: 'Super Member Day 13th — up to ৳1,00,000 per member',
+    subtitleBn: 'সদস্য দিবস প্রতি মাসের ১৩ তারিখে',
     subtitleEn: 'Member Super Day 13th',
     category: 'hot',
     badge: 'MEGA EVENT',
@@ -406,7 +406,7 @@ export const PROMOTIONS_DATA: Promotion[] = [
     bannerImage: promoMemberDay,
     iconType: 'member_day',
     accentColor: '#fbbf24',
-    highlightNumber: '৳১০,০০০ বিলিয়ন পুল',
+    highlightNumber: 'সর্বোচ্চ ৳১,০০,০০০',
     claimableAmount: '৳ ৫,০০০ - ৳ ১,০০,০০০',
     validUntil: 'প্রতি মাসের ১৩ তারিখ',
     requirementsBn: [
@@ -455,11 +455,11 @@ export const PROMOTIONS_DATA: Promotion[] = [
     ],
     rulesBn: [
       'কোনো অপেক্ষার প্রয়োজন নেই—ক্লিক করলেই ইনস্ট্যান্ট ওয়ালেটে রিলিজ।',
-      'জিরো ভেগারিং শর্ত (0x Wagering)—চাইলেই সরাসরি ক্যাশআউট।'
+      'রিবেটে ১ গুণ বাজির শর্ত, তারপর উত্তোলনযোগ্য।'
     ],
     rulesEn: [
       'Zero wait time—click "One-Key Claim" anytime.',
-      '0x Wagering requirement—direct cashout eligible immediately.'
+      '1x wagering, then withdrawable.'
     ],
     actionTextBn: 'রিবেট ক্লেইম করুন',
     actionTextEn: 'Claim Instant Rebate',
