@@ -17,7 +17,7 @@ import {
 } from 'lucide-react';
 import { UserAccount, VipTierConfig, VipRewardRecord } from '../types';
 import { api } from '../services/api';
-import { useLiveRules, weekdayName } from '../services/promoLive';
+import { useLiveRules, weekdayName, toBnDigits } from '../services/promoLive';
 
 interface VipMobileViewProps {
   user?: UserAccount;
@@ -458,7 +458,7 @@ export const VipMobileView: React.FC<VipMobileViewProps> = ({
 
             <div>
               <p>
-                <strong className="text-gray-800">সাপ্তাহিক বোনাস:</strong> প্রতি {weekdayName(liveRules?.promoRules?.vip?.weeklyClaimDay)} নগদ কার্ড আসে; মাসিক কার্ড মাসের {liveRules?.promoRules?.vip?.monthlyClaimDay ?? 1} তারিখে (বাংলাদেশ সময়)।
+                <strong className="text-gray-800">সাপ্তাহিক বোনাস:</strong> প্রতি {weekdayName(liveRules?.promoRules?.vip?.weeklyClaimDay)} নগদ কার্ড আসে; মাসিক কার্ড মাসের {toBnDigits(String(liveRules?.promoRules?.vip?.monthlyClaimDay ?? 1))} তারিখ {toBnDigits(String(liveRules?.promoRules?.vip?.monthlyHour ?? 15).padStart(2,'0'))}:০০-এ (বাংলাদেশ সময়)।
               </p>
               <p className="mt-1">
                 <strong className="text-gray-800">মাসিক বোনাস:</strong> পুরস্কার কেন্দ্রের টিকিট থেকে কার্ড একবার গ্রহণ করলে টাকা ব্যালেন্সে যোগ হয়।

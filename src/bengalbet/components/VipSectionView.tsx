@@ -542,7 +542,7 @@ export const VipSectionView: React.FC<VipSectionViewProps> = ({
               <div>
                 <p className="font-bold text-gray-900">সাপ্তাহিক বোনাস:</p>
                 <p className="text-gray-600 pl-4 mt-0.5">
-                  প্রতি {weekdayName(liveRules?.promoRules?.vip?.weeklyClaimDay)} রাত ১২টায় পুরস্কার কেন্দ্রে নগদ কার্ড আসে; মাসিক বোনাস মাসের {liveRules?.promoRules?.vip?.monthlyClaimDay ?? 1} তারিখে (বাংলাদেশ সময়)।
+                  প্রতি {weekdayName(liveRules?.promoRules?.vip?.weeklyClaimDay)} রাত ১২টায় পুরস্কার কেন্দ্রে নগদ কার্ড আসে; মাসিক কার্ড মাসের {toBnDigits(String(liveRules?.promoRules?.vip?.monthlyClaimDay ?? 1))} তারিখ {toBnDigits(String(liveRules?.promoRules?.vip?.monthlyHour ?? 15).padStart(2,'0'))}:০০-এ (বাংলাদেশ সময়)।
                 </p>
               </div>
 
