@@ -45,7 +45,6 @@ import { useLiveRules, liveRulesFor } from '../services/promoLive';
 import firstDepositBanner from '../assets/images/bengal_deposit_banner_1790008299014.jpg';
 import vipExclusiveBanner from '../assets/images/bengal_vip_banner_1790008315416.jpg';
 import inviteFriendsBanner from '../assets/images/bengal_invite_banner_1790008327090.jpg';
-import { LiveRewardArtwork } from './LiveRewardArtwork';
 
 interface CasinoLobbyProps {
   language: Language;
@@ -331,7 +330,12 @@ export const CasinoLobby: React.FC<CasinoLobbyProps> = ({
               }}
               className="shrink-0 relative cursor-pointer overflow-hidden rounded-xl sm:rounded-2xl border-2 border-yellow-500/60 hover:border-yellow-400 shadow-xl group/item transition-all duration-300 hover:scale-[1.01] bg-[#073625] aspect-[16/9]"
             >
-              <LiveRewardArtwork type={b.type === 'share' ? 'referral' : b.type} title={language === 'bn' ? b.titleBn : b.titleEn} compact />
+              <img
+                src={b.image}
+                alt={b.alt}
+                referrerPolicy="no-referrer"
+                className="w-full h-full object-fill aspect-[16/9] transition-transform duration-300 group-hover/item:scale-[1.02]"
+              />
             </div>
           ))}
         </div>

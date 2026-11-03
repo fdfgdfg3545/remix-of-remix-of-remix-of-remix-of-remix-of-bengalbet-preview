@@ -21,7 +21,6 @@ import noticePartner from '../assets/images/bn_notice_partner_1790010575654.jpg'
 import noticeMystery from '../assets/images/bn_notice_mystery_1790010600259.jpg';
 import noticeDailyLogin from '../assets/images/bn_notice_daily_login_1790010613724.jpg';
 import { api } from '../services/api';
-import { LiveRewardArtwork } from './LiveRewardArtwork';
 
 interface NoticeAnnouncementModalProps {
   isOpen: boolean;
@@ -126,10 +125,10 @@ export const NoticeAnnouncementModal: React.FC<NoticeAnnouncementModalProps> = (
     },
     {
       id: 'member-day',
-      shortBn: '👑 সদস্য দিবস',
-      shortEn: '👑 Member Day',
-      titleBn: '👑 সদস্য দিবস বোনাস',
-      titleEn: '👑 Member Day Bonus',
+      shortBn: '👑 সুপার মেম্বার ডে ১৩ তারিখ',
+      shortEn: '👑 Super Member Day 13th',
+      titleBn: '👑 প্রতি মাসের ১৩ তারিখ সুপার মেম্বার ডে মেগা বোনাস',
+      titleEn: '👑 Monthly Super Member Day 13th Mega Bonus',
       badgeBn: 'মেম্বার ডে',
       badgeEn: 'MEMBER DAY',
       imageUrl: noticeMemberDay,
@@ -180,14 +179,14 @@ export const NoticeAnnouncementModal: React.FC<NoticeAnnouncementModalProps> = (
       id: 'daily-login',
       shortBn: '🔥 দৈনিক লগইন হাতুড়ি',
       shortEn: '🔥 Daily Login Hammer',
-      titleBn: '🔥 দৈনিক লগইন হাতুড়ি ও সোনার ডিম',
-      titleEn: '🔥 Daily Login Hammer & Golden Eggs',
+      titleBn: '🔥 প্রতিদিন লগইনে ১টি হাতুড়ি, সোনার ডিম ভেঙে পুরস্কার',
+      titleEn: '🔥 1 Hammer Every Daily Login, Crack Golden Eggs',
       badgeBn: 'দৈনিক',
       badgeEn: 'DAILY',
       imageUrl: noticeDailyLogin,
-      actionTextBn: 'ডিপোজিট করে যোগ্যতা অর্জন করুন',
-      actionTextEn: 'Deposit to Qualify',
-      onAction: onOpenDeposit
+      actionTextBn: 'ভাগ্যের চাকা দেখুন',
+      actionTextEn: 'View Lucky Wheel',
+      onAction: onOpenSpin
     }
   ];
   // Admin-edited notice (Site Notice tab) is shown first when enabled
@@ -503,7 +502,7 @@ export const NoticeAnnouncementModal: React.FC<NoticeAnnouncementModalProps> = (
                 </button>
 
                 {/* Banner Graphic Image: Fits completely on both X & Y axis without cutting Bengali text */}
-                {activeNotice.id === 'admin-notice' ? <img
+                <img
                   key={activeNotice.id}
                   id={`notice-image-${activeNotice.id}`}
                   src={activeNotice.imageUrl}
@@ -511,7 +510,7 @@ export const NoticeAnnouncementModal: React.FC<NoticeAnnouncementModalProps> = (
                   className="w-full h-full object-contain block select-none transition-all duration-300 animate-in fade-in"
                   loading="eager"
                   style={{ maxHeight: '460px' }}
-                /> : <LiveRewardArtwork type={({ 'realtime-rebate': 'rebate', 'member-day': 'member_day', 'vip-members': 'vip', 'partner-reward': 'referral', 'mystery-bonus': 'mystery', 'daily-login': 'golden_egg' } as Record<string, string>)[activeNotice.id] || 'deposit'} title={language === 'bn' ? activeNotice.titleBn : activeNotice.titleEn} />}
+                />
 
                 <button
                   type="button"

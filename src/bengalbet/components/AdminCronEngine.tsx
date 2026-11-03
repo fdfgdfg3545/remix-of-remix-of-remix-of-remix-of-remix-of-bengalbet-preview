@@ -5,7 +5,7 @@ import { Input } from '@/components/ui/input';
 import { Switch } from '@/components/ui/switch';
 import { api, REST_API_CONFIG } from '../services/api';
 
-type State = { enabled: boolean; httpKeyConfigured: boolean; lastStarted: string | null; lastSuccess: string | null; status: string; processed: number; cycleComplete: boolean; salaryPendingJobs?: number; mysteryPendingJobs?: number; lastError: string | null; windows: Record<string, unknown>; serverTime: string; stale: boolean; cliPath: string; };
+type State = { enabled: boolean; httpKeyConfigured: boolean; lastStarted: string | null; lastSuccess: string | null; status: string; processed: number; cycleComplete: boolean; salaryPendingJobs?: number; lastError: string | null; windows: Record<string, unknown>; serverTime: string; stale: boolean; cliPath: string; };
 export function AdminCronEngine() {
   const [state, setState] = useState<State | null>(null);
   const [key, setKey] = useState('');
@@ -33,7 +33,7 @@ export function AdminCronEngine() {
   };
   const run = async () => {
     setBusy(true); setMessage('');
-    try { const r = await api.cron.run(); if (!r.success) throw new Error('ক্রন চালানো যায়নি'); const back = await api.cron.status(); if (!back.success || !back.state) throw new Error('ক্রন চলেছে, কিন্তু সর্বশেষ অবস্থা যাচাই হয়নি।'); setState(back.state); setMessage(`ফলাফল: ${r.status}; এই ডাকে পরীক্ষা: ${r.processedThisCall ?? 0}`); }
+    try { const r = await api.cron.run(); if (!r.success) throw new Error('ক্রন চালানো যায়নি'); await load(); setMessage(`ফলাফল: ${r.status}; এই ডাকে পরীক্ষা: ${r.processedThisCall ?? 0}`); }
     catch (e) { setMessage(e instanceof Error ? e.message : 'ক্রন চালানো ব্যর্থ'); }
     finally { setBusy(false); }
   };
@@ -52,7 +52,6 @@ export function AdminCronEngine() {
         <div><dt className="text-muted-foreground">শেষ সফল ডাক</dt><dd>{state.lastSuccess || 'এখনো নেই'}</dd></div>
         <div><dt className="text-muted-foreground">এই চক্রে সদস্য পরীক্ষা</dt><dd>{state.processed} · {state.cycleComplete ? 'শেষ' : 'পরের ডাকে চলবে'}</dd></div>
         <div><dt className="text-muted-foreground">অসমাপ্ত VIP বেতনের কাজ</dt><dd>{state.salaryPendingJobs ?? 'অজানা'}</dd></div>
-        <div><dt className="text-muted-foreground">অসমাপ্ত রহস্য কার্ডের কাজ</dt><dd>{state.mysteryPendingJobs ?? 'অজানা'}</dd></div>
         <div><dt className="text-muted-foreground">বাংলাদেশ সার্ভার সময়</dt><dd>{state.serverTime}</dd></div>
       </dl>
       {state.lastError && <p role="alert" className="text-destructive">{state.lastError}</p>}
@@ -61,11 +60,11 @@ export function AdminCronEngine() {
         <Button disabled={busy || (key.length > 0 && key.length < 32)} onClick={save}><Save />ক্রন সেটিং সংরক্ষণ</Button>
       </div>
       <p className="text-sm text-muted-foreground">HTTP কী: {state.httpKeyConfigured ? 'সেট করা আছে' : 'সেট করা নেই'} · মাস্টার কী ব্যবহার করবেন না।</p>
-      {/^[A-Za-z]:[\\/]/.test(state.cliPath) ? <div className="space-y-2 text-sm"><h4 className="font-semibold">Windows Task Scheduler · প্রতি ১ মিনিট</h4><p>প্রোগ্রাম: সার্ভারের যাচাইকৃত php.exe</p><pre className="whitespace-pre-wrap break-all border border-border rounded-md p-3 bg-muted">{`"${state.cliPath}"`}</pre><p>একই কাজ একসাথে আবার শুরু না করার সেটিং রাখুন। স্বয়ংক্রিয় ডাক এখনও আলাদাভাবে স্থাপন করতে হবে।</p></div> : <div className="space-y-2 text-sm"><h4 className="font-semibold">cPanel · প্রতি মিনিট · * * * * *</h4>
+      <div className="space-y-2 text-sm"><h4 className="font-semibold">cPanel · প্রতি মিনিট · * * * * *</h4>
         <pre className="whitespace-pre-wrap break-all border border-border rounded-md p-3 bg-muted">{`/usr/local/bin/php ${state.cliPath} >> /home/CPANEL_USER/bengalbet-cron.log 2>&1`}</pre>
         <pre className="whitespace-pre-wrap break-all border border-border rounded-md p-3 bg-muted">{`curl --fail --silent --show-error --max-time 50 --config /home/CPANEL_USER/.bengalbet-cron.conf '${url}' >> /home/CPANEL_USER/bengalbet-cron.log 2>&1`}</pre>
         <p className="text-muted-foreground">HTTP ব্যবহার করলে ব্যক্তিগত .conf ফাইলে header = "X-Cron-Key: YOUR_DEDICATED_KEY" রাখুন; অনুমতি 600। CPANEL_USER নিজের অ্যাকাউন্টের নামে বদলান। URL-এ কী দেবেন না।</p>
-      </div>}
+      </div>
       <div className="flex flex-wrap gap-x-5 gap-y-2 text-sm">{Object.entries(state.windows || {}).filter(([k]) => !['serverTime', 'timezone'].includes(k)).map(([k,v]) => <span key={k}>{k}: {v ? 'সময় খোলা' : 'সময় বন্ধ'}</span>)}</div>
       <p className="text-sm text-muted-foreground">নির্ধারিত দিনে VIP বেতনের নগদ কার্ড টিকিটে আসে; কার্ড গ্রহণের আগে ব্যালেন্স বাড়ে না। অসমাপ্ত কাজ পরের ডাকে চলবে।</p>
     </>}
