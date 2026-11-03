@@ -102,6 +102,7 @@ export function AdminPromoRules() {
               {DAYS.slice(1).map((d, i) => <option key={d} value={i + 1}>{d}</option>)}
             </select></label>
           {num('মাসিক বোনাসের তারিখ (১–২৮)', r.vip.monthlyClaimDay, n => setRules({ ...r, vip: { ...r.vip, monthlyClaimDay: n } }))}
+          {num('মাসিক নগদ কার্ডের সময় (ঘণ্টা ০–২৩)', r.vip.monthlyHour ?? 15, n => setRules({ ...r, vip: { ...r.vip, monthlyHour: n } }))}
           {num('অ্যাপ বোনাস ৳', r.appBonus.amount, n => setRules({ ...r, appBonus: { ...r.appBonus, amount: n } }))}
           <label className="flex items-center gap-2 text-sm pt-6"><Switch aria-label="অ্যাপ বোনাস চালু" checked={r.appBonus.enabled} onCheckedChange={enabled => setRules({ ...r, appBonus: { ...r.appBonus, enabled } })} />অ্যাপ বোনাস চালু</label>
         </div>

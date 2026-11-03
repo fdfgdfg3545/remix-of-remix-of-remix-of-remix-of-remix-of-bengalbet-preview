@@ -4,7 +4,7 @@
  */
 import { useEffect, useState } from 'react';
 import { PROMOTIONS_DATA } from '../data/promotions';
-import { loadPromoLive, liveRulesFor } from './promoLive';
+import { loadPromoLive, liveRulesFor, type LiveRules } from './promoLive';
 
 const ICON_TO_ASSET: Record<string, string> = {
   mystery: 'mystery', referral: 'referral', deposit: 'first_deposit', vip: 'vip', slot: 'daily_slot', app: 'app',
@@ -34,13 +34,34 @@ export function mergeServerPromotions(server: any[] | null | undefined): any[] {
   return server.filter((p) => p && p.enabled !== false).map((p) => ({ ...p, bannerImage: resolveBanner(p.bannerImage) }));
 }
 
+/**
+ * Site banners carry printed numbers. A bundled banner is shown on the offers page only while
+ * the live server value equals the printed one; otherwise the card falls back to text only.
+ */
+export function bannerMatchesLive(iconType: string, live: LiveRules | null | undefined): boolean {
+  if (!live) return false;
+  const r = live.promoRules || {};
+  switch (iconType) {
+    case 'deposit': return !!live.depositOffer?.enabled && Number(live.depositOffer?.bonusPercent) === 47;
+    case 'referral': return !!live.referral?.enabled && Number(live.referral?.instantBonusPerFriend) === 300;
+    case 'app': return !!r.appBonus?.enabled && Number(r.appBonus?.amount) === 52;
+    case 'golden_egg': return Number(live.chance?.golden_egg?.max) === 18222;
+    case 'red_packet': return !!r.redPacket?.enabled && Number(live.chance?.red_envelope?.max) === 77777;
+    case 'rebate': return !!r.rebate?.enabled && Number(r.rebate?.ratePercent) === 3;
+    case 'mystery': return !!live.mystery?.enabled && Number(live.mystery?.triggerDayOfMonth) === 23;
+    case 'member_day': return !!r.memberDay?.enabled && Number(r.memberDay?.day) === 13;
+    case 'iphone': case 'vip': case 'slot': case 'cashback': return true;
+    default: return false;
+  }
+}
+
 export function usePromotions(): any[] {
   const [list, setList] = useState<any[]>(PROMOTIONS_DATA as any[]);
   useEffect(() => { let on = true; loadPromoLive().then((r) => { if (on) setList(mergeServerPromotions(r.promotions).map(p => {
     const lines = liveRulesFor(p.iconType, r.live);
-    // Printed banner numbers cannot track admin changes. Keep originals in the editor,
-    // but show current server copy to members instead of incompatible printed terms.
-    return lines.length ? { ...p, titleBn: lines[0], titleEn: '', subtitleBn: lines[1] || '', subtitleEn: '', requirementsBn: lines, rulesBn: lines, bannerImage: '', highlightNumber: '', claimableAmount: '', validUntil: '', badge: '', badgeBn: '' } : p;
+    // Live server copy is the text; the site banner stays while its printed numbers equal live values.
+    const banner = bannerMatchesLive(p.iconType, r.live) ? p.bannerImage : '';
+    return lines.length ? { ...p, titleBn: lines[0], titleEn: '', subtitleBn: lines[1] || '', subtitleEn: '', requirementsBn: lines, rulesBn: lines, bannerImage: banner, highlightNumber: '', claimableAmount: '', validUntil: '', badge: '', badgeBn: '' } : p;
   })); }); return () => { on = false; }; }, []);
   return list;
 }

@@ -205,14 +205,7 @@ export const VipModal: React.FC<VipModalProps> = ({
                   <span className="text-sm sm:text-base font-black text-emerald-300 font-mono mt-0.5 block">৳ {currentTier.weeklyBonus}</span>
                 </div>
                 {user.vipLevel > 0 && currentTier.weeklyBonus > 0 && (
-                  <button
-                    type="button"
-                    disabled={isClaiming}
-                    onClick={() => handleClaim('weekly')}
-                    className="mt-2.5 w-full py-1 rounded-lg bg-emerald-500 hover:bg-emerald-400 text-white font-bold text-[11px] cursor-pointer"
-                  >
-                    বেতন তুলুন
-                  </button>
+                  <span className="mt-2 block w-full text-center text-[11px] font-bold opacity-80">সাপ্তাহিক কার্ড স্বয়ংক্রিয়ভাবে পুরস্কার কেন্দ্রে আসে</span>
                 )}
               </div>
 
@@ -224,14 +217,7 @@ export const VipModal: React.FC<VipModalProps> = ({
                   <span className="text-sm sm:text-base font-black text-cyan-300 font-mono mt-0.5 block">৳ {currentTier.monthlyBonus}</span>
                 </div>
                 {user.vipLevel > 0 && currentTier.monthlyBonus > 0 && (
-                  <button
-                    type="button"
-                    disabled={isClaiming}
-                    onClick={() => handleClaim('monthly')}
-                    className="mt-2.5 w-full py-1 rounded-lg bg-cyan-500 hover:bg-cyan-400 text-black font-bold text-[11px] cursor-pointer"
-                  >
-                    মাসিক তুলুন
-                  </button>
+                  <span className="mt-2 block w-full text-center text-[11px] font-bold opacity-80">মাসিক কার্ড স্বয়ংক্রিয়ভাবে পুরস্কার কেন্দ্রে আসে</span>
                 )}
               </div>
 

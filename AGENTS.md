@@ -16,7 +16,7 @@
 - Keep member mystery-claim eligibility in rewardEligibility and fail closed on missing server data; client checks prevent accidental claims but do not replace authoritative server validation.
 - Keep notice editing in AdminSiteContent and confirm saves through settingsPersistence readback; a successful write response alone does not establish persisted member-visible settings.
 - Keep admin message row normalization and create/delete readback in messagePersistence; legacy PHP rows use snake_case and successful writes alone do not prove persistence.
-- Member promotion terms and titles derive from live server rules; suppress bundled banners with baked-in offer numbers when showing editable terms so printed claims cannot contradict current settings.
+- Member promotion terms and titles derive from live server rules; show a bundled banner only while its printed numbers equal the live values (bannerMatchesLive in promoContent), so printed claims cannot contradict current settings.
 - Derive all administrator navigation surfaces from one tab list to preserve access and consistent labels.
 
 - Completed server reward settlements notify the parent through onSettledReward for read-only wallet refresh; never forward them to the generic reward-claim callback, which would credit twice.
