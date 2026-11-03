@@ -3,7 +3,7 @@ import { RefreshCw, Save, Loader2, Plus, Trash2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { api } from '../services/api';
-import { chanceAverage, validateChanceConfig, type ChanceConfig, type ChanceType } from '../services/chanceRewards';
+import { chanceAverage, validateChanceConfig, saveVerifiedChanceConfig, type ChanceConfig, type ChanceType } from '../services/chanceRewards';
 
 const TYPES: { id: ChanceType; label: string }[] = [
   { id: 'spin', label: 'লাকি স্পিন' },
@@ -33,10 +33,7 @@ export function AdminChanceRewards() {
     if (error) { setMessage(error); return; }
     setBusy(true); setMessage('');
     try {
-      await api.rewards.saveChanceConfig(config);
-      const back = await api.rewards.getChanceConfig();
-      if (!back.configured || validateChanceConfig(back.config as ChanceConfig)) throw new Error('সার্ভার থেকে পড়ে নিশ্চিত করা যায়নি।');
-      setConfig(back.config as ChanceConfig);
+      setConfig(await saveVerifiedChanceConfig(config, api.rewards));
       setMessage('সার্ভার থেকে আবার পড়ে তালিকা সংরক্ষণ নিশ্চিত হয়েছে।');
     } catch (e) { setMessage(e instanceof Error ? e.message : 'সংরক্ষণ হয়নি।'); }
     finally { setBusy(false); }

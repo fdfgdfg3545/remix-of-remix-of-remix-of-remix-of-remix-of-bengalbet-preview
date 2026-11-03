@@ -1782,7 +1782,7 @@ export const InviteFriendsMobileView: React.FC<InviteFriendsMobileViewProps> = (
             <div className="rounded-2xl bg-white border border-[#dce9f2] p-4 shadow-sm">
               <div className="flex items-center justify-between pb-3 border-b border-gray-100">
                 <h3 className="text-sm sm:text-base font-extrabold text-gray-900">
-                  মোট আয়: <span className="text-[#0284c7] font-black font-game">৳ {(liveStats?.totalEarnings !== undefined ? liveStats.totalEarnings : 48650).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
+                  মোট আয়: <span className="text-[#0284c7] font-black font-game">৳ {Number(liveStats?.totalEarnings ?? 0).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
                 </h3>
                 <span className="text-[11px] font-bold text-blue-700 bg-blue-50 px-2 py-0.5 rounded-full">
                   সর্বমোট
