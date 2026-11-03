@@ -503,7 +503,7 @@ export const NoticeAnnouncementModal: React.FC<NoticeAnnouncementModalProps> = (
                 </button>
 
                 {/* Banner Graphic Image: Fits completely on both X & Y axis without cutting Bengali text */}
-                <img
+                {activeNotice.id === 'admin-notice' ? <img
                   key={activeNotice.id}
                   id={`notice-image-${activeNotice.id}`}
                   src={activeNotice.imageUrl}
@@ -511,7 +511,7 @@ export const NoticeAnnouncementModal: React.FC<NoticeAnnouncementModalProps> = (
                   className="w-full h-full object-contain block select-none transition-all duration-300 animate-in fade-in"
                   loading="eager"
                   style={{ maxHeight: '460px' }}
-                />
+                /> : <LiveRewardArtwork type={({ 'realtime-rebate': 'rebate', 'member-day': 'member_day', 'vip-members': 'vip', 'partner-reward': 'referral', 'mystery-bonus': 'mystery', 'daily-login': 'golden_egg' } as Record<string, string>)[activeNotice.id] || 'deposit'} title={language === 'bn' ? activeNotice.titleBn : activeNotice.titleEn} />}
 
                 <button
                   type="button"
