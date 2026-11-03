@@ -103,7 +103,7 @@ export const NeextHubAdminMessagesManager: React.FC<NeextHubAdminMessagesManager
     } else if (presetType === 'vip') {
       setFormCategory('vip');
       setFormSender('VIP লাউঞ্জ');
-      setFormTitle('💎 এক্সক্লুসিভ VIP রিওয়ার্ড ও উইকলি ক্যাশব্যাক ক্রেডিট');
+      setFormTitle('ভিআইপি পুরস্কারের বর্তমান নিয়ম');
       setFormHeadline('আপনার ভিআইপি ক্লাবের বিশেষ উপহার!');
       setFormDescription(liveRulesFor('vip', live).join('\n') || 'ভিআইপি পেইজে আপনার লেভেল ও বর্তমান পুরস্কারের শর্ত দেখুন।');
       setFormClaimableBonus(0);
@@ -529,14 +529,14 @@ export const NeextHubAdminMessagesManager: React.FC<NeextHubAdminMessagesManager
                     onClick={() => applyPreset('mission')}
                     className="px-2.5 py-1.5 rounded-lg bg-emerald-900/60 hover:bg-emerald-800 text-emerald-200 border border-emerald-700/50 text-[11px] font-bold flex items-center gap-1 cursor-pointer transition-colors"
                   >
-                    🏆 মিশন রিওয়ার্ড (৳১০০)
+                    🏆 মিশন নোটিশ
                   </button>
                   <button
                     type="button"
                     onClick={() => applyPreset('deposit')}
                     className="px-2.5 py-1.5 rounded-lg bg-amber-900/40 hover:bg-amber-800 text-yellow-200 border border-amber-700/50 text-[11px] font-bold flex items-center gap-1 cursor-pointer transition-colors"
                   >
-                    🔥 প্রথম ডিপোজিট বোনাস
+                    🔥 বর্তমান জমা অফার
                   </button>
                   <button
                     type="button"
