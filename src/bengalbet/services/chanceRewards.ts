@@ -20,3 +20,18 @@ export function chanceAverage(rows: ChancePrize[]): number {
   const total = rows.reduce((s, r) => s + (r.weight > 0 ? r.weight : 0), 0);
   return total > 0 ? rows.reduce((s, r) => s + r.amount * (r.weight > 0 ? r.weight : 0), 0) / total : 0;
 }
+
+export async function saveVerifiedChanceConfig(config: ChanceConfig, service: {
+  saveChanceConfig: (c: ChanceConfig) => Promise<{ success: boolean }>;
+  getChanceConfig: () => Promise<{ success: boolean; configured: boolean; config: ChanceConfig }>;
+}) {
+  const error = validateChanceConfig(config);
+  if (error) throw new Error(error);
+  if (!(await service.saveChanceConfig(config)).success) throw new Error('পুরস্কার তালিকা সংরক্ষণ হয়নি।');
+  const back = await service.getChanceConfig();
+  if (!back.success || !back.configured || validateChanceConfig(back.config)) throw new Error('সার্ভারের পুরস্কার তালিকা যাচাই করা যায়নি।');
+  for (const type of ['spin', 'golden_egg', 'red_envelope'] as ChanceType[]) {
+    if (JSON.stringify(back.config[type]) !== JSON.stringify(config[type])) throw new Error('সার্ভারে সংরক্ষিত পুরস্কার তালিকা মিলছে না।');
+  }
+  return back.config;
+}

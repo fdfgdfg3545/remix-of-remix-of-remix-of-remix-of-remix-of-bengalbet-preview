@@ -39,11 +39,12 @@ export const PromotionModal: React.FC<PromotionModalProps> = ({
   onOpenDeposit,
   onOpenSpin,
   onOpenShare,
-  onOpenAppDownload
+  onOpenAppDownload,
+  onOpenMenu
 }) => {
   const [claimed, setClaimed] = useState(false);
   const live = useLiveRules();
-  const liveLines = liveRulesFor(promotion.iconType, live);
+  const liveLines = liveRulesFor(promotion?.iconType, live);
   const [copiedCode, setCopiedCode] = useState(false);
 
   if (!promotion) return null;
@@ -172,20 +173,6 @@ export const PromotionModal: React.FC<PromotionModalProps> = ({
                 {promotion.validUntil || 'সর্বদা সক্রিয়'}
               </span>
             </div>
-            <div className="flex flex-col col-span-2 sm:col-span-1">
-              <span className="text-[10px] text-gray-400 font-medium">
-                {language === 'bn' ? 'প্রোমোকোড' : 'Promo Code'}
-              </span>
-              <div className="flex items-center gap-1">
-                <span className="text-xs font-mono font-bold text-yellow-300">BENGALBETVIP</span>
-                <button
-                  onClick={() => copyPromoCode('BENGALBETVIP')}
-                  className="p-0.5 text-gray-400 hover:text-yellow-400"
-                >
-                  {copiedCode ? <Check className="w-3 h-3 text-emerald-400" /> : <Copy className="w-3 h-3" />}
-                </button>
-              </div>
-            </div>
           </div>
 
           {/* Requirements Section */}
@@ -195,7 +182,7 @@ export const PromotionModal: React.FC<PromotionModalProps> = ({
               <span>{language === 'bn' ? 'অংশগ্রহণের শর্তাবলী' : 'Eligibility & Requirements'}</span>
             </h4>
             <ul className="space-y-1.5 pl-2">
-              {(language === 'bn' ? promotion.requirementsBn : promotion.requirementsEn).map((req, i) => (
+              {(liveLines.length ? liveLines : (language === 'bn' ? promotion.requirementsBn : promotion.requirementsEn)).map((req, i) => (
                 <li key={i} className="flex items-start gap-2 text-[11px] sm:text-xs text-gray-300">
                   <span className="text-yellow-400 font-bold">•</span>
                   <span>{req}</span>
