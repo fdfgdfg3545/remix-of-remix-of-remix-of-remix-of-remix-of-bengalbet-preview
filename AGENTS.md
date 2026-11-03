@@ -42,3 +42,5 @@
 - Mystery rules are shared by admin/public/cron; immutable monthly card jobs issue without wallet credit, and owned-card redemption alone writes the common bonus ledger, preventing direct-claim/cron double awards.
 - Withdrawal inactivity state is durable and shared by deposit approval, the minute cron and locked submission; snapshot available balance before mutations and preserve partial-deposit progress so retries cannot reset the target. Legacy missed expiry snapshots record observation time rather than claiming historical precision.
 - All bonus cash, reward grants and scheduled cards require recipient lifetime approved positive deposits; guard before mutation and keep first-deposit approval's own stored bonus eligible within its transaction.
+- Both withdrawal forms use shared withdrawalState for server limits and unknown-turnover gating; no sample payout accounts or unverified transaction-password controls may imply financial authorization.
+- LiveRewardArtwork combines number-free imagery with current server terms; promotion reads revalidate on focus and intervals so printed assets and stale caches cannot override edited rules.
