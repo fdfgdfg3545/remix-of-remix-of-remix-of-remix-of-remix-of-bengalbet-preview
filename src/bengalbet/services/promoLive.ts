@@ -27,8 +27,15 @@ const pct = (n: number) => `${Number(n || 0)}%`;
 const hh = (h: number) => `${String(h).padStart(2, '0')}:00`;
 const DAYS = ['', 'সোমবার', 'মঙ্গলবার', 'বুধবার', 'বৃহস্পতিবার', 'শুক্রবার', 'শনিবার', 'রবিবার'];
 
+const BN_DIGITS = '০১২৩৪৫৬৭৮৯';
+/** Member copy uses Bengali digits throughout so printed and live numbers read the same way. */
+export const toBnDigits = (s: string) => String(s).replace(/[0-9]/g, (d) => BN_DIGITS[Number(d)]);
+
 /** Rule lines the server actually enforces for a promotion type (iconType). Empty when unknown. */
 export function liveRulesFor(iconType: string, live: LiveRules | null | undefined): string[] {
+  return liveRulesRaw(iconType, live).map(toBnDigits);
+}
+function liveRulesRaw(iconType: string, live: LiveRules | null | undefined): string[] {
   if (!live) return [];
   const r = live.promoRules || {};
   const w = r.withdrawal;
@@ -69,7 +76,8 @@ export function liveRulesFor(iconType: string, live: LiveRules | null | undefine
       const top = t.reduce((a, b) => Math.max(a, b.upgradeBonus, b.monthlyBonus), 0);
       return [
         `প্রতি ৳১ বাজিতে ১ ভিআইপি পয়েন্ট; লেভেল ${t[0]?.level ?? 1}–${t[t.length - 1]?.level ?? 10}।`,
-        `প্রতি ${DAYS[r.vip?.weeklyClaimDay] || 'সোমবার'} সাপ্তাহিক এবং মাসের ${r.vip?.monthlyClaimDay ?? 1} তারিখে মাসিক নগদ কার্ড পুরস্কারের টিকিটে আসে; গ্রহণ করলে টাকা যোগ হয়।`,
+        `প্রতি ${DAYS[r.vip?.weeklyClaimDay] || 'সোমবার'} রাত ১২টায় সাপ্তাহিক এবং মাসের ${r.vip?.monthlyClaimDay ?? 1} তারিখ ${hh(r.vip?.monthlyHour ?? 15)}-এ মাসিক নগদ কার্ড পুরস্কার কেন্দ্রে আসে; কার্ড খুললে টাকা যোগ হয়।`,
+        wager(r.withdrawal?.otherBonusTurnover ?? 1),
         top > 0 ? `সর্বোচ্চ লেভেল-আপ/মাসিক বোনাস ${tk(top)}।` : 'ভিআইপি বোনাস অ্যাডমিন ঠিক করেন।',
       ];
     }

@@ -6,7 +6,7 @@ export interface PromoRules {
   wheelTicketsPerDay: number;
   redPacket: { enabled: boolean; hours: number[]; durationMinutes: number; perRoundLimit: number };
   rescue: { enabled: boolean; claimDeadlineHour: number; categories: string[] };
-  vip: { weeklyClaimDay: number; monthlyClaimDay: number };
+  vip: { weeklyClaimDay: number; monthlyClaimDay: number; monthlyHour: number };
   appBonus: { enabled: boolean; amount: number };
   slotDaily: { enabled: boolean; minBet: number; ratePercent: number; maxBonus: number; claimFromHour: number };
   rebate: { enabled: boolean; ratePercent: number };
@@ -23,10 +23,10 @@ export const PROMO_RULE_DEFAULTS: PromoRules = {
   wheelTicketsPerDay: 1,
   redPacket: { enabled: true, hours: [0, 12, 16, 20], durationMinutes: 30, perRoundLimit: 50 },
   rescue: { enabled: true, claimDeadlineHour: 10, categories: ['slot', 'fishing'] },
-  vip: { weeklyClaimDay: 1, monthlyClaimDay: 1 },
+  vip: { weeklyClaimDay: 1, monthlyClaimDay: 1, monthlyHour: 15 },
   appBonus: { enabled: true, amount: 52 },
   slotDaily: { enabled: true, minBet: 2000, ratePercent: 1, maxBonus: 18888, claimFromHour: 9 },
-  rebate: { enabled: true, ratePercent: 1 },
+  rebate: { enabled: true, ratePercent: 3 },
   memberDay: { enabled: true, day: 13, minBet: 1000, ratePercent: 1, maxBonus: 100000 },
   withdrawal: { enabled: true, depositTurnover: 1, depositBonusTurnover: 8, otherBonusTurnover: 1 },
   missions: { enabled: true, category: 'slot', tiers: [{ bet: 1000, bonus: 3 }, { bet: 3000, bonus: 8 }, { bet: 5000, bonus: 12 }, { bet: 10000, bonus: 18 }, { bet: 20000, bonus: 56 }, { bet: 50000, bonus: 128 }, { bet: 100000, bonus: 268 }, { bet: 200000, bonus: 588 }, { bet: 500000, bonus: 1288 }, { bet: 1000000, bonus: 2888 }, { bet: 2000000, bonus: 5888 }, { bet: 5000000, bonus: 12888 }, { bet: 10000000, bonus: 17777 }, { bet: 15000000, bonus: 22888 }, { bet: 20000000, bonus: 28888 }, { bet: 25000000, bonus: 35888 }, { bet: 30000000, bonus: 42888 }, { bet: 40000000, bonus: 55888 }, { bet: 50000000, bonus: 68888 }, { bet: 60000000, bonus: 82888 }, { bet: 70000000, bonus: 98888 }, { bet: 80000000, bonus: 118888 }, { bet: 90000000, bonus: 138888 }, { bet: 100000000, bonus: 168888 }, { bet: 150000000, bonus: 218888 }, { bet: 200000000, bonus: 300000 }] },
@@ -70,7 +70,7 @@ export function validatePromoRules(c: PromoRules): PromoRules {
     wheelTicketsPerDay: int(c.wheelTicketsPerDay, 0, 10),
     redPacket: { enabled: bool(c.redPacket.enabled), hours, durationMinutes: int(c.redPacket.durationMinutes, 1, 59), perRoundLimit: int(c.redPacket.perRoundLimit, 1, 100000) },
     rescue: { enabled: bool(c.rescue.enabled), claimDeadlineHour: int(c.rescue.claimDeadlineHour, 1, 24), categories: [...new Set(c.rescue.categories)] },
-    vip: { weeklyClaimDay: int(c.vip.weeklyClaimDay, 1, 7), monthlyClaimDay: int(c.vip.monthlyClaimDay, 1, 28) },
+    vip: { weeklyClaimDay: int(c.vip.weeklyClaimDay, 1, 7), monthlyClaimDay: int(c.vip.monthlyClaimDay, 1, 28), monthlyHour: int(c.vip.monthlyHour ?? 15, 0, 23) },
     appBonus: { enabled: bool(c.appBonus.enabled), amount: Math.round(amount * 100) / 100 },
     slotDaily: { enabled: bool(c.slotDaily.enabled), minBet: num(c.slotDaily.minBet, 0, 1e8), ratePercent: num(c.slotDaily.ratePercent, 0, 100), maxBonus: num(c.slotDaily.maxBonus, 0, 1e8), claimFromHour: int(c.slotDaily.claimFromHour, 0, 23) },
     rebate: { enabled: bool(c.rebate.enabled), ratePercent: num(c.rebate.ratePercent, 0, 3) },
