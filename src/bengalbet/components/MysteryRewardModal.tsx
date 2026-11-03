@@ -234,7 +234,7 @@ export const MysteryRewardModal: React.FC<MysteryRewardModalProps> = ({
 
                   <p className="text-[11px] text-purple-200/70 font-bengali mt-1">
                     {hasClaimed 
-                      ? `নতুন বোনাসে ${baseMultiplier}× বাজির শর্ত; উত্তোলনে চলতি মাসে অনুমোদিত জমা প্রয়োজন।`
+                      ? `নতুন বোনাসে ${baseMultiplier}× বাজির শর্ত; বোনাস পেতে প্রথম জমা অনুমোদিত হতে হবে।`
                       : `${bn(dropDay)} তারিখ ${dropHour}-এ নগদ কার্ড পুরস্কারের টিকিটে আসে; গ্রহণ করলে টাকা যোগ হয়।`}
                   </p>
                 </div>
@@ -383,7 +383,7 @@ export const MysteryRewardModal: React.FC<MysteryRewardModalProps> = ({
                   </li>
                   <li className="flex items-start gap-2">
                     <span className="text-emerald-400 font-bold">✓</span>
-                    <span>উত্তোলনের অনুরোধে চলতি বাংলাদেশি মাসে অনুমোদিত জমা থাকতে হবে।</span>
+                    <span>শেষ অনুমোদিত জমার এক মাস পর উত্তোলন বন্ধ হলে, ব্লকের সময়ের ব্যালেন্সের সমান মোট নতুন জমা অনুমোদিত হতে হবে।</span>
                   </li>
                   <li className="flex items-start gap-2">
                     <span className="text-emerald-400 font-bold">✓</span>

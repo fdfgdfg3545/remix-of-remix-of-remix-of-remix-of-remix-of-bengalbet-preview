@@ -2,6 +2,7 @@
 require_once __DIR__.'/../config.php';
 require_once __DIR__.'/../db.php';
 require_once __DIR__.'/daily_signin_rules.php';
+require_once __DIR__.'/bonus_eligibility.php';
 $method=$_SERVER['REQUEST_METHOD']; $action=$_GET['action'] ?? 'status';
 $userId=Database::requireUser(); $today=date('Y-m-d');
 if(strpos($action,'new-member-')===0){$_GET['action']=substr($action,11);require __DIR__.'/new_member.php';exit;}
@@ -20,6 +21,7 @@ if($action==='claim') {
   $pdo->beginTransaction();
   $user=Database::fetchOne('SELECT username,balance FROM users WHERE id=? FOR UPDATE',[$userId]);
   if(!$user) throw new RuntimeException('User not found');
+  bbRequireBonusDeposit($userId);
   $last=Database::fetchOne('SELECT * FROM daily_signin_records WHERE user_id=? ORDER BY date DESC LIMIT 1',[$userId]);
   $state=bbSigninNext($last,$today,$config);
   if(!$config['enabled']) throw new RuntimeException('দৈনিক পুরস্কার বন্ধ আছে।');

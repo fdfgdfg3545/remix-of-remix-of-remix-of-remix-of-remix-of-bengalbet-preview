@@ -60,7 +60,7 @@ export function liveRulesFor(iconType: string, live: LiveRules | null | undefine
         `মাসের শুরু থেকে ${m.triggerDayOfMonth} তারিখ শুরু হওয়ার আগের মোট ${tk(m.minBetRequired)} বাজি করলে যোগ্য।`,
         `প্রতি মাসের ${m.triggerDayOfMonth} তারিখ ${hh(m.triggerHour)}-এ ${tk(m.minBonusAmount)}–${tk(m.maxBonusAmount)} নগদ কার্ড পুরস্কারের টিকিটে আসে; গ্রহণ করলে টাকা যোগ হয়।`,
         wager(r.withdrawal?.otherBonusTurnover ?? 1),
-        'উত্তোলনের অনুরোধে চলতি বাংলাদেশি মাসে অনুমোদিত জমা থাকতে হবে।',
+        'বোনাস পেতে আগে একটি জমা অনুমোদিত হতে হবে। শেষ জমার এক মাস পর উত্তোলন বন্ধ হলে ব্লকের সময়ের ব্যালেন্সের সমান মোট নতুন জমা প্রয়োজন।',
       ];
     }
     case 'vip': {

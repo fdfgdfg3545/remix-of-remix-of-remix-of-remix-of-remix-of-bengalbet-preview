@@ -2,6 +2,7 @@
 require_once __DIR__.'/../config.php';require_once __DIR__.'/../db.php';
 $userId=Database::requireUser();$action=$_GET['action'] ?? 'status';$input=Database::getJsonInput();
 require_once __DIR__.'/new_member_rules.php';
+require_once __DIR__.'/bonus_eligibility.php';
 function bbMemberTasks(string $uid): array {
  $config=bbMemberConfig();$definitions=array_map(fn($task)=>[$task['bonus'],$task['requirementType'],$task['requiredAmount']],$config['days']);
  $user=Database::fetchOne('SELECT created_at FROM users WHERE id=?',[$uid]);if(!$user)Database::errorResponse('User not found',404);
@@ -17,6 +18,7 @@ if($action!=='claim' || $_SERVER['REQUEST_METHOD']!=='POST')Database::errorRespo
 $day=filter_var($input['day'] ?? null,FILTER_VALIDATE_INT);if($day===false || $day<1 || $day>12)Database::errorResponse('Invalid task',422);
 $pdo=Database::getConnection();try{
  $pdo->beginTransaction();$user=Database::fetchOne("SELECT username,balance,status FROM users WHERE id=? FOR UPDATE",[$userId]);if(!$user || $user['status']!=='active')throw new RuntimeException('Active account required');
+ bbRequireBonusDeposit($userId);
  $state=bbMemberTasks($userId);$task=$state['tasks'][$day-1];if(!$task['eligible'])throw new RuntimeException('কাজের দিন, পূর্বের দাবি অথবা আজকের শর্ত পূরণ হয়নি।');
  $bonus=$task['bonus'];$now=date('Y-m-d H:i:s');$reference='NM-'.$userId.'-'.$day;
  Database::insert('new_member_claims',['user_id'=>$userId,'day'=>$day,'bonus'=>$bonus,'claimed_at'=>$now]);
