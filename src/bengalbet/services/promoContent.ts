@@ -35,12 +35,12 @@ export function mergeServerPromotions(server: any[] | null | undefined): any[] {
 }
 
 export function usePromotions(): any[] {
-  const [list, setList] = useState<any[]>(PROMOTIONS_DATA as any[]);
-  useEffect(() => { let on = true; loadPromoLive().then((r) => { if (on) setList(mergeServerPromotions(r.promotions).map(p => {
+  const [list, setList] = useState<any[]>([]);
+  useEffect(() => { let on = true; const refresh = () => { void loadPromoLive(true).then((r) => { if (on) setList(!r.live ? [] : mergeServerPromotions(r.promotions).map(p => {
     const lines = liveRulesFor(p.iconType, r.live);
     // Printed banner numbers cannot track admin changes. Keep originals in the editor,
     // but show current server copy to members instead of incompatible printed terms.
     return lines.length ? { ...p, titleBn: lines[0], titleEn: '', subtitleBn: lines[1] || '', subtitleEn: '', requirementsBn: lines, rulesBn: lines, bannerImage: '', highlightNumber: '', claimableAmount: '', validUntil: '', badge: '', badgeBn: '' } : p;
-  })); }); return () => { on = false; }; }, []);
+  })); }); }; refresh(); const timer = window.setInterval(refresh, 30000); window.addEventListener('focus', refresh); return () => { on = false; window.clearInterval(timer); window.removeEventListener('focus', refresh); }; }, []);
   return list;
 }

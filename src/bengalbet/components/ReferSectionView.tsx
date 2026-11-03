@@ -32,6 +32,7 @@ import { InviteFriendsMobileView } from './InviteFriendsMobileView';
 import { useReferralBoard } from '../services/referralBoard';
 import { api } from '../services/api';
 import referRewardsBannerImg from '../assets/images/bengalbet_refer_rewards_banner_1790186975892.jpg';
+import { LiveRewardArtwork } from './LiveRewardArtwork';
 
 interface ReferSectionViewProps {
   user: UserAccount;
@@ -1008,12 +1009,7 @@ export const ReferSectionView: React.FC<ReferSectionViewProps> = ({ user, onClos
               id="refer-rewards-top-banner"
               className="rounded-2xl overflow-hidden shadow-lg border border-emerald-700/60 relative bg-emerald-950 w-full"
             >
-              <img 
-                src={referRewardsBannerImg} 
-                alt="BengalBet Refer Rewards Banner"
-                referrerPolicy="no-referrer"
-                className="w-full h-auto max-h-[220px] object-cover sm:object-contain sm:bg-[#07392a] mx-auto block"
-              />
+              <LiveRewardArtwork type="referral" title="BengalBet রেফার পুরস্কার" />
             </div>
 
             {/* Feedback Alert if claimed or error */}
