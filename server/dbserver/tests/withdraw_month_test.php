@@ -14,7 +14,7 @@ class Database {
   throw new RuntimeException('Unexpected query');
  }
  static function insert($table,$row){self::$writes++;} static function execute($sql,$p=[]){self::$writes++;}
- static function jsonResponse($p){throw new Reply($p);} static function errorResponse($m,$c){throw new Reply(['success'=>false,'message'=>$m,'status'=>$c]);}
+ static function jsonResponse($p){if(!empty($p['success'])){if(self::$writes!==2)throw new RuntimeException('Wrong financial writes');echo "Approved current-month deposit allows submission passed\n";exit(0);}throw new Reply($p);} static function errorResponse($m,$c){throw new Reply(['success'=>false,'message'=>$m,'status'=>$c]);}
 }
 function bbTurnoverStatus($uid){return ['remaining'=>0];}
 $action='withdraw';$method='POST';$userId='isolated';$input=['amount'=>500,'walletType'=>'bkash','accountNumber'=>'test-destination'];

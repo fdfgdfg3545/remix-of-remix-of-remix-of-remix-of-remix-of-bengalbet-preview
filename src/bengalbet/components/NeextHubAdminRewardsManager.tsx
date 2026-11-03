@@ -541,10 +541,13 @@ export const NeextHubAdminRewardsManager: React.FC<NeextHubAdminRewardsManagerPr
         minBetRequired: Number(cfgMinBet),
         promoCode: cfgPromoCode.trim().toUpperCase(),
         wageringTurnover: Number(cfgTurnover),
-        autoCreditEnabled: cfgAutoCredit
+        autoCreditEnabled: false
       });
       if (res.success) {
-        showToast('২৩ তারিখ রহস্যময় পুরস্কার কনফিগারেশন সফলভাবে আপডেট হয়েছে!');
+        const readback = await api.mysteryReward.getAdminConfig();
+        const expected = { enabled: cfgEnabled, minBonusAmount: Number(cfgMinBonus), maxBonusAmount: Number(cfgMaxBonus), triggerDayOfMonth: Number(cfgTriggerDay), triggerHour: Number(cfgTriggerHour), minBetRequired: Number(cfgMinBet), promoCode: cfgPromoCode.trim().toUpperCase() };
+        if (!readback.success || Object.entries(expected).some(([key, value]) => readback.config?.[key] !== value)) throw new Error('সংরক্ষিত রহস্য নিয়ম মেলেনি। আবার পরীক্ষা করুন।');
+        showToast('রহস্য নগদ কার্ডের নিয়ম সংরক্ষিত ও পুনরায় যাচাই হয়েছে।');
         setIsEditingConfig(false);
         loadMysteryData();
       }
@@ -1645,16 +1648,16 @@ export const NeextHubAdminRewardsManager: React.FC<NeextHubAdminRewardsManagerPr
                   </div>
 
                   <div className="p-3 rounded-xl bg-black/30 border border-emerald-800/60">
-                    <label className="block text-xs font-bold text-gray-300 mb-1">অটো-ক্রেডিট ফিচার</label>
+                    <label className="block text-xs font-bold text-gray-300 mb-1">নগদ কার্ড প্রদান</label>
                     <label className="flex items-center gap-2 cursor-pointer mt-2">
                       <input
                         type="checkbox"
-                        checked={cfgAutoCredit}
-                        onChange={e => setCfgAutoCredit(e.target.checked)}
+                        checked={true}
+                        disabled
                         className="w-4 h-4 text-yellow-400 rounded accent-yellow-400 cursor-pointer"
                       />
                       <span className="text-xs font-bold text-white">
-                        ২৩ তারিখ সন্ধ্যা ৬টায় অটো ক্রেডিট
+                        নির্ধারিত সময়ে টিকিটে কার্ড; গ্রহণে টাকা
                       </span>
                     </label>
                   </div>
@@ -1666,7 +1669,7 @@ export const NeextHubAdminRewardsManager: React.FC<NeextHubAdminRewardsManagerPr
                       value={cfgPromoCode}
                       onChange={e => setCfgPromoCode(e.target.value.toUpperCase())}
                       className="w-full px-3 py-1.5 rounded-lg bg-black/50 border border-emerald-700 text-yellow-300 font-mono text-xs font-black uppercase"
-                      required
+                      maxLength={64}
                     />
                   </div>
                 </div>
@@ -1699,7 +1702,7 @@ export const NeextHubAdminRewardsManager: React.FC<NeextHubAdminRewardsManagerPr
                     <input
                       type="number"
                       min="1"
-                      max="31"
+                      max="28"
                       value={cfgTriggerDay}
                       onChange={e => setCfgTriggerDay(Number(e.target.value))}
                       className="w-full px-3 py-2 rounded-xl bg-black/40 border border-emerald-600/40 text-white text-xs font-bold"
@@ -1723,7 +1726,7 @@ export const NeextHubAdminRewardsManager: React.FC<NeextHubAdminRewardsManagerPr
                 <div className="grid grid-cols-2 gap-3">
                   <div>
                     <label className="block text-xs font-bold text-gray-300 mb-1">
-                      ১-২২ তারিখ ন্যূনতম প্রয়োজনীয় বাজি (৳)
+                      ড্রপ দিনের আগে মাসিক ন্যূনতম বাজি (৳)
                     </label>
                     <input
                       type="number"
@@ -1736,14 +1739,14 @@ export const NeextHubAdminRewardsManager: React.FC<NeextHubAdminRewardsManagerPr
                   </div>
                   <div>
                     <label className="block text-xs font-bold text-gray-300 mb-1">
-                      ভেগারিং টার্নওভার (গুণ / Multiplier)
+                      সাধারণ টার্নওভার (প্রোমোশনের নিয়ম থেকে)
                     </label>
                     <input
                       type="number"
                       min="1"
                       max="10"
                       value={cfgTurnover}
-                      onChange={e => setCfgTurnover(Number(e.target.value))}
+                      disabled
                       className="w-full px-3 py-2 rounded-xl bg-black/40 border border-emerald-600/40 text-white text-xs font-bold"
                       required
                     />
