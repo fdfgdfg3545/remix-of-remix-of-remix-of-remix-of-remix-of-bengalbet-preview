@@ -12,6 +12,8 @@ if($amount<(float)$settings['min_withdraw']||$amount>(float)$settings['max_withd
 $pdo=Database::getConnection();try {
     $pdo->beginTransaction();$user=Database::fetchOne('SELECT * FROM users WHERE id=? FOR UPDATE',[$userId]);
     if(!$user||$user['status']!=='active')throw new RuntimeException('Active account required');
+    $turnover=bbTurnoverStatus($userId);
+    if($turnover['remaining']>0)throw new RuntimeException('উত্তোলনের আগে আরও ৳'.number_format($turnover['remaining'],2).' বাজি সম্পন্ন করতে হবে।');
     if((float)$user['balance']<$amount)throw new RuntimeException('Insufficient balance');
     if(Database::fetchOne("SELECT id FROM transactions WHERE user_id=? AND type='withdraw' AND status='pending'",[$userId]))throw new RuntimeException('A withdrawal is already pending');
     $id='tx-'.bin2hex(random_bytes(12));$row=['id'=>$id,'user_id'=>$userId,'username'=>$user['username'],'user_phone'=>$user['phone'],'type'=>'withdraw','amount'=>$amount,'bonus'=>0,'fee'=>0,'channel'=>$type,'account_number'=>$account,'trx_id'=>'WD-'.bin2hex(random_bytes(12)),'status'=>'pending','description'=>'Wallet withdrawal pending approval','created_at'=>date('Y-m-d H:i:s')];

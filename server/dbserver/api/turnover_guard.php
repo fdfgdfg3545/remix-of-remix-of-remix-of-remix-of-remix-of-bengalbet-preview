@@ -5,6 +5,7 @@
  * non-rejected withdrawal, and the valid bets placed in that same period.
  */
 require_once __DIR__ . '/promo_rules.php';
+require_once __DIR__ . '/turnover_math.php';
 if (!function_exists('bbTurnoverStatus')) {
 function bbTurnoverStatus(string $uid): array {
     $w = bbPromoRules()['withdrawal'];
@@ -13,12 +14,9 @@ function bbTurnoverStatus(string $uid): array {
     $dep = Database::fetchOne("SELECT COALESCE(SUM(amount),0) a, COALESCE(SUM(bonus),0) b FROM transactions WHERE user_id=? AND type='deposit' AND status='success' AND COALESCE(processed_at, created_at) > ?", [$uid, $since]);
     $other = (float)Database::fetchOne("SELECT COALESCE(SUM(amount),0) a FROM transactions WHERE user_id=? AND type='bonus' AND status='success' AND created_at > ?", [$uid, $since])['a'];
     $bets = (float)Database::fetchOne('SELECT COALESCE(SUM(valid_bet),0) t FROM bets WHERE user_id=? AND `time` > ?', [$uid, $since])['t'];
-    $required = empty($w['enabled']) ? 0.0 : round((float)$dep['a'] * (float)$w['depositTurnover'] + (float)$dep['b'] * (float)$w['depositBonusTurnover'] + $other * (float)$w['otherBonusTurnover'], 2);
+    $first = Database::fetchOne("SELECT COALESCE(SUM(d.bonus),0) b FROM transactions d WHERE d.user_id=? AND d.type='deposit' AND d.status='success' AND COALESCE(d.processed_at,d.created_at)>? AND NOT EXISTS (SELECT 1 FROM transactions p WHERE p.user_id=d.user_id AND p.type='deposit' AND p.status='success' AND (COALESCE(p.processed_at,p.created_at)<COALESCE(d.processed_at,d.created_at) OR (COALESCE(p.processed_at,p.created_at)=COALESCE(d.processed_at,d.created_at) AND p.id<d.id)))", [$uid,$since]);
+    $required = bbTurnoverRequired($w, (float)$dep['a'], (float)$dep['b'], (float)$first['b'], $other);
     return ['enabled' => !empty($w['enabled']), 'since' => $last, 'deposits' => (float)$dep['a'], 'depositBonus' => (float)$dep['b'], 'otherBonus' => $other, 'required' => $required, 'completed' => $bets, 'remaining' => max(0.0, round($required - $bets, 2)), 'rules' => $w];
 }
 }
 if ($action === 'turnover' && $method === 'GET') Database::jsonResponse(['success' => true] + bbTurnoverStatus($userId));
-if ($action === 'withdraw' && $method === 'POST') {
-    $t = bbTurnoverStatus($userId);
-    if ($t['remaining'] > 0) Database::errorResponse('উত্তোলনের আগে আরও ৳' . number_format($t['remaining'], 2) . ' বাজি সম্পন্ন করতে হবে।', 409, ['turnover' => $t]);
-}

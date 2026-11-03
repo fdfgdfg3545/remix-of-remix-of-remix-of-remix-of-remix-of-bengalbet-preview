@@ -75,16 +75,16 @@ export function validatePromoRules(c: PromoRules): PromoRules {
     slotDaily: { enabled: bool(c.slotDaily.enabled), minBet: num(c.slotDaily.minBet, 0, 1e8), ratePercent: num(c.slotDaily.ratePercent, 0, 100), maxBonus: num(c.slotDaily.maxBonus, 0, 1e8), claimFromHour: int(c.slotDaily.claimFromHour, 0, 23) },
     rebate: { enabled: bool(c.rebate.enabled), ratePercent: num(c.rebate.ratePercent, 0, 3) },
     memberDay: { enabled: bool(c.memberDay.enabled), day: int(c.memberDay.day, 2, 28), minBet: num(c.memberDay.minBet, 0, 1e8), ratePercent: num(c.memberDay.ratePercent, 0, 100), maxBonus: num(c.memberDay.maxBonus, 0, 1e8) },
-    withdrawal: { enabled: bool(c.withdrawal.enabled), depositTurnover: num(c.withdrawal.depositTurnover, 0, 50), depositBonusTurnover: num(c.withdrawal.depositBonusTurnover, 0, 50), otherBonusTurnover: num(c.withdrawal.otherBonusTurnover, 0, 50) },
+    withdrawal: { enabled: bool(c.withdrawal.enabled), depositTurnover: num(c.withdrawal.depositTurnover, 0, 50), depositBonusTurnover: num(c.withdrawal.depositBonusTurnover, 0, 50), otherBonusTurnover: num(c.withdrawal.depositTurnover, 0, 50) },
     missions: (() => { const m = c.missions ?? PROMO_RULE_DEFAULTS.missions; if (!['all', ...GAME_CATEGORIES].includes(m.category)) throw new Error('মিশনের গেম ধরন সঠিক নয়।'); return { enabled: bool(m.enabled), category: m.category, tiers: tiers(m.tiers, 'bet', 1e10) }; })(),
     referralLevels: (() => { const m = c.referralLevels ?? PROMO_RULE_DEFAULTS.referralLevels; return { enabled: bool(m.enabled), tiers: tiers(m.tiers, 'friends', 100000) }; })(),
   };
 }
 
-/** Bets still needed before a withdrawal: deposits × x, deposit bonus × y, other bonuses × z, minus bets placed. */
-export function remainingTurnover(rules: PromoRules['withdrawal'], deposits: number, depositBonus: number, otherBonus: number, bets: number): number {
+/** Base on every new non-game credit; extra only on first-deposit bonus. */
+export function remainingTurnover(rules: PromoRules['withdrawal'], deposits: number, depositBonus: number, otherBonus: number, bets: number, firstDepositBonus = depositBonus): number {
   if (!rules.enabled) return 0;
-  const required = deposits * rules.depositTurnover + depositBonus * rules.depositBonusTurnover + otherBonus * rules.otherBonusTurnover;
+  const required = (deposits + depositBonus + otherBonus) * rules.depositTurnover + firstDepositBonus * rules.depositBonusTurnover;
   return Math.max(0, Math.round((required - bets) * 100) / 100);
 }
 

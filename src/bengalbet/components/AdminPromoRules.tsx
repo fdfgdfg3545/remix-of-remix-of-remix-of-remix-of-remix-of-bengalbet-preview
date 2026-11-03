@@ -152,11 +152,11 @@ export function AdminPromoRules() {
       })}
       <div className="border border-border rounded-md p-3 space-y-3 lg:col-span-2">
         <label className="flex items-center gap-2 font-semibold"><Switch aria-label="উত্তোলনের বাজির শর্ত চালু" checked={r.withdrawal.enabled} onCheckedChange={enabled => setRules({ ...r, withdrawal: { ...r.withdrawal, enabled } })} />উত্তোলনের আগে বাজির শর্ত</label>
-        <div className="grid grid-cols-3 gap-3">
-          {num('জমার কত গুণ', r.withdrawal.depositTurnover, n => setRules({ ...r, withdrawal: { ...r.withdrawal, depositTurnover: n } }))}
-          {num('জমা বোনাসের কত গুণ', r.withdrawal.depositBonusTurnover, n => setRules({ ...r, withdrawal: { ...r.withdrawal, depositBonusTurnover: n } }))}
-          {num('অন্য বোনাসের কত গুণ', r.withdrawal.otherBonusTurnover, n => setRules({ ...r, withdrawal: { ...r.withdrawal, otherBonusTurnover: n } }))}
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          {num('সব নতুন জমা ও বোনাসের সাধারণ গুণ', r.withdrawal.depositTurnover, n => setRules({ ...r, withdrawal: { ...r.withdrawal, depositTurnover: n, otherBonusTurnover: n } }))}
+          {num('প্রথম জমা বোনাসের অতিরিক্ত গুণ', r.withdrawal.depositBonusTurnover, n => setRules({ ...r, withdrawal: { ...r.withdrawal, depositBonusTurnover: n } }))}
         </div>
+        <p className="text-sm text-muted-foreground">প্রথম জমা বোনাসে মোট {r.withdrawal.depositTurnover + r.withdrawal.depositBonusTurnover}×; অন্য নতুন অর্থে {r.withdrawal.depositTurnover}×। গেমের জয় ও আটকে রাখা অর্থ ফেরতে নতুন শর্ত নয়।</p>
       </div>
     </fieldset>}
     <footer className="flex flex-wrap items-center justify-between gap-3"><p role="status" className="text-sm break-words">{message}</p>
