@@ -636,14 +636,7 @@ export const VipMobileView: React.FC<VipMobileViewProps> = ({
                 {userVipLevel < 1 ? (
                   <span className="text-[11px] text-gray-400">VIP 1 এ আনলক হবে</span>
                 ) : (
-                  <button
-                    type="button"
-                    disabled={isClaiming || currentTier.weeklyBonus <= 0}
-                    onClick={() => handleClaim('weekly')}
-                    className="w-full py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs shadow-xs active:scale-95 transition-all cursor-pointer disabled:opacity-50"
-                  >
-                    {isClaiming ? 'প্রসেসিং...' : 'বেতন তুলুন'}
-                  </button>
+                  <span className="mt-2 block w-full text-center text-[11px] font-bold opacity-80">সাপ্তাহিক কার্ড স্বয়ংক্রিয়ভাবে পুরস্কার কেন্দ্রে আসে</span>
                 )}
               </div>
             </div>
@@ -664,14 +657,7 @@ export const VipMobileView: React.FC<VipMobileViewProps> = ({
                 {userVipLevel < 1 ? (
                   <span className="text-[11px] text-gray-400">VIP 1 এ আনলক হবে</span>
                 ) : (
-                  <button
-                    type="button"
-                    disabled={isClaiming || currentTier.monthlyBonus <= 0}
-                    onClick={() => handleClaim('monthly')}
-                    className="w-full py-1.5 rounded-lg bg-cyan-600 hover:bg-cyan-500 text-white font-bold text-xs shadow-xs active:scale-95 transition-all cursor-pointer disabled:opacity-50"
-                  >
-                    {isClaiming ? 'প্রসেসিং...' : 'বেতন তুলুন'}
-                  </button>
+                  <span className="mt-2 block w-full text-center text-[11px] font-bold opacity-80">মাসিক কার্ড স্বয়ংক্রিয়ভাবে পুরস্কার কেন্দ্রে আসে</span>
                 )}
               </div>
             </div>

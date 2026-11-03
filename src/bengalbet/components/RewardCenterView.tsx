@@ -589,7 +589,7 @@ export const RewardCenterView: React.FC<RewardCenterViewProps> = ({
                 টেমু টিকিট
               </span>
               <span className="text-[9px] text-yellow-100 font-bengali mt-0.5">
-                শেষ তারিখ: ২০২৬-০৯-০১
+                মেয়াদ: প্রতি মাসে নবায়ন
               </span>
             </div>
             <div className="bg-[#fffbeb] px-3.5 py-2.5 flex flex-col items-center justify-center border-l-2 border-dashed border-amber-300 min-w-[120px]">
@@ -878,7 +878,7 @@ export const RewardCenterView: React.FC<RewardCenterViewProps> = ({
 
               <p className="text-[11px] text-purple-200/90 font-bengali mt-1 leading-relaxed">
                 সর্বোচ্চ বোনাস <strong className="text-yellow-400 font-mono font-bold text-xs">{mRangeBn}</strong> •
-                {mDayBn} তারিখ {mHourBn} থেকে দাবি করা যায় (সার্ভার পরিমাণ বাছে, মাসে একবার)
+                {mDayBn} তারিখ {mHourBn}-এ নগদ কার্ড আসে, খুলে টাকা নিন (সার্ভার পরিমাণ বাছে, মাসে একবার)
               </p>
             </div>
 
