@@ -3,6 +3,7 @@
  * Authentication REST API Endpoint
  */
 
+require_once __DIR__ . '/bonus_eligibility.php';
 require_once __DIR__ . '/../config.php';
 require_once __DIR__ . '/../db.php';
 require_once __DIR__ . '/reward_grants.php';
@@ -42,6 +43,7 @@ switch ($path) {
         $token = Database::makeToken($user['id']);
         if (bbDailyLoginEgg($user['id'])) $user = Database::fetchOne("SELECT * FROM `users` WHERE `id` = ?", [$user['id']]);
         unset($user['password_hash'], $user['transaction_password']);
+        $user['has_lifetime_deposit'] = bbHasLifetimeDeposit((string)$user['id']);
         $user['isLoggedIn'] = true;
 
         Database::jsonResponse([
@@ -119,6 +121,7 @@ switch ($path) {
         }
 
         unset($userData['password_hash']);
+        $userData['has_lifetime_deposit'] = false;
         $userData['isLoggedIn'] = true;
 
         Database::jsonResponse([
@@ -138,6 +141,7 @@ switch ($path) {
         }
 
         unset($user['password_hash'], $user['transaction_password']);
+        $user['has_lifetime_deposit'] = bbHasLifetimeDeposit((string)$user['id']);
         $user['isLoggedIn'] = true;
         Database::jsonResponse([
             'success' => true,
@@ -162,6 +166,7 @@ switch ($path) {
 
         $user = Database::fetchOne("SELECT * FROM `users` WHERE `id` = ?", [$userId]);
         unset($user['password_hash'], $user['transaction_password']);
+        $user['has_lifetime_deposit'] = bbHasLifetimeDeposit((string)$user['id']);
         $user['isLoggedIn'] = true;
 
         Database::jsonResponse([
@@ -240,6 +245,7 @@ switch ($path) {
         }
 
         unset($user['password_hash'], $user['transaction_password']);
+        $user['has_lifetime_deposit'] = bbHasLifetimeDeposit((string)$user['id']);
         $user['isLoggedIn'] = true;
 
         Database::jsonResponse([

@@ -26,5 +26,6 @@ export function normalizeServerUser(raw: Record<string, any> | null | undefined)
       if (Number.isFinite(n)) out[key] = n; else delete out[key];
     }
   }
+  if (raw.has_lifetime_deposit !== undefined) { out.hasLifetimeDeposit = raw.has_lifetime_deposit === true || raw.has_lifetime_deposit === 1 || raw.has_lifetime_deposit === '1'; delete out.has_lifetime_deposit; }
   return out;
 }

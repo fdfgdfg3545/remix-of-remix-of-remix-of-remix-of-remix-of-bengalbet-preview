@@ -603,7 +603,7 @@ export const RewardCenterView: React.FC<RewardCenterViewProps> = ({
                 }}
                 className="mt-1 px-3 py-1.5 rounded-full text-white font-black text-[11px] font-bengali shadow-sm transition-all cursor-pointer bg-gradient-to-r from-[#ea580c] to-[#f97316] hover:from-orange-600 hover:to-orange-700 active:scale-95 flex items-center justify-center gap-1"
               >
-                {claimedCouponIds.includes(1) ? 'সুপার ভ্যালু খুলুন ›' : 'দাবি করুন'}
+                {(user as any)?.hasLifetimeDeposit === false ? 'প্রথমে জমা করুন' : claimedCouponIds.includes(1) ? 'সুপার ভ্যালু খুলুন ›' : 'দাবি করুন'}
               </button>
             </div>
           </div>
@@ -659,7 +659,7 @@ export const RewardCenterView: React.FC<RewardCenterViewProps> = ({
                 }}
                 className="mt-1 px-3 py-1.5 rounded-full text-white font-black text-[11px] font-bengali shadow-sm transition-all cursor-pointer bg-gradient-to-r from-indigo-600 to-blue-600 hover:from-indigo-700 hover:to-blue-700 active:scale-95 flex items-center justify-center gap-1"
               >
-                {claimedCouponIds.includes(2) ? 'সাইন ইন পেজ ›' : 'দাবি করুন'}
+                {(user as any)?.hasLifetimeDeposit === false ? 'প্রথমে জমা করুন' : claimedCouponIds.includes(2) ? 'সাইন ইন পেজ ›' : 'দাবি করুন'}
               </button>
             </div>
           </div>
@@ -715,7 +715,7 @@ export const RewardCenterView: React.FC<RewardCenterViewProps> = ({
                 }}
                 className="mt-1 px-3 py-1.5 rounded-full text-white font-black text-[11px] font-bengali shadow-sm transition-all cursor-pointer bg-gradient-to-r from-amber-500 to-yellow-600 hover:from-amber-600 hover:to-yellow-700 active:scale-95 flex items-center justify-center gap-1"
               >
-                {claimedCouponIds.includes(3) ? 'সোনার ডিম খুলুন ›' : 'দাবি করুন'}
+                {(user as any)?.hasLifetimeDeposit === false ? 'প্রথমে জমা করুন' : claimedCouponIds.includes(3) ? 'সোনার ডিম খুলুন ›' : 'দাবি করুন'}
               </button>
             </div>
           </div>
@@ -771,7 +771,7 @@ export const RewardCenterView: React.FC<RewardCenterViewProps> = ({
                 }}
                 className="mt-1 px-3 py-1.5 rounded-full text-white font-black text-[11px] font-bengali shadow-sm transition-all cursor-pointer bg-gradient-to-r from-rose-500 to-pink-600 hover:from-rose-600 hover:to-pink-700 active:scale-95 flex items-center justify-center gap-1"
               >
-                {claimedCouponIds.includes(4) ? 'লাকি স্পিন খুলুন ›' : 'দাবি করুন'}
+                {(user as any)?.hasLifetimeDeposit === false ? 'প্রথমে জমা করুন' : claimedCouponIds.includes(4) ? 'লাকি স্পিন খুলুন ›' : 'দাবি করুন'}
               </button>
             </div>
           </div>
