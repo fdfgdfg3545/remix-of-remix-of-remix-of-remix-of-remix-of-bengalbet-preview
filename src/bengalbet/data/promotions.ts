@@ -307,7 +307,7 @@ export const PROMOTIONS_DATA: Promotion[] = [
     ],
     requirementsEn: [
       'Receive 1 free golden hammer daily simply by logging in.',
-      'Deposit ৳500+ to unlock up to 3 extra golden egg smashes.'
+      'Each approved deposit adds 1 extra golden egg (max 3 per day).'
     ],
     rulesBn: [
       'সোনার ডিম ভাঙলে নিশ্চিত নগদ পুরস্কার বা লাকি কয়েন মিলবে।',
