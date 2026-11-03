@@ -23,15 +23,16 @@ export function chanceAverage(rows: ChancePrize[]): number {
 
 export async function saveVerifiedChanceConfig(config: ChanceConfig, service: {
   saveChanceConfig: (c: ChanceConfig) => Promise<{ success: boolean }>;
-  getChanceConfig: () => Promise<{ success: boolean; configured: boolean; config: ChanceConfig }>;
+  getChanceConfig: () => Promise<{ success: boolean; configured: boolean; config: Record<string, ChancePrize[]> }>;
 }) {
   const error = validateChanceConfig(config);
   if (error) throw new Error(error);
   if (!(await service.saveChanceConfig(config)).success) throw new Error('পুরস্কার তালিকা সংরক্ষণ হয়নি।');
   const back = await service.getChanceConfig();
-  if (!back.success || !back.configured || validateChanceConfig(back.config)) throw new Error('সার্ভারের পুরস্কার তালিকা যাচাই করা যায়নি।');
+  const restored: ChanceConfig = { spin: back.config['spin'] ?? [], golden_egg: back.config['golden_egg'] ?? [], red_envelope: back.config['red_envelope'] ?? [] };
+  if (!back.success || !back.configured || validateChanceConfig(restored)) throw new Error('সার্ভারের পুরস্কার তালিকা যাচাই করা যায়নি।');
   for (const type of ['spin', 'golden_egg', 'red_envelope'] as ChanceType[]) {
-    if (JSON.stringify(back.config[type]) !== JSON.stringify(config[type])) throw new Error('সার্ভারে সংরক্ষিত পুরস্কার তালিকা মিলছে না।');
+    if (JSON.stringify(restored[type]) !== JSON.stringify(config[type])) throw new Error('সার্ভারে সংরক্ষিত পুরস্কার তালিকা মিলছে না।');
   }
-  return back.config;
+  return restored;
 }
