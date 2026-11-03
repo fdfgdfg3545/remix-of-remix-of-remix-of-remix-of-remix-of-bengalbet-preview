@@ -1282,6 +1282,11 @@ export const api = {
     updateRules: (rules: import('./promoRules').PromoRules) => request<{ success: boolean }>('/api/admin.php?section=promo-rules&action=config', { method: 'POST', body: JSON.stringify(rules) }),
     resetRules: () => request<{ success: boolean }>('/api/admin.php?section=promo-rules&action=config', { method: 'DELETE' }),
   },
+  cron: {
+    status: () => request<any>('/api/admin.php?section=cron&action=status'),
+    configure: (config: { enabled: boolean; key?: string }) => request<any>('/api/admin.php?section=cron&action=config', { method: 'POST', body: JSON.stringify(config) }),
+    run: () => request<any>('/api/admin.php?section=cron&action=run', { method: 'POST', body: '{}' }),
+  },
   promoContent: {
     get: () => request<{ success: boolean; promotions: any[] | null }>('/api/admin.php?section=promo-content&action=config'),
     save: (promotions: any[]) => request<{ success: boolean; promotions: any[] | null }>('/api/admin.php?section=promo-content&action=config', { method: 'POST', body: JSON.stringify({ promotions }) }),
