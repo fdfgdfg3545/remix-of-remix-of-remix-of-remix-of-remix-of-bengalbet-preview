@@ -2,6 +2,12 @@ import { describe, expect, it } from 'vitest';
 import { mayClaimMysteryReward } from '../bengalbet/services/rewardEligibility';
 
 describe('Mystery reward claim eligibility', () => {
+  it('permits a server-issued cash card after its drop day without creating a new reward', () => {
+    const status = { isEligible: true, isUnlocked: true, hasClaimed: false, is23rdToday: false, isPast6PM: false, unlockedCard: { id: 'mcc-issued', status: 'unlocked' } };
+    expect(mayClaimMysteryReward(status)).toBe(true);
+    expect(mayClaimMysteryReward({ ...status, unlockedCard: { id: 'mcc-issued', status: 'claimed' } })).toBe(false);
+    expect(mayClaimMysteryReward(status, true)).toBe(false);
+  });
   it('rejects missing eligibility data rather than granting demo eligibility', () => {
     expect(mayClaimMysteryReward(null)).toBe(false);
     expect(mayClaimMysteryReward({})).toBe(false);

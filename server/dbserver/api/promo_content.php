@@ -56,8 +56,8 @@ function bbPromoLiveRules(): array {
         $amts = array_map(fn($r) => (float)($r['amount'] ?? 0), $cfg[$t] ?? []);
         $chance[$t] = ['min' => $amts ? min($amts) : 0, 'max' => $amts ? max($amts) : 0, 'count' => count($amts)];
     }
-    $mrow = Database::fetchOne('SELECT config_json FROM mystery_reward_config WHERE id=1');
-    $mystery = array_merge(['enabled' => true, 'minBonusAmount' => 1000, 'maxBonusAmount' => 50000, 'triggerDayOfMonth' => 23, 'triggerHour' => 18, 'minBetRequired' => 500, 'wageringTurnover' => 1], $mrow ? (json_decode($mrow['config_json'], true) ?: []) : []);
+    require_once __DIR__.'/mystery_rules.php';
+    $mystery = bbMysteryConfig();
     $rescue = Database::fetchAll("SELECT min_loss, percentage, max_bonus FROM rescue_tiers WHERE status='active' ORDER BY min_loss ASC");
     $vip = Database::fetchAll("SELECT level, name, target_bet, deposit_target, upgrade_bonus, weekly_bonus, monthly_bonus, birthday_bonus FROM vip_tiers WHERE status='active' ORDER BY level ASC");
     $limits = Database::fetchOne('SELECT min_deposit, max_deposit, min_withdraw, max_withdraw FROM site_settings WHERE id=1') ?: [];

@@ -1,11 +1,8 @@
 <?php
 require_once __DIR__ . '/promo_rules.php';
+require_once __DIR__ . '/mystery_rules.php';
+require_once __DIR__ . '/mystery_cards.php';
 /** Server-authoritative reward guard and atomic settlement. */
-function bbMysteryConfig(): array {
- $defaults=['enabled'=>true,'minBonusAmount'=>1000,'maxBonusAmount'=>50000,'triggerDayOfMonth'=>23,'triggerHour'=>18,'minBetRequired'=>500,'promoCode'=>'','wageringTurnover'=>1,'autoCreditEnabled'=>false];
- $row=Database::fetchOne('SELECT config_json FROM mystery_reward_config WHERE id=1');
- return $row ? array_merge($defaults,json_decode($row['config_json'],true) ?: []) : $defaults;
-}
 function bbRewardCredit(string $uid,float $amount,string $description): float {
  if(!is_finite($amount) || $amount<=0) throw new RuntimeException('এই পুরস্কারের জন্য কোনো অনুমোদিত অর্থ নেই।');
  Database::execute('UPDATE users SET balance=balance+? WHERE id=?',[$amount,$uid]);
@@ -16,10 +13,13 @@ $bbModule=basename($_SERVER['SCRIPT_FILENAME'] ?? '');
 // Installed endpoint passes its module explicitly.
 if($rewardModule==='mystery' && $action==='status') {
  $config=bbMysteryConfig(); $month=date('Y-m'); $card=Database::fetchOne('SELECT * FROM mystery_cash_cards WHERE user_id=? AND month_year=?',[$userId,$month]);
- $sum=Database::fetchOne('SELECT COALESCE(SUM(bet_amount),0) AS total FROM bets WHERE user_id=? AND date BETWEEN ? AND ?',[$userId,$month.'-01',$month.'-'.sprintf('%02d',max(1,(int)$config['triggerDayOfMonth']-1))]);
+ $period=bbMysteryPeriod($config,$month);
+ $sum=Database::fetchOne('SELECT COALESCE(SUM(bet_amount),0) AS total FROM bets WHERE user_id=? AND date>=? AND date<?',[$userId,$period['start'],$period['cutoff']]);
  $day=(int)date('j')===(int)$config['triggerDayOfMonth']; $hour=(int)date('G')>=(int)$config['triggerHour']; $claimed=$card && $card['status']==='claimed';
  $eligible=(bool)$config['enabled'] && (float)$sum['total']>=(float)$config['minBetRequired'];
- Database::jsonResponse(['success'=>true,'enabled'=>(bool)$config['enabled'],'currentDate'=>date('Y-m-d H:i:s'),'is23rdToday'=>$day,'isPast6PM'=>$hour,'isUnlocked'=>$day && $hour && $eligible && !$claimed,'hasClaimed'=>(bool)$claimed,'claimedCard'=>$claimed ? $card : null,'unlockedCard'=>$card && !$claimed ? $card : null,'userBetTotal'=>(float)$sum['total'],'minBetRequired'=>(float)$config['minBetRequired'],'isBetSatisfied'=>$eligible,'isEligible'=>$eligible,'config'=>$config]);
+ $ready=$card && $card['status']==='unlocked' && !empty($card['eligible']);
+ $view=$card?['id'=>$card['id'],'bonusAmount'=>(float)$card['bonus_amount'],'status'=>$card['status'],'monthYear'=>$card['month_year'],'ticketCode'=>$card['ticket_code']]:null;
+ Database::jsonResponse(['success'=>true,'enabled'=>(bool)$config['enabled'],'currentDate'=>date('Y-m-d H:i:s'),'is23rdToday'=>$day,'isPast6PM'=>$hour,'isUnlocked'=>$ready && !empty($config['enabled']),'hasClaimed'=>(bool)$claimed,'claimedCard'=>$claimed ? $view : null,'unlockedCard'=>$ready ? $view : null,'userBetTotal'=>(float)$sum['total'],'minBetRequired'=>(float)$config['minBetRequired'],'isBetSatisfied'=>$eligible,'isEligible'=>$ready && !empty($config['enabled']),'config'=>$config]);
 }
 if(($rewardModule==='promos') && in_array($action,['','active'],true)) {
  $rows=Database::fetchAll("SELECT * FROM promo_codes WHERE status='active' AND (expires_at IS NULL OR expires_at>NOW()) AND current_usage_count<max_usage_count ORDER BY created_at DESC");
@@ -27,6 +27,15 @@ if(($rewardModule==='promos') && in_array($action,['','active'],true)) {
 }
 if(!in_array($action,['claim','redeem'],true)) return;
 if($method!=='POST') Database::errorResponse('Method Not Allowed',405);
+if($rewardModule==='mystery') {
+ try {
+  $id=(string)($input['ticketId']??'');
+  if($id==='')$id=(string)(Database::fetchOne("SELECT id FROM mystery_cash_cards WHERE user_id=? AND month_year=? AND status='unlocked'",[$userId,date('Y-m')])['id']??'');
+  if($id==='')throw new RuntimeException('নির্ধারিত নগদ কার্ড এখনো আসেনি। পুরস্কারের টিকিট দেখুন।');
+  Database::jsonResponse(bbMysteryRedeem($userId,$id));
+ }catch(Throwable $e){Database::errorResponse($e instanceof RuntimeException && !($e instanceof PDOException)?$e->getMessage():'রহস্য কার্ড গ্রহণ করা যায়নি।',400);}
+ return;
+}
 $pdo=Database::getConnection();
 try {
  $pdo->beginTransaction();
@@ -75,19 +84,6 @@ try {
   $bonus=(float)$promo['amount']; $description='প্রচার কোড '.$code;
   Database::insert('promo_redemptions',['id'=>'pred-'.bin2hex(random_bytes(12)),'promo_id'=>$promo['id'],'code'=>$code,'user_id'=>$userId,'username'=>$user['username'],'bonus_amount'=>$bonus,'redeemed_at'=>$now]);
   Database::execute('UPDATE promo_codes SET current_usage_count=current_usage_count+1 WHERE id=?',[$promo['id']]); $extra['code']=$code;
- } elseif($rewardModule==='mystery') {
-  $config=bbMysteryConfig(); $month=date('Y-m');
-  if(!$config['enabled'] || (int)date('j')!==(int)$config['triggerDayOfMonth'] || (int)date('G')<(int)$config['triggerHour']) throw new RuntimeException('রহস্য পুরস্কারের নির্ধারিত সময় এখন নয়।');
-  // Plan: turnover from the 1st up to the day before the trigger day
-  $sum=Database::fetchOne('SELECT COALESCE(SUM(bet_amount),0) AS total FROM bets WHERE user_id=? AND date BETWEEN ? AND ?',[$userId,$month.'-01',$month.'-'.sprintf('%02d',max(1,(int)$config['triggerDayOfMonth']-1))]);
-  if((float)$sum['total']<(float)$config['minBetRequired']) throw new RuntimeException('মাসিক বেটের শর্ত পূরণ হয়নি।');
-  $card=Database::fetchOne('SELECT * FROM mystery_cash_cards WHERE user_id=? AND month_year=?',[$userId,$month]);
-  if($card && ($card['status']==='claimed' || !(bool)$card['eligible'])) throw new RuntimeException('এই মাসের কার্ড অযোগ্য অথবা ইতিমধ্যে গ্রহণ করেছেন।');
-  $bonus=$card ? (float)$card['bonus_amount'] : random_int((int)round($config['minBonusAmount']*100),(int)round($config['maxBonusAmount']*100))/100;
-  $ticket=$card['ticket_code'] ?? 'MYS-'.strtoupper(bin2hex(random_bytes(8))); $turnover=$bonus*(float)$config['wageringTurnover'];
-  if($card) Database::update('mystery_cash_cards',['status'=>'claimed','claimed_at'=>$now],'id=?',[$card['id']]);
-  else Database::insert('mystery_cash_cards',['id'=>'mcc-'.bin2hex(random_bytes(12)),'user_id'=>$userId,'username'=>$user['username'],'month_year'=>$month,'bonus_amount'=>$bonus,'status'=>'claimed','eligible'=>1,'user_bet_amount'=>$sum['total'],'turnover_required'=>$turnover,'turnover_completed'=>0,'ticket_code'=>$ticket,'unlocked_at'=>$now,'claimed_at'=>$now]);
-  $description='রহস্য পুরস্কার '.$month; $extra=['turnoverRequired'=>$turnover,'card'=>['monthYear'=>$month,'bonusAmount'=>$bonus,'status'=>'claimed','ticketCode'=>$ticket],'ticket'=>['code'=>$ticket,'name'=>'রহস্য ক্যাশ কার্ড','amount'=>$bonus]];
  } else throw new RuntimeException('Unknown reward module');
  $balance=bbRewardCredit($userId,$bonus,$description); $pdo->commit();
  Database::jsonResponse(array_merge(['success'=>true,'message'=>'পুরস্কার একবার অ্যাকাউন্টে জমা হয়েছে।','bonusAmount'=>$bonus,'newBalance'=>$balance],$extra));

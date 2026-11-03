@@ -57,9 +57,10 @@ export function liveRulesFor(iconType: string, live: LiveRules | null | undefine
       const m = live.mystery || {};
       if (!m.enabled) return ['রহস্যময় পুরস্কার এখন বন্ধ।'];
       return [
-        `মাসের ১ থেকে ${Math.max(1, m.triggerDayOfMonth - 1)} তারিখে মোট ${tk(m.minBetRequired)} বাজি করলে যোগ্য।`,
-        `প্রতি মাসের ${m.triggerDayOfMonth} তারিখ ${hh(m.triggerHour)} থেকে দাবি করুন: ${tk(m.minBonusAmount)}–${tk(m.maxBonusAmount)}।`,
+        `মাসের শুরু থেকে ${m.triggerDayOfMonth} তারিখ শুরু হওয়ার আগের মোট ${tk(m.minBetRequired)} বাজি করলে যোগ্য।`,
+        `প্রতি মাসের ${m.triggerDayOfMonth} তারিখ ${hh(m.triggerHour)}-এ ${tk(m.minBonusAmount)}–${tk(m.maxBonusAmount)} নগদ কার্ড পুরস্কারের টিকিটে আসে; গ্রহণ করলে টাকা যোগ হয়।`,
         wager(r.withdrawal?.otherBonusTurnover ?? 1),
+        'উত্তোলনের অনুরোধে চলতি বাংলাদেশি মাসে অনুমোদিত জমা থাকতে হবে।',
       ];
     }
     case 'vip': {
