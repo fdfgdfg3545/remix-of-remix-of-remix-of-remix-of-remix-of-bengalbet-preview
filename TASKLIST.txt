@@ -14,6 +14,7 @@ BENGALBET কাজের তালিকা — প্রতিটি কাজ
 [x] তিনটি প্ল্যান ফাইল মূল ফোল্ডারে — ২০২৬-১১-০২
 
 বাকি (উপর থেকে ক্রমে করো)
+[ ] ১৯. ২০২৬-১১-০৩ 03:08 UTC: ব্যবহারকারীর পূর্ণ v6 source/member/admin/artwork/settings live recheck ও স্বয়ংক্রিয় প্রতি-মিনিট hosting cron installation; verified defect fixes, isolated tests, exact settings restore এবং পৃথক evidence report।
 [ ] ১৮. v6 confirmed last-deposit calendar-month expiry + fixed blocked-balance target cumulative new deposits + lifetime-approved-deposit prerequisite all bonuses; direct master deployment and live verification.
 [x] ১৮-ক. v6 plan অংশ ২৩ ও conflicting মাসিক gate সংশোধন; sandbox secret master ping success।
 [x] ১৮-খ. Durable activation/deposit/cron/withdraw/error and recipient lifetime gates; ১০ PHP files/৭১ frontend tests pass. All legacy paths exhaustive audit still #১৭-চ.

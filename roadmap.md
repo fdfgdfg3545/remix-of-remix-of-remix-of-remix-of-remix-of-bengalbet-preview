@@ -1,5 +1,12 @@
 # Remaining work
 
+## 2026-11-03 03:08 priority: requested whole-project live recheck
+- [ ] Audit v6 member/admin/source/artwork alignment and correct verified defects.
+- [ ] Verify live admin settings edits/readback and member desktop/mobile results with isolated data; restore shared settings.
+- [ ] Verify salary/mystery cash-card issuance/redemption and minute-runner resume/concurrency.
+- [ ] Install every-minute hosting cron if authenticated hosting facilities permit; otherwise report exact access blocker.
+- [ ] Run regression tests and record evidence, remaining gaps and updated v6 audit document.
+
 ## 2026-11-03 02:50 priority: v6 deployment and verification
 - [x] Update v6 plan with confirmed last-deposit one-month expiry, frozen balance-matched cumulative approved deposit activation, lifetime-deposit prerequisite for all bonuses.
 - [x] Verify saved master secret authenticates from sandbox to test-server ping.
