@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Switch } from '@/components/ui/switch';
 import { api } from '../services/api';
-import { GAME_CATEGORIES, savePromoRules, type PromoRules } from '../services/promoRules';
+import { GAME_CATEGORIES, savePromoRules, validatePromoRules, PROMO_RULE_DEFAULTS, type PromoRules } from '../services/promoRules';
 
 const DAYS = ['', 'সোমবার', 'মঙ্গলবার', 'বুধবার', 'বৃহস্পতিবার', 'শুক্রবার', 'শনিবার', 'রবিবার'];
 const CAT_LABEL: Record<string, string> = { slot: 'স্লট', fishing: 'ফিশিং', live: 'লাইভ', crash: 'ক্র্যাশ', table: 'টেবিল', arcade: 'আর্কেড', poker: 'পোকার', sports: 'স্পোর্টস', esports: 'ই-স্পোর্টস', lottery: 'লটারি' };
@@ -32,7 +32,14 @@ export function AdminPromoRules() {
   const reset = async () => {
     if (!window.confirm('সব প্রোমোশন নিয়ম প্রোমো পেইজের মূল প্ল্যানে ফিরিয়ে দেবেন?')) return;
     setBusy(true); setMessage('');
-    try { await api.promoRules.resetRules(); const r = await api.promoRules.getRules(); setRules(r.rules); setMessage('মূল প্ল্যানে ফিরিয়ে দেওয়া হয়েছে।'); }
+    try {
+      if (!(await api.promoRules.resetRules()).success) throw new Error('মূল প্ল্যানে ফেরানো যায়নি।');
+      const r = await api.promoRules.getRules();
+      if (!r.success || !r.rules) throw new Error('ফেরানোর পর নিয়ম যাচাই করা যায়নি।');
+      const clean = validatePromoRules(r.rules);
+      if (JSON.stringify(clean) !== JSON.stringify(validatePromoRules(PROMO_RULE_DEFAULTS))) throw new Error('সার্ভারের নিয়ম মূল প্ল্যানের সঙ্গে মিলছে না।');
+      setRules(clean); setMessage('মূল প্ল্যানে ফেরানো নিশ্চিত হয়েছে।');
+    }
     catch (e) { setMessage(e instanceof Error ? e.message : 'ফেরানো যায়নি।'); }
     finally { setBusy(false); }
   };

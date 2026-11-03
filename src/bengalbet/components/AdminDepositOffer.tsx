@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Switch } from '@/components/ui/switch';
 import { api } from '../services/api';
-import { depositBonus, saveDepositOffer, type DepositOffer } from '../services/depositOffer';
+import { depositBonus, saveDepositOffer, validateDepositOffer, DEFAULT_DEPOSIT_OFFER, type DepositOffer } from '../services/depositOffer';
 
 /** Admin editor for the one server deposit offer used by member pages and the deposit endpoint. */
 export function AdminDepositOffer() {
@@ -46,8 +46,15 @@ export function AdminDepositOffer() {
         <Switch id="deposit-offer-enabled" disabled={busy || !offer} checked={offer?.enabled ?? false} onCheckedChange={enabled => set({ enabled })} />
         <Button variant="outline" size="icon" title="সেটিং মুছে মূল নিয়মে ফেরান" aria-label="সেটিং মুছে মূল নিয়মে ফেরান" disabled={busy} onClick={async () => {
           if (!window.confirm('জমা অফারের সেটিং মুছে মূল নিয়মে ফেরাবেন?')) return;
-          setBusy(true);
-          try { await api.depositOffer.resetOffer(); const r = await api.depositOffer.getOffer(); setOffer(r.offer); setMessage('সেটিং মুছে মূল নিয়মে ফেরানো হয়েছে।'); }
+          setBusy(true); setMessage('');
+          try {
+            if (!(await api.depositOffer.resetOffer()).success) throw new Error('সেটিং ফেরানো যায়নি।');
+            const r = await api.depositOffer.getOffer();
+            if (!r.success || !r.offer) throw new Error('ফেরানোর পর অফারের তথ্য যাচাই করা যায়নি।');
+            const clean = validateDepositOffer(r.offer);
+            if (Object.entries(DEFAULT_DEPOSIT_OFFER).some(([key, value]) => clean[key as keyof DepositOffer] !== value)) throw new Error('সার্ভারের অফার মূল নিয়মের সঙ্গে মিলছে না।');
+            setOffer(clean); setMessage('সেটিং মুছে মূল নিয়মে ফেরানো নিশ্চিত হয়েছে।');
+          }
           catch (e) { setMessage(e instanceof Error ? e.message : 'ফেরানো যায়নি।'); }
           finally { setBusy(false); }
         }}><RotateCcw /></Button>

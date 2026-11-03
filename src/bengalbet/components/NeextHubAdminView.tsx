@@ -1074,13 +1074,17 @@ export const NeextHubAdminView: React.FC<NeextHubAdminViewProps> = ({
                   </div>
                   <button
                     type="button"
-                    onClick={() => {
+                    disabled={isLoading || !settingsReady}
+                    onClick={async () => {
                       const newMode = !settings.maintenanceMode;
-                      setSettings(prev => ({ ...prev, maintenanceMode: newMode }));
-                      api.admin.updateSettings({ maintenanceMode: newMode }).then(() => {
+                      setIsLoading(true);
+                      try {
+                        await saveVerifiedSettings({ maintenanceMode: newMode }, api.admin);
+                        setSettings(prev => ({ ...prev, maintenanceMode: newMode }));
                         showToast(`মেইনটেন্যান্স মোড ${newMode ? 'অন' : 'অফ'} করা হয়েছে`);
-                        loadData();
-                      });
+                      } catch (e) {
+                        showToast(e instanceof Error ? e.message : 'মোড সংরক্ষণ যাচাই করা যায়নি।');
+                      } finally { setIsLoading(false); }
                     }}
                     className={`px-3 py-1.5 rounded-lg text-xs font-bold cursor-pointer transition-colors ${
                       settings.maintenanceMode ? 'bg-red-500 text-white' : 'bg-emerald-700 text-emerald-100'
