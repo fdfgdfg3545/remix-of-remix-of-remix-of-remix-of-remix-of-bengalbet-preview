@@ -39,7 +39,7 @@ function bbMysteryProcess(float $deadline): int {
             $p=bbMysteryPeriod($c,$job['period_key']);
             $bet=(float)Database::fetchOne('SELECT COALESCE(SUM(bet_amount),0) total FROM bets WHERE user_id=? AND date>=? AND date<?',[$uid,$p['start'],$p['cutoff']])['total'];
             $old=Database::fetchOne('SELECT id FROM mystery_cash_cards WHERE user_id=? AND month_year=?',[$uid,$job['period_key']]);
-            if($u && $u['status']==='active' && $bet>=(float)$c['minBetRequired'] && !$old){
+            if($u && $u['status']==='active' && $bet>=(float)$c['minBetRequired'] && !$old && bbHasLifetimeDeposit($uid)){
                 $amount=random_int((int)round($c['minBonusAmount']*100),(int)round($c['maxBonusAmount']*100))/100;
                 Database::insert('mystery_cash_cards',['id'=>'mcc-'.bin2hex(random_bytes(12)),'user_id'=>$uid,'username'=>$u['username'],'month_year'=>$job['period_key'],'bonus_amount'=>$amount,'status'=>'unlocked','eligible'=>1,'user_bet_amount'=>$bet,'turnover_required'=>0,'turnover_completed'=>0,'ticket_code'=>'MYS-'.strtoupper(bin2hex(random_bytes(12))),'unlocked_at'=>date('Y-m-d H:i:s'),'claimed_at'=>null]);
             }
@@ -53,6 +53,7 @@ function bbMysteryRedeem(string $uid,string $id): array {
     try {
         $u=Database::fetchOne('SELECT * FROM users WHERE id=? FOR UPDATE',[$uid]);
         if(!$u || $u['status']!=='active')throw new RuntimeException('সক্রিয় সদস্য প্রয়োজন।');
+        bbRequireBonusDeposit($uid);
         if(empty(bbMysteryConfig()['enabled']))throw new RuntimeException('রহস্য পুরস্কার এখন বন্ধ।');
         $c=Database::fetchOne('SELECT * FROM mystery_cash_cards WHERE id=? AND user_id=? FOR UPDATE',[$id,$uid]);
         if(!$c || $c['status']!=='unlocked' || empty($c['eligible']))throw new RuntimeException('কার্ড নেই, অযোগ্য অথবা ইতিমধ্যে গ্রহণ করেছেন।');

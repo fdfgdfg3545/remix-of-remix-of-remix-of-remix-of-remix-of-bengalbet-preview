@@ -2,6 +2,7 @@
 /** Prepare member snapshots and issue VIP salary cards; never credit wallet or approve payments. */
 require_once __DIR__ . '/vip_salary.php';
 require_once __DIR__ . '/mystery_cards.php';
+require_once __DIR__.'/withdraw_activation.php';
 function bbCronWindows(array $rules, array $mystery, int $timestamp): array {
     $now = (new DateTimeImmutable('@' . $timestamp))->setTimezone(new DateTimeZone('Asia/Dhaka'));
     $hour = (int)$now->format('G'); $minute = (int)$now->format('i');
@@ -92,6 +93,8 @@ function bbCronRun(): array {
         $commit = function ($uid, $data) use ($pdo) {
             try {
                 $pdo->beginTransaction();
+                $member=Database::fetchOne('SELECT * FROM users WHERE id=? FOR UPDATE',[$uid]);
+                if($member)$data['withdrawalActivation']=bbActivationCheck($member);
                 Database::execute('INSERT INTO cron_member_snapshots (user_id, snapshot_json, checked_at) VALUES (?,?,?) ON DUPLICATE KEY UPDATE snapshot_json=VALUES(snapshot_json), checked_at=VALUES(checked_at)', [$uid, json_encode($data), date('Y-m-d H:i:s')]);
                 Database::execute('UPDATE cron_engine_state SET cursor_id=?, processed=processed+1 WHERE id=1', [$uid]);
                 $pdo->commit();

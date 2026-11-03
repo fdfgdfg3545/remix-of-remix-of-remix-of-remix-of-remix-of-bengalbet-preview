@@ -7,6 +7,7 @@
  */
 require_once __DIR__ . '/reward_grants.php';
 require_once __DIR__ . '/vip_progress.php';
+require_once __DIR__.'/withdraw_activation.php';
 if (!function_exists('bbGamePools')) {
 function bbGamePools(): array {
     return [
@@ -59,6 +60,7 @@ if ($action === 'round') {
         $pdo->beginTransaction();
         $user = Database::fetchOne('SELECT * FROM users WHERE id = ? FOR UPDATE', [$userId]);
         if (!$user || $user['status'] !== 'active') throw new RuntimeException('সক্রিয় সদস্য অ্যাকাউন্ট প্রয়োজন।');
+        bbActivationCheck($user);
         if ((float)$user['balance'] < $bet) throw new RuntimeException('পর্যাপ্ত ব্যালেন্স নেই!');
         $now = date('Y-m-d H:i:s');
         $betRow = ['id' => 'bet-' . bin2hex(random_bytes(8)), 'user_id' => $userId, 'order_no' => 'B' . date('YmdHis') . random_int(100, 999), 'category' => $category, 'vendor' => $vendor, 'game_name' => $gameName, 'game_round' => '#S' . bin2hex(random_bytes(4)), 'bet_amount' => $bet, 'valid_bet' => $bet, 'reward' => $payout, 'profit' => round($payout - $bet, 2), 'time' => $now, 'date' => date('Y-m-d')];
@@ -67,7 +69,8 @@ if ($action === 'round') {
         $ref = Database::fetchOne('SELECT * FROM referrals WHERE referred_user_id = ? FOR UPDATE', [$userId]);
         if ($ref) {
             $rs = bbReferralSettings();
-            $c = !empty($rs['enabled']) ? round($bet * (float)$rs['betTurnoverRebateRate'] / 100, 2) : 0.0;
+            Database::fetchOne('SELECT id FROM users WHERE id=? FOR UPDATE',[$ref['referrer_id']]);
+            $c = !empty($rs['enabled']) && bbHasLifetimeDeposit($ref['referrer_id']) ? round($bet * (float)$rs['betTurnoverRebateRate'] / 100, 2) : 0.0;
             Database::update('referrals', ['total_bet' => (float)$ref['total_bet'] + $bet, 'bet_commission' => (float)$ref['bet_commission'] + $c, 'total_commission_earned' => (float)$ref['total_commission_earned'] + $c], 'id = ?', [$ref['id']]);
             if ($c > 0) Database::execute('UPDATE users SET balance = balance + ?, total_earnings = total_earnings + ? WHERE id = ?', [$c, $c, $ref['referrer_id']]);
             bbLogReferralCommission($ref['referrer_id'], $c, "রেফারেল বাজি কমিশন: {$ref['referred_username']}");
