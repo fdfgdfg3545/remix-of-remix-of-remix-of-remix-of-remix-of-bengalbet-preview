@@ -398,7 +398,7 @@ export const VipSectionView: React.FC<VipSectionViewProps> = ({
                 <div className="mt-4 pt-3 border-t border-amber-200/60">
                   {userVipLevel === 0 ? (
                     <span className="text-xs text-gray-400 block text-center py-2">
-                      VIP 1 এ পৌঁছালে ক্লেইম করা যাবে
+                      VIP ১ এ পৌঁছালে পাওয়া যাবে
                     </span>
                   ) : isUpgradeClaimed ? (
                     <div className="w-full py-2.5 rounded-xl bg-gray-100 text-gray-500 font-bold text-xs text-center">
@@ -428,24 +428,17 @@ export const VipSectionView: React.FC<VipSectionViewProps> = ({
                     ৳ {Number(currentTier.weeklyBonus ?? 0).toLocaleString()}
                   </div>
                   <p className="text-xs text-emerald-800/80 mt-1">
-                    প্রতি {weekdayName(liveRules?.promoRules?.vip?.weeklyClaimDay)} দাবি করা যায়
+                    প্রতি {weekdayName(liveRules?.promoRules?.vip?.weeklyClaimDay)} রাত ১২টায় পুরস্কার কেন্দ্রে নগদ কার্ড আসে
                   </p>
                 </div>
 
                 <div className="mt-4 pt-3 border-t border-emerald-200/60">
                   {userVipLevel < 1 ? (
                     <span className="text-xs text-gray-400 block text-center py-2">
-                      VIP 1 এ পৌঁছালে ক্লেইম করা যাবে
+                      VIP ১ এ পৌঁছালে পাওয়া যাবে
                     </span>
                   ) : (
-                    <button
-                      type="button"
-                      disabled={isClaiming || currentTier.weeklyBonus <= 0}
-                      onClick={() => handleClaimReward('weekly')}
-                      className="w-full py-2.5 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-black text-xs shadow-md shadow-emerald-600/20 cursor-pointer transition-all disabled:opacity-50"
-                    >
-                      {isClaiming ? 'প্রসেসিং...' : 'সাপ্তাহিক বেতন তুলুন'}
-                    </button>
+                    <span className="text-xs font-bold text-gray-600 block text-center py-2">সাপ্তাহিক কার্ড স্বয়ংক্রিয়ভাবে আসে — পুরস্কার কেন্দ্রে খুলুন</span>
                   )}
                 </div>
               </div>
@@ -468,17 +461,10 @@ export const VipSectionView: React.FC<VipSectionViewProps> = ({
                 <div className="mt-4 pt-3 border-t border-indigo-200/60">
                   {userVipLevel < 1 ? (
                     <span className="text-xs text-gray-400 block text-center py-2">
-                      VIP 1 এ পৌঁছালে ক্লেইম করা যাবে
+                      VIP ১ এ পৌঁছালে পাওয়া যাবে
                     </span>
                   ) : (
-                    <button
-                      type="button"
-                      disabled={isClaiming || currentTier.monthlyBonus <= 0}
-                      onClick={() => handleClaimReward('monthly')}
-                      className="w-full py-2.5 rounded-xl bg-gradient-to-r from-indigo-600 to-blue-600 hover:from-indigo-500 hover:to-blue-500 text-white font-black text-xs shadow-md shadow-indigo-600/20 cursor-pointer transition-all disabled:opacity-50"
-                    >
-                      {isClaiming ? 'প্রসেসিং...' : 'মাসিক বেতন তুলুন'}
-                    </button>
+                    <span className="text-xs font-bold text-gray-600 block text-center py-2">মাসিক কার্ড স্বয়ংক্রিয়ভাবে আসে — পুরস্কার কেন্দ্রে খুলুন</span>
                   )}
                 </div>
               </div>
@@ -556,7 +542,7 @@ export const VipSectionView: React.FC<VipSectionViewProps> = ({
               <div>
                 <p className="font-bold text-gray-900">সাপ্তাহিক বোনাস:</p>
                 <p className="text-gray-600 pl-4 mt-0.5">
-                  প্রতি {weekdayName(liveRules?.promoRules?.vip?.weeklyClaimDay)} দাবি করা যায়; মাসিক বোনাস মাসের {liveRules?.promoRules?.vip?.monthlyClaimDay ?? 1} তারিখে (বাংলাদেশ সময়)।
+                  প্রতি {weekdayName(liveRules?.promoRules?.vip?.weeklyClaimDay)} রাত ১২টায় পুরস্কার কেন্দ্রে নগদ কার্ড আসে; মাসিক বোনাস মাসের {liveRules?.promoRules?.vip?.monthlyClaimDay ?? 1} তারিখে (বাংলাদেশ সময়)।
                 </p>
               </div>
 
