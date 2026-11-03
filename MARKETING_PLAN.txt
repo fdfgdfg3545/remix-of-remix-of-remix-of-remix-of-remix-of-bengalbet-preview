@@ -123,3 +123,157 @@ BengalBet একটি অনলাইন ক্যাসিনো-ধরনে�
 ১. TASKLIST.txt-এর প্রথম খোলা কাজ নাও। ২. CONTEXT.txt-এর নিয়ম মেনে করো। ৩. টেস্ট সদস্য দিয়ে লাইভ পরীক্ষা + bunx vitest run। ৪. TASKLIST-এ [x] ও ফল, CONTEXT-এর অগ্রগতিতে এক লাইন, অংক বদলালে এই ফাইলের অংশ ৪ আপডেট।
 
 সতর্কতা: শুধু টেস্ট। আসল মানুষ বা আসল টাকায় চালুর আগে স্থানীয় আইন ও লাইসেন্স বাধ্যতামূলক।
+
+
+অংশ ১১ — যাচাইয়ের সৎ সীমা ও ব্যবহারযোগ্যতা (২০২৬-১১-০৩)
+======================================================================
+এই নথি টেস্ট সাইটের অপারেশন পরিকল্পনা; সব ফিচার বাগমুক্ত বা প্রোডাকশন-প্রস্তুত ঘোষণা নয়।
+চারটি আলাদা প্রমাণস্তর: (ক) কোডে আছে, (খ) ইউনিট পরীক্ষায় পাস, (গ) লাইভ API-তে পাস, (ঘ) সদস্য→অ্যাডমিন→সার্ভার→ওয়ালেট ব্রাউজারে পাস। একটি পেইজ খোলা মানে সব action পরীক্ষিত নয়।
+নতুন সদস্য: VIP0, শূন্য ব্যালেন্স; দৈনিক লগইনের সার্ভার গ্রান্ট ছাড়া ফ্রি পুরস্কার বানানো যায় না।
+প্রচারসূচি অংশ ৬ একটি প্রস্তাবিত অপারেশন ক্যালেন্ডার; স্বয়ংক্রিয় সময়মতো মেইল/নোটিশ পাঠানোর scheduler প্রমাণিত নয়।
+
+অংশ ১২ — প্রতিটি সদস্য পেইজ ও পরীক্ষার মানদণ্ড
+======================================================================
+হোম/লবি: ব্যানার, ক্যাটাগরি, প্রোভাইডার, সার্চ, পছন্দের গেম, বড় জয়ের তালিকা। বড় জয়ের অংক সার্ভার থেকে; লোকের ছবিকে বাস্তব বিজয়ীর পরিচয় বলা যাবে না।
+গেম বিভাগ: hot, slot, live, fishing, poker, table, sports, esports, cockfight, lottery, crash/arcade; তালিকা দেখা ও বাজি settlement আলাদা। ২০ বিশেষ গেম ডেমো-সীমার মধ্যে থাকবে যতক্ষণ প্রতিটির trusted round রূপান্তর ও পরীক্ষা না হয়।
+নিবন্ধন/লগইন: বৈধ পরিচয়, ভুল পাসওয়ার্ড, রেফার লিংক, লগআউট, মেয়াদোত্তীর্ণ সেশন, member/admin আলাদা অধিকার।
+অ্যাকাউন্ট: নিজের সার্ভার পরিচয়, ব্যালেন্স, VIP ও reward counts; অন্য সদস্যে fallback নয়।
+জমা (কম্পিউটার/ফোন): transaction min/max এবং bonus eligibility min আলাদা; প্রথম-জমা/সব-জমা ও opt-in/out; pending অবস্থায় credit নয়; approval stored bonus একবার।
+উত্তোলন: নিজের গন্তব্য, transaction min/max, ব্যালেন্স, pending guard, remaining wagering; অসম্পূর্ণ wagering-এ request আটকাবে, pending বলে প্রতিশ্রুতি নয়।
+বাজি/অ্যাকাউন্ট/জমা-উত্তোলন/লাভক্ষতি রেকর্ড: নিজের সার্ভার রেকর্ড, empty state, range filter, UTC+6; নমুনা অংক নয়।
+প্রোমোশন: enabled server content, category filter, বর্তমান শর্ত; deposit→জমা, invite→রেফার, spin→চাকা, app→অ্যাপ, rescue/mystery→পুরস্কার কেন্দ্র, slot/rebate/member day→রিবেট।
+মিশন: server category, আজকের turnover, ২৬ default ধাপ; threshold-এর নিচে disabled, একবার claim; প্রশাসক ১–৪০ ordered ধাপ রাখতে পারেন।
+রেফার: নিজের link/code, qualified/unqualified count, deposit/bet/instant earnings, পদক, মাসিক masked leaderboard; অনুপস্থিত তথ্য শূন্য/অজানা, fabricated total নয়।
+VIP: সার্ভারে অর্জিত tier; deposit ও bet target দুইটি পূরণ; কখনো স্বয়ংক্রিয় tier কমে না; weekly/monthly date gate।
+রিবেট: slot_daily, rebate, member_day amount/eligibility server থেকে; পুনরায় দাবি একই বাজিতে double credit নয়।
+পুরস্কার কেন্দ্র: rescue, code redemption, mystery, ticket/history; ভুয়া code নয়; সদস্যের claim settled হলে শুধু wallet refresh।
+মেইল: শুধু নিজের ও বৈধ broadcast; unread/read/delete, bonus claim থাকলে authoritative once settlement।
+ডিম: server counter ও chance table; dummy winners নয়; UI random egg নির্বাচন শুধু animation, টাকা নয়।
+লাল খাম: server window, round remaining, member claimed; বন্ধ সময়ে blocked, একই round একবার।
+চাকা: server ticket/weighted table; cash ও item outcome পৃথক; iPhone নগদ মূল্য settlement মানেই physical delivery প্রমাণ নয়।
+নিরাপত্তা/কার্ড/মতামত/সাপোর্ট/চ্যাট/হেল্প: নিজের তথ্য, persist/readback, empty/error states; সব action independent positive/negative test চাই।
+অ্যাপ: বর্তমানে আলাদা APK/iOS ডাউনলোড ফাইল নেই; download started/virus-free দাবি সরানো হয়েছে। সার্ভার app bonus claim একবার আছে; install verification নেই, প্রকৃত app release আলাদা কাজ।
+
+অংশ ১৩ — অ্যাডমিনের ১৩ বিভাগ ও নিয়মের মালিকানা
+======================================================================
+১ ওভারভিউ: real stats/time/maintenance; maintenance write+readback ছাড়া local success নয়।
+২ সদস্য/ব্যালেন্স: search/filter/details/status/VIP; financial adjustment শুধু অনুমোদিত, audit note ও ledger; অন্য সদস্যে test নয়।
+৩ VIP: tier bet/deposit targets, upgrade/weekly/monthly/birthday bonus; সময় Promo Rules-এ।
+৪ পুরস্কার ও প্রচার: promotion list (add/edit/order/on-off/delete/image/reset), promo timing/rules, chance arrays, ১২ member tasks; পাশাপাশি signin/rescue/promo/ticket/mystery subtab।
+৫ transactions: pending→success/rejected locked guard; final reversal/edit/delete টাকা বদলাতে পারবে না; repeat identical decision credit/refund নয়।
+৬ game engine: game RTP/volatility/cap; পরিবর্তন শুধু server rounds-এ কার্যকর; custom demo games-এ নয়।
+৭ gateways: deposit/withdraw min/max ও destinations; deposit offer শতাংশ/cap/minimum/first-only/enabled/reset।
+৮ site notice: বাংলা/ইংরেজি title/body/banner/enabled; member popup readback।
+৯ messages: targeted/broadcast create; snake_case mapping; create নতুন record মেলে, delete absent মেলে, তারপর success।
+১০ support tickets: নিজের/assigned ticket access, reply/status persistence।
+১১ live chat: session read/reply/status; credentials/PII leakage নিষেধ।
+১২ referrals: enabled, qualification, per-friend bonus, deposit/bet commission; medal amounts Promo Rules-এ; পুরনো decorative scale যেন authoritative বলে না।
+১৩ master controller: privileged source/db operations; key শুধু secret/sandbox; review ও rollback backup।
+
+নিয়মের স্থান:
+- deposit offer: deposit_offer config / deposit_offer_rules.php / depositOffer.ts
+- schedule/grant/turnover/missions/referral medals: promo_rules / promo_rules.php / promoRules.ts
+- weighted prizes: chance_rewards configuration / AdminChanceRewards
+- rescue amount tiers: rescue tiers; timing/categories promo_rules
+- VIP levels/benefits: VIP tiers; eligibility vip_progress; dates promo_rules
+- mystery: পৃথক mystery config
+- নতুন সদস্য: পৃথক new_member_config, ঠিক ১২ দিন
+- referral commissions/qualification: referral settings, reward_grants
+- promotion content/images: promo content list, asset key অথবা verified https image
+- public transaction limits: settings
+প্রত্যেক save: validate→write→fresh GET→submitted values match→success। Reset: config delete→default readback→match; local draft reset মানে server reset নয়।
+
+অংশ ১৪ — একবারের পুরস্কার ও সময়ের নির্দিষ্ট সীমা
+======================================================================
+সব সময় Asia/Dhaka UTC+6; eligibility browser clock দিয়ে নয়।
+লাল খাম default opening included, close excluded: 00:00:00≤time<00:30:00; একইভাবে 12/16/20।
+উদ্ধার default claim time <10:00:00; ঠিক 10:00-তে blocked।
+Slot daily 09:00 থেকে; yesterday server bet record; member-day configured day; VIP ISO weekly day ও month date।
+দিন ও মাস পরিবর্তনে grant key বদলাবে; account একবারের app key বদলাবে না।
+একই claim duplicate/concurrent হলে cash ledger এবং wallet একবার বদলাবে; grant uniqueness ও locking deployed schema-তে independently verify করতে হবে।
+Rebate cumulative নতুন bet cut-off concurrency test বিশেষ জরুরি।
+Referral deposit ০.৭%, bet ১% commissions bonus ledger-এ; otherBonus wagering rule প্রযোজ্য।
+
+অংশ ১৫ — ছবির পূর্ণ তালিকা ও নীতিমালা
+======================================================================
+৪৪ bundled JPG: ২০ game icons, ১২ promo banners, ৭ notice banners, ৩ lobby/referral banners, ২ tiger/brand images। সব ৪৪ decode করেছে ও এক contact sheet-এ দেখা হয়েছে।
+Printed marketing numbers editable server terms অনুসরণ করতে পারে না: কিছু image-এ ৩% rebate, ২৩ তারিখ mystery, ৮৭% first-deposit ও ভিন্ন referral terms আছে। এগুলো actual rule প্রমাণ নয়। Member promo cards-এ বর্তমান server title/rules প্রাধান্য; incompatible printed banner suppress করা হয়েছে, original admin asset inventory retained।
+অন্যান্য lobby/notice image এখনও একে একে সংশোধন দরকার; text ঠিক হলেই image ১:১ হয় না।
+Remote game/avatar/QR images bundled inspection-এর বাইরে; page-level network failure ও QR destination যাচাই প্রয়োজন।
+
+অংশ ১৬ — ২০২৬-১১-০৩ পরীক্ষার প্রমাণ
+======================================================================
+আগের পুনঃপরীক্ষা: ১০ member section ও ১৩ admin section খুলেছে; zero page error। Targeted zero-bonus message create→member inbox→delete readback পাস।
+এবার: admin browser deposit offer ৪৭→৪৬% save, independent GET=৪৬, member promotion popup rule=৪৬%; শেষে ৪৭% মূল offer exact readback restored। Banner/title mismatch এই পরীক্ষায় দেখা গেছে, live-rule presentation সংশোধন হয়েছে।
+Admin Promo Rules app amount ৫২→৫৩ save/readback পাস। Member app dialog ৳৫৩ দেখায়, claim-এর server success, repeated claim blocked; original promo rules exact readback restored।
+Red packet disabled→status closed→claim rejected; current Dhaka hour temporary round+৫৯ মিনিটে isolated member প্রথম claim success ৳১৭৭, repeat rejected; original settings restored। পরের rerun member already claimed দেখায়, নতুন success বলে গণনা নয়।
+আগের rescue/mystery সময় পরীক্ষার dated evidence TASKLIST-এ আছে; এবারের run-এ আবার প্রত্যেক positive/concurrency branch চালানো হয়নি।
+Automated: ১৭ file / ৬৮ test pass; preview build OK। Chance config valid-but-different readback-এর স্থায়ী test যোগ।
+60-day fixed simulation: ১৮,০০০ modeled members, issues={}; এটি in-memory model, HTTP/DB locks/auth/UI/load/uptime পরীক্ষা নয়।
+
+অংশ ১৭ — যা এখনো সম্পূর্ণ নয় (সমাপ্ত বলে দেখানো নিষেধ)
+======================================================================
+- সকল admin financial/config/message/ticket/chat mutation ও role/permission negative audit।
+- ২০ custom game trusted-round conversion ও প্রতিটির real settlement proof; আগের scope অনুযায়ী demo-only।
+- ১২ member task day ২–১২ full boundary/concurrency proof।
+- প্রতিটি reward concurrent claim, rollback, midnight/week/month boundary।
+- প্রকৃত APK/iOS files, install verification, valid downloadable URL/QR।
+- সব baked-in lobby/notice/promo text-image ১:১ পুনর্নির্মাণ; broken remote media audit।
+- scheduler-backed marketing calendar, দীর্ঘমেয়াদি monitoring, backup/restore drill।
+- শক্ত master key server-side rotation; নিরাপদ separate admin identity।
+- আইন/লাইসেন্স/responsible-gaming release gates।
+অন্য member data পরিবর্তন করা হয়নি; isolated audit member রাখা হয়েছে। Cleanup শুধুমাত্র স্পষ্ট inventory ও অনুমতি নিয়ে।
+
+অংশ ১৮ — পরিবর্তন গ্রহণের checklist
+======================================================================
+প্রতি rule: old snapshot→validate admin edit→fresh GET→member fresh page→positive/negative server action→exact wallet/ledger delta→duplicate rejected→restore snapshot→GET identical।
+প্রতি image: actual wording→current offer→desktop/mobile fit→network loaded→no contradictory title/range/time→replace/suppress if stale।
+প্রতি control: enabled/loading/error state→action→saved state readback→refresh/relLogin persists→permission failure।
+প্রতি test report: date, account-isolation, input, expected amount, observed amount, page state, restore result; token/key/password কখনো report নয়।
+সম্পূর্ণ ১:১ বলা যাবে শুধু উপরের প্রতিটি খোলা gap closed এবং পুনঃপরীক্ষা evidence থাকলে; এই নথি roadmap, blanket guarantee নয়।
+
+সম্পূর্ণ bundled image filenames:
+- alibaba_cave_icon_1789327670216.jpg
+- anubis_wrath_icon_1789328514214.jpg
+- bengal_deposit_banner_1790008299014.jpg
+- bengal_invite_banner_1790008327090.jpg
+- bengal_vip_banner_1790008315416.jpg
+- bengalbet_refer_rewards_banner_1790186975892.jpg
+- bn_notice_daily_login_1790010613724.jpg
+- bn_notice_member_day_1790010543368.jpg
+- bn_notice_mystery_1790010600259.jpg
+- bn_notice_official_1790010513305.jpg
+- bn_notice_partner_1790010575654.jpg
+- bn_notice_rebate_1790010529061.jpg
+- bn_notice_vip_club_1790010555851.jpg
+- bn_promo_app_1790173858946.jpg
+- bn_promo_egg_1790173893915.jpg
+- bn_promo_first_dep_1790173806277.jpg
+- bn_promo_invite_1790173787979.jpg
+- bn_promo_iphone_1790173931015.jpg
+- bn_promo_member_1790173950780.jpg
+- bn_promo_mystery_1790173769456.jpg
+- bn_promo_packet_1790173911880.jpg
+- bn_promo_rebate_1790173969832.jpg
+- bn_promo_rescue_1790173874285.jpg
+- bn_promo_slots_1790173843512.jpg
+- bn_promo_vip_1790173825343.jpg
+- boxing_king_icon_1789325912862.jpg
+- circus_joker_icon_1789330788237.jpg
+- crazy_777_icon_1789328037942.jpg
+- fortune_gems_3_1789325632226.jpg
+- fortune_tree_icon_1789326882984.jpg
+- gates_olympus_icon_1789330801506.jpg
+- happy_fishing_icon_1789326697876.jpg
+- head_tail_icon_1789325177529.jpg
+- magic_ace_icon_1789330338430.jpg
+- money_coming_icon_1789330321878.jpg
+- pinata_wins_icon_1789328528210.jpg
+- real_tiger_face_1790007904695.jpg
+- seven_coins_icon_1789328050971.jpg
+- super_ace_2_icon_1789325204493.jpg
+- super_elements_2_icon_1789326156273.jpg
+- sweet_bonanza_icon_1789330361177.jpg
+- tiger_filled_face.jpg
+- treasures_aztec_icon_1789330776428.jpg
+- wild_bounty_showdown_1789326457687.jpg
