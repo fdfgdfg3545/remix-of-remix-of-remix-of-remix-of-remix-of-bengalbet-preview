@@ -5,7 +5,7 @@ import { Input } from '@/components/ui/input';
 import { Switch } from '@/components/ui/switch';
 import { api, REST_API_CONFIG } from '../services/api';
 
-type State = { enabled: boolean; httpKeyConfigured: boolean; lastStarted: string | null; lastSuccess: string | null; status: string; processed: number; cycleComplete: boolean; lastError: string | null; windows: Record<string, unknown>; serverTime: string; stale: boolean; cliPath: string; };
+type State = { enabled: boolean; httpKeyConfigured: boolean; lastStarted: string | null; lastSuccess: string | null; status: string; processed: number; cycleComplete: boolean; salaryPendingJobs?: number; lastError: string | null; windows: Record<string, unknown>; serverTime: string; stale: boolean; cliPath: string; };
 export function AdminCronEngine() {
   const [state, setState] = useState<State | null>(null);
   const [key, setKey] = useState('');
@@ -51,6 +51,7 @@ export function AdminCronEngine() {
         <div><dt className="text-muted-foreground">অবস্থা</dt><dd>{state.status}{state.stale ? ' · নিয়মিত ডাক পাওয়া যাচ্ছে না' : ''}</dd></div>
         <div><dt className="text-muted-foreground">শেষ সফল ডাক</dt><dd>{state.lastSuccess || 'এখনো নেই'}</dd></div>
         <div><dt className="text-muted-foreground">এই চক্রে সদস্য পরীক্ষা</dt><dd>{state.processed} · {state.cycleComplete ? 'শেষ' : 'পরের ডাকে চলবে'}</dd></div>
+        <div><dt className="text-muted-foreground">অসমাপ্ত VIP বেতনের কাজ</dt><dd>{state.salaryPendingJobs ?? 'অজানা'}</dd></div>
         <div><dt className="text-muted-foreground">বাংলাদেশ সার্ভার সময়</dt><dd>{state.serverTime}</dd></div>
       </dl>
       {state.lastError && <p role="alert" className="text-destructive">{state.lastError}</p>}
@@ -65,7 +66,7 @@ export function AdminCronEngine() {
         <p className="text-muted-foreground">HTTP ব্যবহার করলে ব্যক্তিগত .conf ফাইলে header = "X-Cron-Key: YOUR_DEDICATED_KEY" রাখুন; অনুমতি 600। CPANEL_USER নিজের অ্যাকাউন্টের নামে বদলান। URL-এ কী দেবেন না।</p>
       </div>
       <div className="flex flex-wrap gap-x-5 gap-y-2 text-sm">{Object.entries(state.windows || {}).filter(([k]) => !['serverTime', 'timezone'].includes(k)).map(([k,v]) => <span key={k}>{k}: {v ? 'সময় খোলা' : 'সময় বন্ধ'}</span>)}</div>
-      <p className="text-sm text-muted-foreground">সময় ও বাজির তথ্য পরীক্ষা হয়; টাকা বা পুরস্কার স্বয়ংক্রিয়ভাবে দেওয়া হয় না। সদস্যের দাবি সার্ভার আবার যাচাই করে।</p>
+      <p className="text-sm text-muted-foreground">নির্ধারিত দিনে VIP বেতনের নগদ কার্ড টিকিটে আসে; কার্ড গ্রহণের আগে ব্যালেন্স বাড়ে না। অসমাপ্ত কাজ পরের ডাকে চলবে।</p>
     </>}
     <p role="status" className="text-sm">{message}</p>
   </section>;

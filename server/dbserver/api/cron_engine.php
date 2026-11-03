@@ -41,6 +41,7 @@ function bbCronStatus(): array {
         'lastStarted' => $s['last_started'], 'lastFinished' => $s['last_finished'],
         'lastSuccess' => $s['last_success'], 'status' => $s['status'],
         'processed' => (int)$s['processed'], 'cycleComplete' => (bool)$s['cycle_complete'],
+        'salaryPendingJobs' => (int)Database::fetchOne('SELECT COUNT(*) c FROM vip_salary_jobs WHERE complete=0')['c'],
         'lastError' => $s['last_error'], 'windows' => json_decode($s['windows_json'] ?? '{}', true),
         'serverTime' => date('Y-m-d H:i:s'), 'timezone' => 'Asia/Dhaka',
         'stale' => !$s['last_started'] || time() - strtotime($s['last_started']) > 180,
@@ -67,8 +68,9 @@ function bbCronRun(): array {
         Database::execute("UPDATE cron_engine_state SET last_started=?, status='running', last_error=NULL, windows_json=? WHERE id=1", [date('Y-m-d H:i:s', $now), json_encode($windows)]);
         if ((bool)$s['cycle_complete']) {
             if ($s['cycle_minute'] === $minute) {
-                Database::execute("UPDATE cron_engine_state SET status='idle', last_finished=?, last_success=? WHERE id=1", [date('Y-m-d H:i:s'), date('Y-m-d H:i:s')]);
-                return ['success' => true, 'status' => 'idle', 'processedThisCall' => 0, 'state' => bbCronStatus()];
+                $pending=(int)Database::fetchOne('SELECT COUNT(*) c FROM vip_salary_jobs WHERE complete=0')['c'];
+                Database::execute("UPDATE cron_engine_state SET status=?, last_finished=?, last_success=? WHERE id=1", [$pending?'pending':'idle',date('Y-m-d H:i:s'), date('Y-m-d H:i:s')]);
+                return ['success' => true, 'status' => $pending?'pending':'idle', 'processedThisCall' => 0, 'salaryProcessedThisCall'=>$salaryCount, 'state' => bbCronStatus()];
             }
             $upper = Database::fetchOne("SELECT MAX(id) upper_id FROM users WHERE status='active'")['upper_id'] ?? '';
             Database::execute('UPDATE cron_engine_state SET cursor_id=?, upper_id=?, cycle_minute=?, cycle_complete=0, processed=0 WHERE id=1', ['', $upper, $minute]);
@@ -94,8 +96,10 @@ function bbCronRun(): array {
         $count = bbCronProcessBatch($ids, $unit, $commit, $deadline);
         $current = Database::fetchOne('SELECT cursor_id,upper_id FROM cron_engine_state WHERE id=1');
         $more = Database::fetchOne("SELECT id FROM users WHERE status='active' AND id>? AND id<=? ORDER BY id LIMIT 1", [$current['cursor_id'], $current['upper_id']]);
-        Database::execute('UPDATE cron_engine_state SET cycle_complete=?, status=?, last_finished=?, last_success=? WHERE id=1', [$more ? 0 : 1, $more ? 'pending' : 'complete', date('Y-m-d H:i:s'), date('Y-m-d H:i:s')]);
-        return ['success' => true, 'status' => $more ? 'pending' : 'complete', 'processedThisCall' => $count, 'salaryProcessedThisCall'=>$salaryCount, 'state' => bbCronStatus()];
+        $pendingSalary=(int)Database::fetchOne('SELECT COUNT(*) c FROM vip_salary_jobs WHERE complete=0')['c'];
+        $status=$more||$pendingSalary?'pending':'complete';
+        Database::execute('UPDATE cron_engine_state SET cycle_complete=?, status=?, last_finished=?, last_success=? WHERE id=1', [$more ? 0 : 1, $status, date('Y-m-d H:i:s'), date('Y-m-d H:i:s')]);
+        return ['success' => true, 'status' => $status, 'processedThisCall' => $count, 'salaryProcessedThisCall'=>$salaryCount, 'state' => bbCronStatus()];
     } catch (Throwable $e) {
         if ($pdo->inTransaction()) $pdo->rollBack();
         Database::execute("UPDATE cron_engine_state SET status='error', last_error=?, last_finished=? WHERE id=1", ['Scheduled work failed; the unchanged checkpoint will retry on the next call.', date('Y-m-d H:i:s')]);

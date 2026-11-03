@@ -205,6 +205,7 @@ export const VipMobileView: React.FC<VipMobileViewProps> = ({
 
   // Handle Bonus Claim
   const handleClaim = async (type: 'upgrade' | 'weekly' | 'monthly', level?: number) => {
+    if (type === 'weekly' || type === 'monthly') { showToast('বেতন স্বয়ংক্রিয় নগদ কার্ড হয়; পুরস্কার কেন্দ্রের টিকিট থেকে গ্রহণ করুন।', 'success'); return; }
     setIsClaiming(true);
     try {
       const res = await api.vip.claim(type, level ?? userVipLevel);
@@ -457,10 +458,10 @@ export const VipMobileView: React.FC<VipMobileViewProps> = ({
 
             <div>
               <p>
-                <strong className="text-gray-800">সাপ্তাহিক বোনাস:</strong> প্রতি {weekdayName(liveRules?.promoRules?.vip?.weeklyClaimDay)} দাবি করা যায়; মাসিক বোনাস মাসের {liveRules?.promoRules?.vip?.monthlyClaimDay ?? 1} তারিখে (বাংলাদেশ সময়)।
+                <strong className="text-gray-800">সাপ্তাহিক বোনাস:</strong> প্রতি {weekdayName(liveRules?.promoRules?.vip?.weeklyClaimDay)} নগদ কার্ড আসে; মাসিক কার্ড মাসের {liveRules?.promoRules?.vip?.monthlyClaimDay ?? 1} তারিখে (বাংলাদেশ সময়)।
               </p>
               <p className="mt-1">
-                <strong className="text-gray-800">মাসিক বোনাস:</strong> প্রতি মাসের ১ তারিখ এ বাংলাদেশে সময় দুপুর ৩টার আগে প্রদান করা হয়।
+                <strong className="text-gray-800">মাসিক বোনাস:</strong> পুরস্কার কেন্দ্রের টিকিট থেকে কার্ড একবার গ্রহণ করলে টাকা ব্যালেন্সে যোগ হয়।
               </p>
               <p className="mt-1">
                 <strong className="text-gray-800">বোনাস প্রাপ্তির পদ্ধতি:</strong> সদস্যদের তাদের অ্যাকাউন্টে লগইন করে বোনাস সংগ্রহ করতে হবে।
