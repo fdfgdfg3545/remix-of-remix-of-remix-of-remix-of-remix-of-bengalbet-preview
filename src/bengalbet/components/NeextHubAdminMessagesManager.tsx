@@ -21,6 +21,7 @@ import {
   ChevronDown
 } from 'lucide-react';
 import { api } from '../services/api';
+import { createVerifiedMessage, deleteVerifiedMessage, normalizeMessage } from '../services/messagePersistence';
 import confetti from 'canvas-confetti';
 
 interface NeextHubAdminMessagesManagerProps {
@@ -64,7 +65,7 @@ export const NeextHubAdminMessagesManager: React.FC<NeextHubAdminMessagesManager
     try {
       const res = await api.admin.getMessages();
       if (res.success && res.messages) {
-        setMessages(res.messages);
+        setMessages(res.messages.map(normalizeMessage));
       }
     } catch (err) {
       console.warn('Admin Messages load error:', err);
@@ -125,6 +126,10 @@ export const NeextHubAdminMessagesManager: React.FC<NeextHubAdminMessagesManager
       alert('অনুগ্রহ করে বার্তার শিরোনাম লিখুন');
       return;
     }
+    if (formTargetType === 'specific' && !formSelectedUserId) {
+      alert('বার্তা পাঠাতে নির্দিষ্ট প্লেয়ার নির্বাচন করুন।');
+      return;
+    }
 
     setIsSubmitting(true);
     try {
@@ -143,8 +148,10 @@ export const NeextHubAdminMessagesManager: React.FC<NeextHubAdminMessagesManager
         rules: rulesArray
       };
 
-      const res = await api.admin.createBroadcastMessage(payload);
+      const confirmedMessages = await createVerifiedMessage(payload, api.admin);
+      const res = { success: true };
       if (res.success) {
+        setMessages(confirmedMessages);
         if (showToast) showToast('অভ্যন্তরীণ বার্তা সফলভাবে পাঠানো হয়েছে!');
         confetti({ particleCount: 50, spread: 60, origin: { y: 0.6 } });
         setIsCreateModalOpen(false);
@@ -153,7 +160,6 @@ export const NeextHubAdminMessagesManager: React.FC<NeextHubAdminMessagesManager
         setFormHeadline('');
         setFormDescription('');
         setFormClaimableBonus(0);
-        loadMessages();
         if (onRefreshSiteUser) onRefreshSiteUser();
       } else {
         alert(res.message || 'বার্তা পাঠাতে সমস্যা হয়েছে');
@@ -168,9 +174,10 @@ export const NeextHubAdminMessagesManager: React.FC<NeextHubAdminMessagesManager
   // Handle Delete Message
   const handleDeleteMessage = async (id: string) => {
     try {
-      const res = await api.admin.deleteMessage(id);
+      const confirmedMessages = await deleteVerifiedMessage(id, api.admin);
+      const res = { success: true };
       if (res.success) {
-        setMessages(prev => prev.filter(m => m.id !== id));
+        setMessages(confirmedMessages);
         if (showToast) showToast('বার্তা সফলভাবে মুছে ফেলা হয়েছে');
         if (viewingMessage && viewingMessage.id === id) {
           setViewingMessage(null);
@@ -179,7 +186,7 @@ export const NeextHubAdminMessagesManager: React.FC<NeextHubAdminMessagesManager
         alert('বার্তা মুছে ফেলা সম্ভব হয়নি');
       }
     } catch (err) {
-      console.warn(err);
+      alert(err instanceof Error ? err.message : 'বার্তা মুছে ফেলা যাচাই করা যায়নি।');
     } finally {
       setDeletingId(null);
     }
