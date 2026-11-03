@@ -17,9 +17,9 @@ import noticeOfficial from '../assets/images/bn_notice_official_1790010513305.jp
 import noticeRebate from '../assets/images/bn_notice_rebate_1790010529061.jpg';
 import noticeMemberDay from '../assets/images/bn_notice_member_day_1790010543368.jpg';
 import noticeVipClub from '../assets/images/bn_notice_vip_club_1790010555851.jpg';
-import noticePartner from '../assets/images/bn_notice_partner_1790010575654.jpg';
+import noticePartner from '../assets/images/bengalbet_refer_rewards_banner_1790186975892.jpg';
 import noticeMystery from '../assets/images/bn_notice_mystery_1790010600259.jpg';
-import noticeDailyLogin from '../assets/images/bn_notice_daily_login_1790010613724.jpg';
+import noticeDailyLogin from '../assets/images/bn_promo_egg_1790173893915.jpg';
 import { api } from '../services/api';
 
 interface NoticeAnnouncementModalProps {
@@ -151,12 +151,12 @@ export const NoticeAnnouncementModal: React.FC<NoticeAnnouncementModalProps> = (
     },
     {
       id: 'partner-reward',
-      shortBn: '🤝 এজেন্ট ও পার্টনার কমিশন',
-      shortEn: '🤝 Agent & Partner Commission',
-      titleBn: '🤝 এজেন্ট ও পার্টনার আজীবন আকর্ষণীয় কমিশন',
-      titleEn: '🤝 Lifetime Agent & Partner Commissions',
-      badgeBn: 'আজীবন কমিশন',
-      badgeEn: 'PARTNER',
+      shortBn: '🤝 বন্ধু আমন্ত্রণ: ৳৩০০ + ০.৭% + ১%',
+      shortEn: '🤝 Invite: ৳300 + 0.7% + 1%',
+      titleBn: '🤝 প্রতি বন্ধুতে ৳৩০০, বন্ধুর জমায় ০.৭% ও বাজিতে ১% কমিশন',
+      titleEn: '🤝 ৳300 per friend, 0.7% of deposits and 1% of bets',
+      badgeBn: 'রেফার',
+      badgeEn: 'REFER',
       imageUrl: noticePartner,
       actionTextBn: 'বন্ধুদের ইনভাইট করুন',
       actionTextEn: 'Invite Friends Now',
@@ -184,8 +184,8 @@ export const NoticeAnnouncementModal: React.FC<NoticeAnnouncementModalProps> = (
       badgeBn: 'দৈনিক',
       badgeEn: 'DAILY',
       imageUrl: noticeDailyLogin,
-      actionTextBn: 'ভাগ্যের চাকা দেখুন',
-      actionTextEn: 'View Lucky Wheel',
+      actionTextBn: 'সোনার ডিম ভাঙুন',
+      actionTextEn: 'Smash Golden Egg',
       onAction: onOpenSpin
     }
   ];
