@@ -5,6 +5,7 @@
 - [x] Verify saved master secret authenticates from sandbox to test-server ping.
 - [ ] Implement and test durable inactivity state, approval/cron/withdrawal enforcement and member submit message.
 - [ ] Enforce lifetime deposit across cash bonuses, noncash grants/cards and legacy/admin routes; test before/after first approval.
+- [ ] Explicit referral rule: referred friend deposit/play does not qualify a never-deposited referrer; all instant/commission/medal payouts off for that recipient.
 - [ ] Backup and upload reviewed changes with schema preflight and exact readback; verify isolated live API and member desktop/mobile/admin interactions.
 - [ ] Complete remaining whole-site 1:1 and two-month accelerated live matrix; no blanket completion without evidence.
 

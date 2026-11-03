@@ -48,6 +48,7 @@ export function liveRulesFor(iconType: string, live: LiveRules | null | undefine
       const s = live.referral || {};
       if (!s.enabled) return ['রেফার প্রোগ্রাম এখন বন্ধ।'];
       return [
+        'আপনার নিজের অন্তত একটি জমা অনুমোদিত না হলে কোনো রেফার বোনাস বা কমিশন পাবেন না।',
         `বন্ধু ${tk(s.minDepositToQualify)} জমা ও ${tk(s.minBetTurnoverToQualify)} বাজি করলে আপনি ${tk(s.instantBonusPerFriend)} পাবেন (প্রতি বন্ধু একবার)।`,
         `বন্ধুর প্রতিটি অনুমোদিত জমায় ${pct(s.depositRebateRate)} কমিশন।`,
         `বন্ধুর প্রতিটি বাজিতে ${pct(s.betTurnoverRebateRate)} কমিশন সাথে সাথে।`,
