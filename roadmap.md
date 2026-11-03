@@ -1,11 +1,15 @@
 # Remaining work
 
 ## 2026-11-03 full plan alignment request
-- [ ] Inventory every member/admin view, promotion, reward and image; document evidence and discrepancies.
-- [ ] Produce a detailed versioned marketing/site-rules text file for the user and update the project plan.
-- [ ] Verify admin rule changes through live browser saves, member readback and server enforcement; restore temporary values.
-- [ ] Exercise time-based reward boundaries safely with isolated members and restore all settings.
-- [ ] Fix confirmed discrepancies, run permanent tests and the 60-day simulation, and record exact remaining gaps.
+- [x] Inventory member/admin views, promotions, rewards and 44 bundled images; detailed scope and discrepancies documented.
+- [x] Detailed versioned marketing/site-rules text file v4 delivered; project plan expanded with evidence and gaps.
+- [x] Admin browser deposit 46% and app amount 53 saves read back; member promotion/app claim verified; original settings restored exactly.
+- [x] Red packet disabled/open/duplicate tested on isolated member; Dhaka temporary round paid 177 once; settings restored. Exhaustive boundary/concurrency matrix remains unverified.
+- [x] Fixed promotion callback/code/title/image contradictions, referral fallback earnings, chance readback equality and fake app-download claim; 68 tests and 18,000-member model passed.
+- [ ] Actual APK/iOS download and install verification require release files/URLs not supplied.
+- [ ] Production readiness requires separate identity/key rotation, legal/licensing review and a provisioned monitoring/backup-restore environment.
+
+Full 1:1 completion is not asserted: custom games remain demo-only under the earlier scope; all action/concurrency and remote/baked-image paths are itemized as unverified in marketing plan v4, not marked passed.
 
 ## 2026-11-03 continuation: popup/admin retest
 - [x] Reran 10 member sections after referral/policy fixes; no page errors.

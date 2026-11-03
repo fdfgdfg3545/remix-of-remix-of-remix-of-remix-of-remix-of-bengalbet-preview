@@ -14,7 +14,7 @@ BENGALBET কাজের তালিকা — প্রতিটি কাজ
 [x] তিনটি প্ল্যান ফাইল মূল ফোল্ডারে — ২০২৬-১১-০২
 
 বাকি (উপর থেকে ক্রমে করো)
-[ ] ১৫. পূর্ণ বিস্তারিত মার্কেটিং/সাইট নিয়মের নতুন টেক্সট নথি; সব পেইজ/ছবি/পুরস্কার/অ্যাডমিন যাচাই, লাইভ নিয়ম পরিবর্তন ও সময় পরীক্ষা, অমিল সংশোধন — ২০২৬-১১-০৩ অনুরোধ; পৃথক টেস্ট সদস্য ও সব সাময়িক সেটিং পুনরুদ্ধার বাধ্যতামূলক।
+[ ] ১৫. পূর্ণ ১:১ অডিট — ২০২৬-১১-০৩: v4 বিস্তারিত টেক্সট নথি ও ৪৪ ছবির inventory তৈরি; admin ৪৬% deposit→member title/rules, app ৫৩→member claim once, red packet off/open/duplicate পাস; সব settings exact restored। callback missing, fake promo code, ৪৮,৬৫০ fallback, stale title/banner, chance readback equality, fake download দাবি ঠিক। ৬৮ tests ও ১৮,০০০ modeled-member simulation পাস। পূর্ণ action/concurrency, remaining baked/remote media, custom games ও actual app files এখনো সম্পূর্ণ নয়; v4 অংশ ১৭-এ তালিকা।
 [x] ১৪. সর্বশেষ সদস্য-পপআপ/অ্যাডমিন পরিবর্তনের পুনঃপরীক্ষা — ২০২৬-১১-০৩: ১০ সদস্য বিভাগ ও ১৩ অ্যাডমিন বিভাগ খুলেছে, কোনো page error নেই। শূন্য-বোনাস ব্যক্তিগত টেস্ট বার্তা তৈরি → সদস্য ইনবক্সে দেখা → শুধু সেই বার্তা মোছা → readback পাস। বার্তা snake_case mapping, create/delete confirmation, নমুনার ভুল পুরস্কার/সময় প্রতিশ্রুতি ও local reset feedback ঠিক; ৬৭ টেস্ট পাস। #১৩-এর পূর্ণ সব action/permission পরীক্ষা এখনো শেষ নয়।
 [x] ১. রেফার দুই পেইজ থেকে নমুনা রেকর্ড/বন্ধু তালিকা ও এলোমেলো চলমান পুরস্কার সরানো (ReferSectionView, InviteFriendsMobileView)
 [x] ২. পুরস্কার কেন্দ্রের "দাবি করা প্রোমো ইতিহাস" ও "টিকিট রেকর্ড" সার্ভার থেকে (RewardCenterView)
