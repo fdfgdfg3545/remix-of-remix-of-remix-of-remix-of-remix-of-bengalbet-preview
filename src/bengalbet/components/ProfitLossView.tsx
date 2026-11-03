@@ -539,7 +539,7 @@ export const ProfitLossView: React.FC<ProfitLossViewProps> = ({
           <span className="text-[10px] font-extrabold leading-none">!</span>
         </div>
         <span className="text-[#cf1322] font-semibold text-xs sm:text-[13px] tracking-wide">
-          অন্তর্বর্ণীকরণ: উপরের প্রতিবেদন GMT + 8 ভিত্তিক স্বয়ংক্রিয় হিসাব
+          উপরের প্রতিবেদন বাংলাদেশ সময় (UTC+6) অনুযায়ী হিসাব করা হয়েছে
         </span>
       </footer>
 
