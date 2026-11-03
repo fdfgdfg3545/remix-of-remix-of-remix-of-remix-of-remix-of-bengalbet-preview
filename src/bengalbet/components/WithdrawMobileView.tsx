@@ -132,6 +132,7 @@ export const WithdrawMobileView: React.FC<WithdrawMobileViewProps> = ({
   const [isRefreshing, setIsRefreshing] = useState<boolean>(false);
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
   const [toastMessage, setToastMessage] = useState<string | null>(null);
+  const [withdrawError, setWithdrawError] = useState<string | null>(null);
 
   // Handle Quick Turnover Completion (Interactive Simulation for user)
   const handleCompleteTurnover = () => {
@@ -212,6 +213,7 @@ export const WithdrawMobileView: React.FC<WithdrawMobileViewProps> = ({
 
   const handleWithdrawSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setWithdrawError(null);
 
     if (remainingTurnover > 0) {
       triggerToast('অপূর্ণ প্রয়োজনীয় টার্নওভার আছে, উত্তোলনের অনুরোধ অনুমোদিত হতে পারে না।');
@@ -254,7 +256,7 @@ export const WithdrawMobileView: React.FC<WithdrawMobileViewProps> = ({
       setWithdrawPassword('');
     } catch (err: any) {
       setIsSubmitting(false);
-      triggerToast(err.message || 'উত্তোলন প্রক্রিয়া ব্যর্থ হয়েছে! ডাটাবেস সার্ভারে সংযোগ চেক করুন।');
+      setWithdrawError(err.message || 'উত্তোলন প্রক্রিয়া ব্যর্থ হয়েছে। আবার চেষ্টা করুন।');
     }
   };
 
@@ -962,6 +964,7 @@ export const WithdrawMobileView: React.FC<WithdrawMobileViewProps> = ({
               </button>
             </div>
 
+            {withdrawError && <p role="alert" className="rounded-md border border-destructive/30 bg-destructive/10 px-3 py-2 text-sm text-destructive break-words">{withdrawError}</p>}
             {/* Bottom Submit Button: জমা দিন */}
             <div className="pt-2">
               <button
