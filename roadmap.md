@@ -1,5 +1,11 @@
 # Remaining work
 
+## 2026-11-03 continuation: popup/admin retest
+- [ ] Rerun member popup checks after the latest referral and policy fixes.
+- [ ] Verify all 13 admin sections and message creation/deletion readback with an isolated zero-bonus test message.
+- [ ] Correct remaining misleading admin save/reset feedback and run regression tests.
+- [ ] Record verified results and remaining gaps in TASKLIST.txt and CONTEXT.txt.
+
 ## 2026-11-02 10:25 request: missions, referral leaderboard/levels, promo page + admin editor, plan doc, retest
 - [x] Daily missions on server (26 tiers, admin-editable, claim once per tier/day); both mission pages use it. Live-tested.
 - [x] Referral medal levels real (qualified friends, admin-editable, claim once) and leaderboard/recent payouts from server. Live-tested.
