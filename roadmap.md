@@ -1,5 +1,12 @@
 # Remaining work
 
+## 2026-11-03 full plan alignment request
+- [ ] Inventory every member/admin view, promotion, reward and image; document evidence and discrepancies.
+- [ ] Produce a detailed versioned marketing/site-rules text file for the user and update the project plan.
+- [ ] Verify admin rule changes through live browser saves, member readback and server enforcement; restore temporary values.
+- [ ] Exercise time-based reward boundaries safely with isolated members and restore all settings.
+- [ ] Fix confirmed discrepancies, run permanent tests and the 60-day simulation, and record exact remaining gaps.
+
 ## 2026-11-03 continuation: popup/admin retest
 - [x] Reran 10 member sections after referral/policy fixes; no page errors.
 - [x] Opened all 13 admin sections; isolated zero-bonus message created, received through member inbox, deleted and readback verified.
