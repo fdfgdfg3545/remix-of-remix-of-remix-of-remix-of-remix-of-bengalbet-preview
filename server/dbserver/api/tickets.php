@@ -5,6 +5,7 @@
 
 require_once __DIR__ . '/../config.php';
 require_once __DIR__ . '/../db.php';
+require_once __DIR__.'/bonus_eligibility.php';
 
 $method = $_SERVER['REQUEST_METHOD'];
 $action = $_GET['action'] ?? 'my';
@@ -46,31 +47,23 @@ switch ($action) {
 
         if (empty($ticketId)) Database::errorResponse('Ticket ID is required', 400);
 
-        $ticket = Database::fetchOne("SELECT * FROM `user_tickets` WHERE `id` = ? AND `user_id` = ?", [$ticketId, $userId]);
-        if (!$ticket) Database::errorResponse('টিকেট পাওয়া যায়নি।', 404);
-
-        if ($ticket['status'] === 'used') {
-            Database::errorResponse('এই টিকেটটি ইতিমধ্যে ব্যবহৃত হয়েছে।', 400);
-        }
-
-        Database::update('user_tickets', [
-            'status' => 'used',
-            'used_time' => date('Y-m-d H:i:s')
-        ], "`id` = ?", [$ticketId]);
-
-        // If ticket has monetary amount, credit to user balance
-        $amount = (float)($ticket['amount_number'] ?? 0);
-        if ($amount > 0) {
-            Database::execute("UPDATE `users` SET `balance` = `balance` + ? WHERE `id` = ?", [$amount, $userId]);
-        }
-
-        $updated = Database::fetchOne("SELECT * FROM `user_tickets` WHERE `id` = ?", [$ticketId]);
-
-        Database::jsonResponse([
-            'success' => true,
-            'message' => "টিকেট (#{$ticket['redeem_code']}) সফলভাবে ব্যবহৃত হয়েছে!",
-            'ticket' => $updated
-        ]);
+        $pdo=Database::getConnection();
+        try {
+            $pdo->beginTransaction();
+            $u=Database::fetchOne('SELECT * FROM users WHERE id=? FOR UPDATE',[$userId]);
+            if(!$u || $u['status']!=='active')throw new RuntimeException('Active account required');
+            bbRequireBonusDeposit($userId);
+            $ticket=Database::fetchOne('SELECT * FROM user_tickets WHERE id=? AND user_id=? FOR UPDATE',[$ticketId,$userId]);
+            if(!$ticket || !in_array($ticket['status'],['active','ready'],true))throw new RuntimeException('টিকিট নেই অথবা ব্যবহার হয়েছে।');
+            $amount=(float)($ticket['amount_number']??0);
+            if($amount>0){
+                Database::execute('UPDATE users SET balance=balance+? WHERE id=?',[$amount,$userId]);
+                Database::insert('transactions',['id'=>'tx-'.bin2hex(random_bytes(12)),'user_id'=>$userId,'type'=>'bonus','amount'=>$amount,'channel'=>'system','trx_id'=>$ticketId,'status'=>'success','description'=>'টিকিট নগদ পুরস্কার','created_at'=>date('Y-m-d H:i:s')]);
+            }
+            Database::update('user_tickets',['status'=>'used','used_time'=>date('Y-m-d H:i:s')],'id=?',[$ticketId]);
+            $updated=Database::fetchOne('SELECT * FROM user_tickets WHERE id=?',[$ticketId]);
+            $pdo->commit();Database::jsonResponse(['success'=>true,'message'=>'টিকিট গ্রহণ হয়েছে।','ticket'=>$updated,'newBalance'=>round((float)$u['balance']+$amount,2)]);
+        }catch(Throwable $e){if($pdo->inTransaction())$pdo->rollBack();Database::errorResponse($e instanceof RuntimeException && !($e instanceof PDOException)?$e->getMessage():'Ticket could not be saved',400);}
         break;
 
     default:

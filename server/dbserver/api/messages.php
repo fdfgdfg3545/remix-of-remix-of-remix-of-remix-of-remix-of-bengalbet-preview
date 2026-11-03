@@ -5,6 +5,7 @@
 
 require_once __DIR__ . '/../config.php';
 require_once __DIR__ . '/../db.php';
+require_once __DIR__.'/bonus_eligibility.php';
 
 $method = $_SERVER['REQUEST_METHOD'];
 $action = $_GET['action'] ?? '';
@@ -67,48 +68,21 @@ switch ($action) {
         if ($method !== 'POST') Database::errorResponse('Method Not Allowed', 405);
         if (empty($msgId)) Database::errorResponse('Message ID is required', 400);
 
-        $msg = Database::fetchOne("SELECT * FROM `messages` WHERE `id` = ?", [$msgId]);
-        if (!$msg) Database::errorResponse('মেসেজটি পাওয়া যায়নি।', 404);
-
-        $bonus = (float)$msg['claimable_bonus'];
-        if ($bonus <= 0) {
-            Database::errorResponse('এই মেসেজে কোনো দাবিযোগ্য বোনাস নেই।', 400);
-        }
-
-        $alreadyClaimed = Database::fetchOne("SELECT `id` FROM `message_claims` WHERE `message_id` = ? AND `user_id` = ?", [$msgId, $userId]);
-        if ($alreadyClaimed) {
-            Database::errorResponse('আপনি ইতিমধ্যে এই বোনাসটি দাবি করেছেন।', 400);
-        }
-
-        // Record claim
-        Database::insert('message_claims', [
-            'id' => 'mc-' . uniqid(),
-            'message_id' => $msgId,
-            'user_id' => $userId,
-            'claimed_at' => date('Y-m-d H:i:s')
-        ]);
-
-        // Credit balance
-        Database::execute("UPDATE `users` SET `balance` = `balance` + ? WHERE `id` = ?", [$bonus, $userId]);
-
-        // Record transaction
-        Database::insert('transactions', [
-            'id' => 'tx-' . uniqid(),
-            'user_id' => $userId,
-            'type' => 'bonus',
-            'amount' => $bonus,
-            'channel' => 'inbox_bonus',
-            'trx_id' => 'MSG' . date('YmdHis') . rand(100, 999),
-            'status' => 'success',
-            'description' => "ইনবক্স মেসেজ বোনাস: {$msg['title']}",
-            'created_at' => date('Y-m-d H:i:s')
-        ]);
-
-        Database::jsonResponse([
-            'success' => true,
-            'amount' => $bonus,
-            'message' => "৳{$bonus} ইনবক্স বোনাস সফলভাবে জমা হয়েছে!"
-        ]);
+        $pdo=Database::getConnection();
+        try {
+            $pdo->beginTransaction();
+            $u=Database::fetchOne('SELECT * FROM users WHERE id=? FOR UPDATE',[$userId]);
+            if(!$u || $u['status']!=='active')throw new RuntimeException('Active account required');
+            bbRequireBonusDeposit($userId);
+            $msg=Database::fetchOne("SELECT * FROM messages WHERE id=? AND (user_id=? OR user_id='all') FOR UPDATE",[$msgId,$userId]);
+            if(!$msg || (float)$msg['claimable_bonus']<=0)throw new RuntimeException('এই মেসেজে কোনো দাবিযোগ্য বোনাস নেই।');
+            if(Database::fetchOne('SELECT id FROM message_claims WHERE message_id=? AND user_id=?',[$msgId,$userId]))throw new RuntimeException('ইতিমধ্যে গ্রহণ করেছেন।');
+            $bonus=(float)$msg['claimable_bonus'];
+            Database::insert('message_claims',['id'=>'mc-'.bin2hex(random_bytes(12)),'message_id'=>$msgId,'user_id'=>$userId,'claimed_at'=>date('Y-m-d H:i:s')]);
+            Database::execute('UPDATE users SET balance=balance+? WHERE id=?',[$bonus,$userId]);
+            Database::insert('transactions',['id'=>'tx-'.bin2hex(random_bytes(12)),'user_id'=>$userId,'type'=>'bonus','amount'=>$bonus,'channel'=>'inbox_bonus','trx_id'=>'MSG'.bin2hex(random_bytes(12)),'status'=>'success','description'=>'ইনবক্স বোনাস','created_at'=>date('Y-m-d H:i:s')]);
+            $pdo->commit();Database::jsonResponse(['success'=>true,'amount'=>$bonus,'newBalance'=>round((float)$u['balance']+$bonus,2),'message'=>'ইনবক্স বোনাস গ্রহণ হয়েছে।']);
+        }catch(Throwable $e){if($pdo->inTransaction())$pdo->rollBack();Database::errorResponse($e instanceof RuntimeException && !($e instanceof PDOException)?$e->getMessage():'Bonus could not be saved',400);}
         break;
 
     default:
