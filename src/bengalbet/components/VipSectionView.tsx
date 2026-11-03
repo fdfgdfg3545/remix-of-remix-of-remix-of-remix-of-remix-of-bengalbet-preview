@@ -113,6 +113,10 @@ export const VipSectionView: React.FC<VipSectionViewProps> = ({
 
   // Handle Reward Claim
   const handleClaimReward = async (type: 'upgrade' | 'weekly' | 'monthly') => {
+    if (type === 'weekly' || type === 'monthly') {
+      showToast('বেতন স্বয়ংক্রিয় নগদ কার্ড হয়; পুরস্কার কেন্দ্রের টিকিট থেকে গ্রহণ করুন।', 'success');
+      return;
+    }
     setIsClaiming(true);
     try {
       const res = await api.vip.claim(type, userVipLevel);

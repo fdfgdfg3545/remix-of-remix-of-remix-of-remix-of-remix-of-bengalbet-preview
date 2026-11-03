@@ -36,6 +36,7 @@ try {
  if($rewardModule==='vip') {
   require_once __DIR__.'/vip_progress.php'; $user['vip_level']=bbVipSync($userId);
   $type=$input['type'] ?? ''; $level=filter_var($input['level'] ?? null,FILTER_VALIDATE_INT);
+  if(in_array($type,['weekly','monthly'],true)) throw new RuntimeException('সাপ্তাহিক/মাসিক বেতন স্বয়ংক্রিয় নগদ কার্ড হয়; পুরস্কার কেন্দ্রের টিকিট থেকে গ্রহণ করুন।');
   if(!in_array($type,['upgrade','weekly','monthly','birthday'],true) || $level===false || $level<1 || $level>(int)$user['vip_level']) throw new RuntimeException('ভিআইপি পুরস্কারের যোগ্যতা পূরণ হয়নি।');
   if($type!=='upgrade' && $level!==(int)$user['vip_level']) throw new RuntimeException('বর্তমান ভিআইপি স্তরের পুরস্কার দাবি করুন।');
   $tier=Database::fetchOne("SELECT * FROM vip_tiers WHERE level=? AND status='active'",[$level]);

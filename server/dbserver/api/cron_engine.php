@@ -1,5 +1,6 @@
 <?php
-/** Schedule preparation only: never credits money, grants rewards or approves payments. */
+/** Prepare member snapshots and issue VIP salary cards; never credit wallet or approve payments. */
+require_once __DIR__ . '/vip_salary.php';
 function bbCronWindows(array $rules, array $mystery, int $timestamp): array {
     $now = (new DateTimeImmutable('@' . $timestamp))->setTimezone(new DateTimeZone('Asia/Dhaka'));
     $hour = (int)$now->format('G'); $minute = (int)$now->format('i');
@@ -60,6 +61,9 @@ function bbCronRun(): array {
         require_once __DIR__ . '/promo_content.php';
         $live = bbPromoLiveRules(); $now = time(); $minute = date('Y-m-d H:i', $now);
         $windows = bbCronWindows($live['promoRules'], $live['mystery'], $now);
+        $deadline=microtime(true)+15;
+        bbSalaryPrepare($live,date('Y-m-d',$now));
+        $salaryCount=bbSalaryProcess($deadline);
         Database::execute("UPDATE cron_engine_state SET last_started=?, status='running', last_error=NULL, windows_json=? WHERE id=1", [date('Y-m-d H:i:s', $now), json_encode($windows)]);
         if ((bool)$s['cycle_complete']) {
             if ($s['cycle_minute'] === $minute) {
@@ -87,11 +91,11 @@ function bbCronRun(): array {
                 $pdo->commit();
             } catch (Throwable $e) { if ($pdo->inTransaction()) $pdo->rollBack(); throw $e; }
         };
-        $count = bbCronProcessBatch($ids, $unit, $commit, microtime(true) + 15);
+        $count = bbCronProcessBatch($ids, $unit, $commit, $deadline);
         $current = Database::fetchOne('SELECT cursor_id,upper_id FROM cron_engine_state WHERE id=1');
         $more = Database::fetchOne("SELECT id FROM users WHERE status='active' AND id>? AND id<=? ORDER BY id LIMIT 1", [$current['cursor_id'], $current['upper_id']]);
         Database::execute('UPDATE cron_engine_state SET cycle_complete=?, status=?, last_finished=?, last_success=? WHERE id=1', [$more ? 0 : 1, $more ? 'pending' : 'complete', date('Y-m-d H:i:s'), date('Y-m-d H:i:s')]);
-        return ['success' => true, 'status' => $more ? 'pending' : 'complete', 'processedThisCall' => $count, 'state' => bbCronStatus()];
+        return ['success' => true, 'status' => $more ? 'pending' : 'complete', 'processedThisCall' => $count, 'salaryProcessedThisCall'=>$salaryCount, 'state' => bbCronStatus()];
     } catch (Throwable $e) {
         if ($pdo->inTransaction()) $pdo->rollBack();
         Database::execute("UPDATE cron_engine_state SET status='error', last_error=?, last_finished=? WHERE id=1", ['Scheduled work failed; the unchanged checkpoint will retry on the next call.', date('Y-m-d H:i:s')]);

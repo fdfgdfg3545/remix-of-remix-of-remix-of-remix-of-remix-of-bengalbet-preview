@@ -257,7 +257,7 @@ export const RewardCenterView: React.FC<RewardCenterViewProps> = ({
         setClaimedPromos(formatted);
       }
 
-      if (ticketRes && ticketRes.success && ticketRes.tickets && ticketRes.tickets.length > 0) {
+      if (ticketRes && ticketRes.success && ticketRes.tickets) {
         setRealTickets(ticketRes.tickets);
       }
     } catch (e) {
@@ -381,6 +381,15 @@ export const RewardCenterView: React.FC<RewardCenterViewProps> = ({
   };
 
   const handleUseTicketRecord = async (item: any) => {
+    if (item.targetAction === 'vip_salary') {
+      if (item.status !== 'active') return;
+      try {
+        const result = await api.tickets.useTicket(item.id);
+        await refreshSettledReward(result, onSettledReward);
+        await loadRewardBackendData();
+      } catch (e) { window.alert(e instanceof Error ? e.message : 'নগদ কার্ড গ্রহণ করা যায়নি।'); }
+      return;
+    }
     if (item.status === 'active') {
       try {
         await api.tickets.useTicket(item.id);
