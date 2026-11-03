@@ -6,7 +6,7 @@ require_once __DIR__.'/mystery_rules.php';
 if($section==='mystery-reward' && $action==='config') {
  if($method==='GET')Database::jsonResponse(['success'=>true,'config'=>bbMysteryConfig()]);
  if($method==='DELETE'){Database::execute('DELETE FROM mystery_reward_config WHERE id=1');Database::jsonResponse(['success'=>true,'config'=>bbMysteryConfig()]);}
- if($method!=='POST')Database::errorResponse('Method Not Allowed',405);
+ if(!in_array($method,['POST','PUT'],true))Database::errorResponse('Method Not Allowed',405);
  try{$config=bbValidateMystery($input);}catch(InvalidArgumentException $e){Database::errorResponse($e->getMessage(),422);}
  Database::execute('INSERT INTO mystery_reward_config (id,config_json) VALUES (1,?) ON DUPLICATE KEY UPDATE config_json=VALUES(config_json)',[json_encode($config,JSON_UNESCAPED_UNICODE)]);
  Database::jsonResponse(['success'=>true,'config'=>bbMysteryConfig()]);

@@ -1,5 +1,15 @@
 # Remaining work
 
+## 2026-11-03 02:50 priority: v6 deployment and verification
+- [x] Update v6 plan with confirmed last-deposit one-month expiry, frozen balance-matched cumulative approved deposit activation, lifetime-deposit prerequisite for all bonuses.
+- [x] Verify saved master secret authenticates from sandbox to test-server ping.
+- [x] Implement and test durable inactivity state, approval/cron/withdrawal enforcement and desktop/mobile member submit error.
+- [ ] Enforce lifetime deposit across cash bonuses, noncash grants/cards and legacy/admin routes; test before/after first approval.
+- [x] Explicit referral rule enforced: live friend approved deposit + round pays zero commission to never-deposited referrer; instant/medal recipient gates unit-tested.
+- [x] Backup/upload with duplicate schema preflight and exact readback; isolated live API and member desktop/mobile submission verified; admin approval/refund and config readback verified through API. Full admin browser mutation remains open.
+- [ ] Complete remaining whole-site 1:1 and two-month accelerated live matrix; no blanket completion without evidence.
+
+
 ## 2026-11-03 02:22 priority: detailed v5 and card/withdrawal audit
 - [x] Expand and deliver v5 using actual member/admin/server/image rules, including detailed mystery eligibility and scheduled cash cards (22 sections).
 - [x] Local PHP withdrawal guard rejects missing current-month deposits before financial writes; regression and approval-month boundary tests pass. Remote deployment unverified.

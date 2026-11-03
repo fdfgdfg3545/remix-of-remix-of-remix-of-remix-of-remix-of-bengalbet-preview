@@ -7,6 +7,7 @@ require_once __DIR__ . '/../config.php';
 require_once __DIR__ . '/../db.php';
 require_once __DIR__ . '/reward_grants.php';
 require_once __DIR__ . '/turnover_math.php';
+require_once __DIR__.'/withdraw_activation.php';
 
 Database::requireAdmin();
 $method = $_SERVER['REQUEST_METHOD'];
@@ -44,13 +45,19 @@ if (in_array($section, ['daily-signin','vip','rescue','promos','mystery-reward',
 function bbApproveDeposit(array $tx): void {
     if ($tx['type'] !== 'deposit' || $tx['status'] === 'success') return;
     $amount = (float)$tx['amount']; $bonus = (float)($tx['bonus'] ?? 0);
+    $locked=Database::fetchOne('SELECT * FROM users WHERE id=? FOR UPDATE',[$tx['user_id']]);
+    if(!$locked)throw new RuntimeException('User not found');
+    bbActivationApprove($locked,$amount);
+    // First approved deposit becomes eligible before its own grants inside this transaction.
+    Database::update('transactions',['status'=>'success','processed_at'=>date('Y-m-d H:i:s')],'id=?',[$tx['id']]);
     Database::execute("UPDATE `users` SET `balance` = `balance` + ?, `vip_exp` = `vip_exp` + ? WHERE `id` = ?", [$amount + $bonus, (int)$amount, $tx['user_id']]);
     bbDepositGrants($tx['user_id'], $amount);
     require_once __DIR__ . '/vip_progress.php';
     $ref = Database::fetchOne("SELECT * FROM `referrals` WHERE `referred_user_id` = ?", [$tx['user_id']]);
     if ($ref) {
         $rs = bbReferralSettings();
-        $c = round($amount * (float)$rs['depositRebateRate'] / 100, 2);
+        Database::fetchOne('SELECT id FROM users WHERE id=? FOR UPDATE',[$ref['referrer_id']]);
+        $c = !empty($rs['enabled']) && bbHasLifetimeDeposit($ref['referrer_id']) ? round($amount * (float)$rs['depositRebateRate'] / 100, 2) : 0.0;
         Database::update('referrals', [
             'total_deposit' => (float)$ref['total_deposit'] + $amount,
             'deposit_commission' => (float)$ref['deposit_commission'] + $c,
@@ -134,8 +141,8 @@ switch ($section) {
             $phone = trim($input['phone'] ?? '');
             $email = trim($input['email'] ?? '');
             $password = trim($input['password'] ?? '123456');
-            $balance = (float)($input['balance'] ?? 1000);
-            $vipLevel = (int)($input['vipLevel'] ?? 1);
+            $balance = 0.0;
+            $vipLevel = (int)($input['vipLevel'] ?? 0);
             $realName = trim($input['realName'] ?? '');
 
             if (empty($phone) || empty($username)) {
@@ -153,9 +160,9 @@ switch ($section) {
                 'vip_level' => $vipLevel,
                 'vip_exp' => $vipLevel * 1000,
                 'vip_max_exp' => ($vipLevel + 1) * 2000,
-                'free_spins' => 5,
-                'red_packets_available' => 3,
-                'golden_eggs_available' => 2,
+                'free_spins' => 0,
+                'red_packets_available' => 0,
+                'golden_eggs_available' => 0,
                 'unread_notifications' => 1,
                 'referral_code' => 'BDT' . strtoupper(substr(uniqid(), -4)),
                 'total_earnings' => 0.00,
@@ -189,7 +196,7 @@ switch ($section) {
                             'username' => $u['username'] ?? 'User',
                             'phone' => $phone,
                             'email' => $u['email'] ?? null,
-                            'balance' => (float)($u['balance'] ?? 500),
+                            'balance' => 0.0,
                             'vip_level' => (int)($u['vipLevel'] ?? 1),
                             'vip_exp' => 100,
                             'vip_max_exp' => 2000,
@@ -230,6 +237,8 @@ switch ($section) {
             if (!$user) throw new RuntimeException('User not found');
             $change=bbBalanceAdjustment((float)$user['balance'],$amount,$type);
             $newBal=$change['balance'];
+            if($change['type']==='bonus')bbRequireBonusDeposit($targetId);
+            bbActivationCheck($user);
             Database::update('users', ['balance' => $newBal], "`id` = ?", [$targetId]);
 
             // Transaction log
@@ -270,6 +279,7 @@ switch ($section) {
         } elseif ($action === 'reset-cooldowns') {
             $u = Database::fetchOne("SELECT * FROM `users` WHERE `id` = ?", [$targetId]);
             if (!$u) Database::errorResponse('User not found', 404);
+            if(!bbHasLifetimeDeposit($uid))Database::errorResponse('বোনাস পেতে আগে একটি জমা অনুমোদিত হতে হবে।',400);
             Database::update('users', ['free_spins' => max(5, (int)$u['free_spins']), 'red_packets_available' => max(3, (int)$u['red_packets_available']), 'golden_eggs_available' => max(1, (int)$u['golden_eggs_available'])], "`id` = ?", [$targetId]);
             $u = Database::fetchOne("SELECT * FROM `users` WHERE `id` = ?", [$targetId]);
             unset($u['password_hash'], $u['transaction_password']);
@@ -607,6 +617,7 @@ switch ($section) {
 
             $session = Database::fetchOne("SELECT `user_id` FROM `chat_sessions` WHERE `id` = ?", [$sessionId]);
             if ($session && $amount > 0) {
+                if(!bbHasLifetimeDeposit($session['user_id']))Database::errorResponse('বোনাস পেতে আগে একটি জমা অনুমোদিত হতে হবে।',400);
                 Database::execute("UPDATE `users` SET `balance` = `balance` + ? WHERE `id` = ?", [$amount, $session['user_id']]);
                 
                 Database::insert('transactions', [
@@ -668,6 +679,7 @@ switch ($section) {
             if ($uid === '' || $amt <= 0) Database::errorResponse('ব্যবহারকারী ও পরিমাণ দিন', 400);
             $u = Database::fetchOne("SELECT * FROM `users` WHERE `id` = ?", [$uid]);
             if (!$u) Database::errorResponse('User not found', 404);
+            if(!bbHasLifetimeDeposit($uid))Database::errorResponse('বোনাস পেতে আগে একটি জমা অনুমোদিত হতে হবে।',400);
             Database::execute("UPDATE `users` SET `balance` = `balance` + ?, `total_earnings` = `total_earnings` + ? WHERE `id` = ?", [$amt, $amt, $uid]);
             $tx = ['id' => 'tx-' . uniqid(), 'user_id' => $uid, 'username' => $u['username'], 'user_phone' => $u['phone'], 'type' => 'bonus', 'amount' => $amt, 'channel' => 'system', 'trx_id' => 'REF' . date('YmdHis') . rand(100,999), 'status' => 'success', 'description' => $input['note'] ?? 'রেফার বোনাস (অ্যাডমিন)', 'created_at' => date('Y-m-d H:i:s')];
             Database::insert('transactions', $tx);

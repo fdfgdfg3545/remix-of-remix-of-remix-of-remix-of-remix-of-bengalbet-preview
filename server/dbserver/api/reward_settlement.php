@@ -4,6 +4,7 @@ require_once __DIR__ . '/mystery_rules.php';
 require_once __DIR__ . '/mystery_cards.php';
 /** Server-authoritative reward guard and atomic settlement. */
 function bbRewardCredit(string $uid,float $amount,string $description): float {
+ bbRequireBonusDeposit($uid);
  if(!is_finite($amount) || $amount<=0) throw new RuntimeException('এই পুরস্কারের জন্য কোনো অনুমোদিত অর্থ নেই।');
  Database::execute('UPDATE users SET balance=balance+? WHERE id=?',[$amount,$uid]);
  Database::insert('transactions',['id'=>'tx-'.bin2hex(random_bytes(12)),'user_id'=>$uid,'type'=>'bonus','amount'=>$amount,'channel'=>'system','trx_id'=>'RWD'.bin2hex(random_bytes(12)),'status'=>'success','description'=>$description,'created_at'=>date('Y-m-d H:i:s')]);
@@ -41,6 +42,7 @@ try {
  $pdo->beginTransaction();
  $user=Database::fetchOne('SELECT * FROM users WHERE id=? FOR UPDATE',[$userId]);
  if(!$user || $user['status']!=='active') throw new RuntimeException('সক্রিয় সদস্য অ্যাকাউন্ট প্রয়োজন।');
+ bbRequireBonusDeposit($userId);
  $now=date('Y-m-d H:i:s'); $today=date('Y-m-d'); $bonus=0; $extra=[];
  if($rewardModule==='vip') {
   require_once __DIR__.'/vip_progress.php'; $user['vip_level']=bbVipSync($userId);

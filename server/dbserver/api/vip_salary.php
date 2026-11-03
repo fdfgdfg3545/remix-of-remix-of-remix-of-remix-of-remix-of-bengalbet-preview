@@ -1,4 +1,5 @@
 <?php
+require_once __DIR__ . "/bonus_eligibility.php";
 /** Durable salary cards: issuance never credits wallet; redemption does, once. */
 function bbSalaryPeriods(array $vip, string $day): array {
     $date = new DateTimeImmutable($day, new DateTimeZone('Asia/Dhaka'));
@@ -44,7 +45,7 @@ function bbSalaryProcess(float $deadline): int {
             $tier=null; foreach($tiers as $t) if((int)$t['level']===(int)$user['vip_level'])$tier=$t;
             $amount=$tier ? (float)($tier[$job['reward_type'].'Bonus']??0) : 0;
             $legacy=Database::fetchOne('SELECT id FROM vip_claims WHERE user_id=? AND type=? AND date>=? AND date<? LIMIT 1',[$uid,$job['reward_type'],$job['reward_type']==='weekly'?$job['period_key']:$job['period_key'].'-01',(new DateTimeImmutable($job['reward_type']==='weekly'?$job['period_key']:$job['period_key'].'-01'))->modify($job['reward_type']==='weekly'?'+7 days':'+1 month')->format('Y-m-d')]);
-            if($user['status']==='active' && (int)$user['vip_level']>0 && $amount>0 && !$legacy) {
+            if($user['status']==='active' && (int)$user['vip_level']>0 && $amount>0 && !$legacy && bbHasLifetimeDeposit($uid)) {
                 Database::execute('INSERT IGNORE INTO vip_salary_cards (id,user_id,reward_type,period_key,vip_level,amount,created_at) VALUES (?,?,?,?,?,?,?)',['vips-'.bin2hex(random_bytes(12)),$uid,$job['reward_type'],$job['period_key'],(int)$user['vip_level'],round($amount,2),date('Y-m-d H:i:s')]);
             }
             Database::execute('UPDATE vip_salary_jobs SET cursor_id=? WHERE id=?',[$uid,$job['id']]);
@@ -58,6 +59,7 @@ function bbSalaryRedeem(string $uid,string $id): array {
     try {
         $u=Database::fetchOne('SELECT * FROM users WHERE id=? FOR UPDATE',[$uid]);
         if(!$u || $u['status']!=='active')throw new RuntimeException('সক্রিয় সদস্য প্রয়োজন।');
+        bbRequireBonusDeposit($uid);
         $c=Database::fetchOne('SELECT * FROM vip_salary_cards WHERE id=? AND user_id=? FOR UPDATE',[$id,$uid]);
         if(!$c || $c['status']!=='active')throw new RuntimeException('কার্ড নেই অথবা ইতিমধ্যে গ্রহণ করেছেন।');
         $amount=(float)$c['amount'];if(!is_finite($amount)||$amount<=0)throw new RuntimeException('কার্ডের অঙ্ক সঠিক নয়।');

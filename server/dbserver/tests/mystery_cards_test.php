@@ -13,6 +13,7 @@ class Database {
  static function getConnection(){return self::$pdo??=new MemoryConnection();}
  static function fetchOne($sql,$p=[]){
   if(str_contains($sql,'promo_rules_config')||str_contains($sql,'mystery_reward_config'))return null;
+  if(str_contains($sql,"FROM transactions"))return ['id'=>'approved-deposit'];
   if(str_contains($sql,'FROM users'))return ['id'=>$p[0],'status'=>'active','balance'=>self::$balance];
   if(str_contains($sql,'mystery_cash_cards')){ $c=self::$cards[$p[0]]??null;return $c && $c['user_id']===$p[1]?$c:null; }
   throw new RuntimeException('Unexpected test query');

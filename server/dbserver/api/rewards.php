@@ -99,6 +99,8 @@ try {
     $pdo->beginTransaction();
     $user = Database::fetchOne('SELECT * FROM users WHERE id=? FOR UPDATE', [$userId]);
     if (!$user) throw new RuntimeException('User not found');
+    if($user['status']!=='active')throw new RuntimeException('Active account required');
+    bbRequireBonusDeposit($userId);
     if ($type === 'red_envelope') {
         // Red packet rain: fixed rounds, one packet per member per round, first 50 members only
         $round = bbPacketWindow();

@@ -8,11 +8,14 @@
  * All grants are idempotent through reward_grants (user_id, grant_key).
  */
 require_once __DIR__ . '/promo_rules.php';
+require_once __DIR__.'/bonus_eligibility.php';
 if (!function_exists('bbGrantOnce')) {
 function bbGrantOnce(string $uid, string $key): bool {
+    bbRequireBonusDeposit($uid);
     return Database::execute('INSERT IGNORE INTO reward_grants (user_id, grant_key, created_at) VALUES (?,?,?)', [$uid, substr($key, 0, 64), date('Y-m-d H:i:s')]) === 1;
 }
 function bbDailyLoginEgg(string $uid): bool {
+    if(!bbHasLifetimeDeposit($uid))return false;
     $n = (int)bbPromoRules()['loginHammerPerDay'];
     if ($n <= 0 || !bbGrantOnce($uid, 'login_egg:' . date('Y-m-d'))) return false;
     Database::execute('UPDATE users SET golden_eggs_available = golden_eggs_available + ? WHERE id = ?', [$n, $uid]);
@@ -41,7 +44,7 @@ function bbReferralSettings(): array {
 }
 /** Logs a referral commission as a bonus transaction so it counts toward the withdrawal wagering rule. */
 function bbLogReferralCommission(string $referrerId, float $amount, string $desc): void {
-    if ($amount <= 0) return;
+    if ($amount <= 0 || !bbHasLifetimeDeposit($referrerId)) return;
     $r = Database::fetchOne('SELECT username, phone FROM users WHERE id = ?', [$referrerId]);
     if (!$r) return;
     Database::insert('transactions', ['id' => 'tx-' . bin2hex(random_bytes(8)), 'user_id' => $referrerId, 'username' => $r['username'], 'user_phone' => $r['phone'], 'type' => 'bonus', 'amount' => $amount, 'channel' => 'system', 'trx_id' => 'RFC' . date('YmdHis') . random_int(100, 999), 'status' => 'success', 'description' => $desc, 'created_at' => date('Y-m-d H:i:s')]);
@@ -57,7 +60,7 @@ function bbReferralQualify(string $referredUid): float {
     $bonus = round(min((float)$s['instantBonusPerFriend'], (float)$s['maxBonusCap']), 2);
     if ($bonus <= 0) return 0.0;
     $referrer = Database::fetchOne('SELECT id, username, phone FROM users WHERE id = ? FOR UPDATE', [$ref['referrer_id']]);
-    if (!$referrer) return 0.0;
+    if (!$referrer || !bbHasLifetimeDeposit($referrer['id'])) return 0.0;
     Database::update('referrals', ['instant_bonus_paid' => 1, 'instant_bonus_amount' => $bonus, 'status' => 'active', 'total_commission_earned' => (float)$ref['total_commission_earned'] + $bonus], 'id = ?', [$ref['id']]);
     Database::execute('UPDATE users SET balance = balance + ?, total_earnings = total_earnings + ? WHERE id = ?', [$bonus, $bonus, $referrer['id']]);
     Database::insert('transactions', ['id' => 'tx-' . bin2hex(random_bytes(8)), 'user_id' => $referrer['id'], 'username' => $referrer['username'], 'user_phone' => $referrer['phone'], 'type' => 'bonus', 'amount' => $bonus, 'channel' => 'system', 'trx_id' => 'REF' . date('YmdHis') . random_int(100, 999), 'status' => 'success', 'description' => "রেফারেল বোনাস: {$ref['referred_username']} যোগ্য হয়েছেন", 'created_at' => date('Y-m-d H:i:s')]);
