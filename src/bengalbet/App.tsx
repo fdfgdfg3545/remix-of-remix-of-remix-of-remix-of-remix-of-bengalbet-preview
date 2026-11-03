@@ -869,6 +869,7 @@ export default function App() {
         onOpenDeposit={handleOpenDeposit}
         onOpenVip={() => setIsVipOpen(true)}
         onOpenSpin={handleOpenSpin}
+        onOpenEgg={() => { setIsNoticeOpen(false); handleOpenGoldenEgg(); }}
         onOpenShare={() => setIsShareOpen(true)}
       />
 

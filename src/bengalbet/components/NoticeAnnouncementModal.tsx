@@ -29,6 +29,7 @@ interface NoticeAnnouncementModalProps {
   onOpenDeposit?: () => void;
   onOpenVip?: () => void;
   onOpenSpin?: () => void;
+  onOpenEgg?: () => void;
   onOpenShare?: () => void;
 }
 
@@ -55,6 +56,7 @@ export const NoticeAnnouncementModal: React.FC<NoticeAnnouncementModalProps> = (
   onOpenDeposit,
   onOpenVip,
   onOpenSpin,
+  onOpenEgg,
   onOpenShare
 }) => {
   const [selectedNoticeId, setSelectedNoticeId] = useState<string>('bengalbet-announcement');
@@ -186,7 +188,7 @@ export const NoticeAnnouncementModal: React.FC<NoticeAnnouncementModalProps> = (
       imageUrl: noticeDailyLogin,
       actionTextBn: 'সোনার ডিম ভাঙুন',
       actionTextEn: 'Smash Golden Egg',
-      onAction: onOpenSpin
+      onAction: onOpenEgg || onOpenSpin
     }
   ];
   // Admin-edited notice (Site Notice tab) is shown first when enabled
