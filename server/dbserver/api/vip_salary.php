@@ -8,6 +8,11 @@ function bbSalaryPeriods(array $vip, string $day): array {
     if ((int)$date->format('j') === (int)$vip['monthlyClaimDay']) $out[] = ['type'=>'monthly','period'=>$date->format('Y-m')];
     return $out;
 }
+/** Due time in Bangladesh time: weekly at 00:00, monthly at the configured hour (site copy: 15:00). */
+function bbSalaryDueAt(array $vip, string $type, string $day): string {
+    $h = $type==='monthly' ? max(0,min(23,(int)($vip['monthlyHour'] ?? 15))) : 0;
+    return $day.' '.str_pad((string)$h,2,'0',STR_PAD_LEFT).':00:00';
+}
 function bbSalaryCardView(array $row): array {
     $name='VIP'.$row['vip_level'].' '.($row['reward_type']==='weekly' ? 'সাপ্তাহিক' : 'মাসিক').' নগদ কার্ড';
     return ['id'=>$row['id'],'name'=>$name,'productName'=>$name,'type'=>'vip_salary','category'=>'vip_salary','targetAction'=>'vip_salary','amount'=>(float)$row['amount'],'bonusAmount'=>'৳ '.number_format((float)$row['amount'],2),'redeemCode'=>$row['id'],'status'=>$row['status'],'claimedAt'=>$row['claimed_at'],'receivedAt'=>$row['created_at'],'date'=>$row['created_at'],'dateCategory'=>substr($row['created_at'],0,10)===date('Y-m-d')?'today':(substr($row['created_at'],0,10)===date('Y-m-d',strtotime('-1 day'))?'yesterday':'older'),'period'=>$row['period_key']];
@@ -22,7 +27,8 @@ function bbSalaryPrepare(array $live, string $today): void {
         while ($day<=$today && $count++<31) {
             foreach(bbSalaryPeriods($live['promoRules']['vip'],$day) as $p) {
                 $upper=Database::fetchOne("SELECT MAX(id) upper_id FROM users WHERE status='active' AND created_at<=?",[$day.' 00:00:00'])['upper_id']??'';
-                Database::execute('INSERT IGNORE INTO vip_salary_jobs (id,reward_type,period_key,due_at,tiers_json,upper_id) VALUES (?,?,?,?,?,?)', ['salary:'.$p['type'].':'.$p['period'],$p['type'],$p['period'],$day.' 00:00:00',json_encode($live['vipTiers']),$upper]);
+                $due=bbSalaryDueAt($live['promoRules']['vip'],$p['type'],$day);
+                Database::execute('INSERT IGNORE INTO vip_salary_jobs (id,reward_type,period_key,due_at,tiers_json,upper_id) VALUES (?,?,?,?,?,?)', ['salary:'.$p['type'].':'.$p['period'],$p['type'],$p['period'],$due,json_encode($live['vipTiers']),$upper]);
             }
             if($day===$today) break;
             $day=(new DateTimeImmutable($day))->modify('+1 day')->format('Y-m-d');
@@ -33,7 +39,7 @@ function bbSalaryPrepare(array $live, string $today): void {
 function bbSalaryProcess(float $deadline): int {
     $pdo=Database::getConnection(); $done=0;
     while($done<25 && microtime(true)<$deadline) {
-        $job=Database::fetchOne('SELECT * FROM vip_salary_jobs WHERE complete=0 ORDER BY due_at,id LIMIT 1');
+        $job=Database::fetchOne('SELECT * FROM vip_salary_jobs WHERE complete=0 AND due_at<=? ORDER BY due_at,id LIMIT 1',[date('Y-m-d H:i:s')]);
         if(!$job) break;
         $next=Database::fetchOne("SELECT id FROM users WHERE id>? AND id<=? AND created_at<=? ORDER BY id LIMIT 1",[$job['cursor_id'],$job['upper_id'],$job['due_at']]);
         if(!$next) { Database::execute('UPDATE vip_salary_jobs SET complete=1 WHERE id=?',[$job['id']]); continue; }
