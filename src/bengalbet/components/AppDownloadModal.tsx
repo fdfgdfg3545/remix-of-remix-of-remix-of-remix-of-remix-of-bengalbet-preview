@@ -1,5 +1,7 @@
 // @ts-nocheck
-import React from 'react';
+import React, { useState } from 'react';
+import { useLiveRules } from '../services/promoLive';
+import { Button } from '@/components/ui/button';
 import { X, Smartphone, Download, QrCode, ShieldCheck, Check, Sparkles } from 'lucide-react';
 import confetti from 'canvas-confetti';
 import { Language } from '../types';
@@ -17,13 +19,18 @@ export const AppDownloadModal: React.FC<AppDownloadModalProps> = ({
   onClose,
   onClaimAppBonus
 }) => {
+  const live = useLiveRules();
+  const [busy, setBusy] = useState(false);
+  const [message, setMessage] = useState('');
+  const bonus = live?.promoRules?.appBonus;
   if (!isOpen) return null;
 
-  const handleDownload = async (platform: 'android' | 'ios') => {
-    confetti({ particleCount: 60, spread: 50 });
-    const result = await onClaimAppBonus();
-    alert(`${language === 'bn' ? `BengalBet ${platform === 'android' ? 'Android APK' : 'iOS PWA'} ডাউনলোড শুরু হয়েছে।` : `BengalBet ${platform === 'android' ? 'Android APK' : 'iOS Web App'} download started.`}${result ? `
-${result}` : ''}`);
+  const handleBonus = async () => {
+    if (busy) return;
+    setBusy(true); setMessage('');
+    try { const result = await onClaimAppBonus(); setMessage(result || ''); }
+    catch (e) { setMessage(e instanceof Error ? e.message : 'পুরস্কার নেওয়া যায়নি।'); }
+    finally { setBusy(false); }
   };
 
   return (
@@ -44,7 +51,7 @@ ${result}` : ''}`);
         </div>
 
         <div className="inline-block px-3 py-0.5 rounded-full bg-red-600 text-white text-[11px] font-black mb-2 shadow">
-          {language === 'bn' ? 'ফ্রি নগদ বোনাস: ৳৫২' : 'FREE INSTALL BONUS: ৳52'}
+          {bonus?.enabled ? `${language === 'bn' ? 'অ্যাপ বোনাস' : 'App bonus'}: ৳${bonus.amount}` : (language === 'bn' ? 'অ্যাপ বোনাস এখন উপলব্ধ নয়' : 'App bonus unavailable')}
         </div>
 
         <h2 className="text-xl sm:text-2xl font-black text-white font-game tracking-wider">
@@ -52,36 +59,27 @@ ${result}` : ''}`);
         </h2>
         <p className="text-xs text-emerald-200 mt-1 max-w-xs">
           {language === 'bn' 
-            ? 'হাই স্পিড লোডিং, অ্যান্টি-ব্লকিং সিস্টেম এবং ইনস্ট্যান্ট ডিপোজিট সহ মোবাইলে স্মুথ গেমিং অভিজ্ঞতা।'
-            : 'Experience ultra-fast gameplay, 100% secure anti-block network and instant ৳52 reward.'}
+                ? 'বর্তমানে আলাদা APK বা iOS ডাউনলোড ফাইল সংযুক্ত নেই।'
+            : 'No separate APK or iOS download file is currently connected.'}
         </p>
 
         {/* Download Buttons */}
         <div className="w-full space-y-2.5 my-5">
-          <button
-            onClick={() => handleDownload('android')}
-            className="w-full btn-bdt-gold py-3 rounded-xl font-black text-xs sm:text-sm shadow-lg flex items-center justify-center gap-2"
-          >
-            <Download className="w-4 h-4" />
-            <span>{language === 'bn' ? 'অ্যান্ড্রয়েড APK ডাউনলোড করুন (v4.2)' : 'Download Android APK (v4.2)'}</span>
-          </button>
-
-          <button
-            onClick={() => handleDownload('ios')}
-            className="w-full py-2.5 rounded-xl bg-[#0e432f] hover:bg-[#155e42] text-emerald-200 text-xs font-bold border border-[#1b6b4c] flex items-center justify-center gap-2 transition-colors"
-          >
-            <span>{language === 'bn' ? 'iOS অ্যাপ ও ওয়েব ভার্সন' : 'iOS / Safari Web App'}</span>
-          </button>
+          <Button className="w-full" disabled={busy || !bonus?.enabled} onClick={handleBonus}>
+            <Sparkles className="w-4 h-4" />
+            {language === 'bn' ? 'অ্যাপ বোনাস দাবি করুন' : 'Claim app bonus'}
+          </Button>
+          {message && <p role="status" className="text-sm text-foreground">{message}</p>}
         </div>
 
         <div className="w-full pt-3 border-t border-[#14593e] flex items-center justify-center gap-4 text-[10px] text-gray-400">
           <span className="flex items-center gap-1">
             <ShieldCheck className="w-3 h-3 text-emerald-400" />
-            <span>100% Virus Free</span>
+            <span>{language === 'bn' ? 'সার্ভারে যাচাইকৃত পুরস্কার' : 'Server-verified reward'}</span>
           </span>
           <span className="flex items-center gap-1">
             <Check className="w-3 h-3 text-yellow-400" />
-            <span>Instant ৳52</span>
+            <span>{language === 'bn' ? 'প্রতি সদস্য একবার' : 'Once per member'}</span>
           </span>
         </div>
       </div>
