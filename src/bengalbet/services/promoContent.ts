@@ -4,7 +4,7 @@
  */
 import { useEffect, useState } from 'react';
 import { PROMOTIONS_DATA } from '../data/promotions';
-import { loadPromoLive } from './promoLive';
+import { loadPromoLive, liveRulesFor } from './promoLive';
 
 const ICON_TO_ASSET: Record<string, string> = {
   mystery: 'mystery', referral: 'referral', deposit: 'first_deposit', vip: 'vip', slot: 'daily_slot', app: 'app',
@@ -36,6 +36,11 @@ export function mergeServerPromotions(server: any[] | null | undefined): any[] {
 
 export function usePromotions(): any[] {
   const [list, setList] = useState<any[]>(PROMOTIONS_DATA as any[]);
-  useEffect(() => { let on = true; loadPromoLive().then((r) => { if (on) setList(mergeServerPromotions(r.promotions)); }); return () => { on = false; }; }, []);
+  useEffect(() => { let on = true; loadPromoLive().then((r) => { if (on) setList(mergeServerPromotions(r.promotions).map(p => {
+    const lines = liveRulesFor(p.iconType, r.live);
+    // Printed banner numbers cannot track admin changes. Keep originals in the editor,
+    // but show current server copy to members instead of incompatible printed terms.
+    return lines.length ? { ...p, titleBn: lines[0], subtitleBn: lines[1] || '', requirementsBn: lines, rulesBn: lines, bannerImage: '' } : p;
+  })); }); return () => { on = false; }; }, []);
   return list;
 }

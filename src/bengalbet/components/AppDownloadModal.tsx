@@ -69,7 +69,7 @@ export const AppDownloadModal: React.FC<AppDownloadModalProps> = ({
             <Sparkles className="w-4 h-4" />
             {language === 'bn' ? 'অ্যাপ বোনাস দাবি করুন' : 'Claim app bonus'}
           </Button>
-          {message && <p role="status" className="text-sm text-foreground">{message}</p>}
+          {message && <p role="status" className="text-sm text-emerald-200">{message}</p>}
         </div>
 
         <div className="w-full pt-3 border-t border-[#14593e] flex items-center justify-center gap-4 text-[10px] text-gray-400">
