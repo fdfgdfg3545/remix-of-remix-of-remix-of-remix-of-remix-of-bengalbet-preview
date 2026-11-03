@@ -864,9 +864,9 @@ export const InviteFriendsMobileView: React.FC<InviteFriendsMobileViewProps> = (
                   <div className="flex-1">
                     <span className="text-xs text-gray-600 font-bold block">সাফল্য পুরস্কার</span>
                     <span className="text-base sm:text-lg font-black text-[#2e3e78] font-game">
-                      ৳ {(liveStats?.breakdown?.milestoneRewardTotal !== undefined ? liveStats.breakdown.milestoneRewardTotal : 2726500).toLocaleString('en-US', { minimumFractionDigits: 2 })}
+                      ৳ {(liveStats?.breakdown?.milestoneRewardTotal ?? 0).toLocaleString('en-US', { minimumFractionDigits: 2 })}
                     </span>
-                    <span className="text-[11px] text-gray-500 font-medium block">6430 দাবিত</span>
+                    
                   </div>
                   <div className="w-2 h-2 rounded-full bg-emerald-500" />
                 </div>
@@ -879,9 +879,9 @@ export const InviteFriendsMobileView: React.FC<InviteFriendsMobileViewProps> = (
                   <div className="flex-1">
                     <span className="text-xs text-gray-600 font-bold block">জমা ছাড়া</span>
                     <span className="text-base sm:text-lg font-black text-[#2e3e78] font-game">
-                      ৳ {(liveStats?.breakdown?.depositCommissionTotal !== undefined ? liveStats.breakdown.depositCommissionTotal : 20475362743.72).toLocaleString('en-US', { minimumFractionDigits: 2 })}
+                      ৳ {(liveStats?.breakdown?.depositCommissionTotal ?? 0).toLocaleString('en-US', { minimumFractionDigits: 2 })}
                     </span>
-                    <span className="text-[11px] text-gray-500 font-medium block">585574 দাবিত</span>
+                    
                   </div>
                   <div className="w-2 h-2 rounded-full bg-emerald-500" />
                 </div>
@@ -894,9 +894,9 @@ export const InviteFriendsMobileView: React.FC<InviteFriendsMobileViewProps> = (
                   <div className="flex-1">
                     <span className="text-xs text-gray-600 font-bold block">বেটিং রিবেট</span>
                     <span className="text-base sm:text-lg font-black text-[#2e3e78] font-game">
-                      ৳ {(liveStats?.breakdown?.betRebateTotal !== undefined ? liveStats.breakdown.betRebateTotal : 34703198046.84).toLocaleString('en-US', { minimumFractionDigits: 2 })}
+                      ৳ {(liveStats?.breakdown?.betRebateTotal ?? 0).toLocaleString('en-US', { minimumFractionDigits: 2 })}
                     </span>
-                    <span className="text-[11px] text-gray-500 font-medium block">593141 দাবিত</span>
+                    
                   </div>
                   <div className="w-2 h-2 rounded-full bg-emerald-500" />
                 </div>
@@ -1029,16 +1029,7 @@ export const InviteFriendsMobileView: React.FC<InviteFriendsMobileViewProps> = (
                     </tr>
                   </thead>
                   <tbody className="bg-white font-bold text-gray-800 divide-y divide-gray-100">
-                    {((liveStats?.instantBonusRanges && liveStats.instantBonusRanges.length > 0)
-                      ? liveStats.instantBonusRanges
-                      : [
-                        { id: 1, minCount: 1, maxCount: 5, instantBonus: 300, label: '১ - ৫ জন', formattedBonus: '৳৩০০' },
-                        { id: 2, minCount: 6, maxCount: 10, instantBonus: 1500, label: '৬ - ১০ জন', formattedBonus: '৳১,৫০০' },
-                        { id: 3, minCount: 11, maxCount: 20, instantBonus: 3000, label: '১১ - ২০ জন', formattedBonus: '৳৩,০০০' },
-                        { id: 4, minCount: 21, maxCount: 50, instantBonus: 5000, label: '২১ - ৫০ জন', formattedBonus: '৳৫,০০০' },
-                        { id: 5, minCount: 51, maxCount: 999999, instantBonus: 10000, label: '৫১+ জন', formattedBonus: '৳১০,০০০' },
-                      ]
-                    ).map((range: any, idx: number) => {
+                    {([{ id: 1, minCount: 1, maxCount: 999999, instantBonus: Number(liveStats?.commissionRates?.instantBonus ?? 0), label: 'প্রতিটি যোগ্য বন্ধু' }]).map((range: any, idx: number) => {
                       const userCount = liveStats?.totalFriends || 0;
                       const isRowCurrent = range.isCurrent !== undefined 
                         ? range.isCurrent 
@@ -1147,18 +1138,14 @@ export const InviteFriendsMobileView: React.FC<InviteFriendsMobileViewProps> = (
                   <div>
                     <span className="text-gray-600 block text-[11px]">প্রতি রেফারে তাৎক্ষণিক রেট:</span>
                     <span className="font-black text-[#175345] text-sm font-game">
-                      ৳ {(simulatedRangeCount >= 51 ? 10000 : simulatedRangeCount >= 21 ? 5000 : simulatedRangeCount >= 11 ? 3000 : simulatedRangeCount >= 6 ? 1500 : 300).toLocaleString()}
+                      ৳ {Number(liveStats?.commissionRates?.instantBonus ?? 0).toLocaleString()}
                     </span>
                   </div>
                   <div className="text-right">
                     <span className="text-gray-600 block text-[11px]">মোট সম্ভাব্য তাৎক্ষণিক বোনাস:</span>
                     <span className="font-black text-amber-600 text-sm font-game">
                       ৳ {(
-                        simulatedRangeCount <= 5 
-                          ? simulatedRangeCount * 300 
-                          : simulatedRangeCount <= 10 
-                            ? 5 * 300 + (simulatedRangeCount - 5) * 1500
-                            : 5 * 300 + 5 * 1500 + (simulatedRangeCount - 10) * 3000
+                        simulatedRangeCount * Number(liveStats?.commissionRates?.instantBonus ?? 0)
                       ).toLocaleString()}
                     </span>
                   </div>
@@ -1762,19 +1749,19 @@ export const InviteFriendsMobileView: React.FC<InviteFriendsMobileViewProps> = (
               <div className="pt-3 space-y-2.5 text-xs sm:text-sm">
                 <div className="flex justify-between items-center text-gray-700">
                   <span>আমন্ত্রণ পুরস্কার</span>
-                  <span className="font-black text-[#2e3e78] font-game">৳ {(liveStats?.breakdown?.todayInstantReward !== undefined ? liveStats.breakdown.todayInstantReward : 600).toLocaleString('en-US', { minimumFractionDigits: 2 })}</span>
+                  <span className="font-black text-[#2e3e78] font-game">৳ {(liveStats?.breakdown?.todayInstantReward ?? 0).toLocaleString('en-US', { minimumFractionDigits: 2 })}</span>
                 </div>
                 <div className="flex justify-between items-center text-gray-700">
                   <span>সাফল্য পুরস্কার</span>
-                  <span className="font-black text-[#2e3e78] font-game">৳ {(liveStats?.breakdown?.todayMilestoneReward !== undefined ? liveStats.breakdown.todayMilestoneReward : 300).toLocaleString('en-US', { minimumFractionDigits: 2 })}</span>
+                  <span className="font-black text-[#2e3e78] font-game">৳ {(liveStats?.breakdown?.todayMilestoneReward ?? 0).toLocaleString('en-US', { minimumFractionDigits: 2 })}</span>
                 </div>
                 <div className="flex justify-between items-center text-gray-700">
                   <span>জমা ছাড়া</span>
-                  <span className="font-black text-[#2e3e78] font-game">৳ {(liveStats?.breakdown?.todayDepositCommission !== undefined ? liveStats.breakdown.todayDepositCommission : 150).toLocaleString('en-US', { minimumFractionDigits: 2 })}</span>
+                  <span className="font-black text-[#2e3e78] font-game">৳ {(liveStats?.breakdown?.todayDepositCommission ?? 0).toLocaleString('en-US', { minimumFractionDigits: 2 })}</span>
                 </div>
                 <div className="flex justify-between items-center text-gray-700">
                   <span>বেটিং রিবেট</span>
-                  <span className="font-black text-[#2e3e78] font-game">৳ {(liveStats?.breakdown?.todayBetRebate !== undefined ? liveStats.breakdown.todayBetRebate : 150).toLocaleString('en-US', { minimumFractionDigits: 2 })}</span>
+                  <span className="font-black text-[#2e3e78] font-game">৳ {(liveStats?.breakdown?.todayBetRebate ?? 0).toLocaleString('en-US', { minimumFractionDigits: 2 })}</span>
                 </div>
                 <div className="flex justify-between items-center text-gray-700">
                   <span>সূচিপত্রধারী</span>
@@ -1805,19 +1792,19 @@ export const InviteFriendsMobileView: React.FC<InviteFriendsMobileViewProps> = (
               <div className="pt-3 space-y-2.5 text-xs sm:text-sm">
                 <div className="flex justify-between items-center text-gray-700">
                   <span>আমন্ত্রণ পুরস্কার</span>
-                  <span className="font-black text-[#2e3e78] font-game">৳ {(liveStats?.breakdown?.instantRewardTotal !== undefined ? liveStats.breakdown.instantRewardTotal : 18200).toLocaleString('en-US', { minimumFractionDigits: 2 })}</span>
+                  <span className="font-black text-[#2e3e78] font-game">৳ {(liveStats?.breakdown?.instantRewardTotal ?? 0).toLocaleString('en-US', { minimumFractionDigits: 2 })}</span>
                 </div>
                 <div className="flex justify-between items-center text-gray-700">
                   <span>সাফল্য পুরস্কার</span>
-                  <span className="font-black text-[#2e3e78] font-game">৳ {(liveStats?.breakdown?.milestoneRewardTotal !== undefined ? liveStats.breakdown.milestoneRewardTotal : 12500).toLocaleString('en-US', { minimumFractionDigits: 2 })}</span>
+                  <span className="font-black text-[#2e3e78] font-game">৳ {(liveStats?.breakdown?.milestoneRewardTotal ?? 0).toLocaleString('en-US', { minimumFractionDigits: 2 })}</span>
                 </div>
                 <div className="flex justify-between items-center text-gray-700">
                   <span>জমা ছাড়া</span>
-                  <span className="font-black text-[#2e3e78] font-game">৳ {(liveStats?.breakdown?.depositCommissionTotal !== undefined ? liveStats.breakdown.depositCommissionTotal : 6450).toLocaleString('en-US', { minimumFractionDigits: 2 })}</span>
+                  <span className="font-black text-[#2e3e78] font-game">৳ {(liveStats?.breakdown?.depositCommissionTotal ?? 0).toLocaleString('en-US', { minimumFractionDigits: 2 })}</span>
                 </div>
                 <div className="flex justify-between items-center text-gray-700">
                   <span>বেটিং রিবেট</span>
-                  <span className="font-black text-[#2e3e78] font-game">৳ {(liveStats?.breakdown?.betRebateTotal !== undefined ? liveStats.breakdown.betRebateTotal : 11500).toLocaleString('en-US', { minimumFractionDigits: 2 })}</span>
+                  <span className="font-black text-[#2e3e78] font-game">৳ {(liveStats?.breakdown?.betRebateTotal ?? 0).toLocaleString('en-US', { minimumFractionDigits: 2 })}</span>
                 </div>
                 <div className="flex justify-between items-center text-gray-700">
                   <span>সূচিপত্রধারী</span>
