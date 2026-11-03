@@ -791,7 +791,7 @@ export const GAMES_DATA: GameItem[] = [
     nameBn: '9wickets',
     provider: '9wickets',
     category: 'sports',
-    image: 'https://images.unsplash.com/photo-1531415074868-036b1c57e3ce?auto=format&fit=crop&w=500&q=85',
+    image: 'https://images.unsplash.com/photo-1574629810360-7efbbe195018?auto=format&fit=crop&w=500&q=85',
     isHot: true,
     rtp: 98.5,
     playersCount: 38400
@@ -802,7 +802,7 @@ export const GAMES_DATA: GameItem[] = [
     nameBn: 'BTi',
     provider: 'BTi',
     category: 'sports',
-    image: 'https://images.unsplash.com/photo-1508098682722-e99c43a406b2?auto=format&fit=crop&w=500&q=85',
+    image: 'https://images.unsplash.com/photo-1518091043644-c1d4457512c6?auto=format&fit=crop&w=500&q=85',
     isHot: true,
     rtp: 98.2,
     playersCount: 29500
@@ -846,7 +846,7 @@ export const GAMES_DATA: GameItem[] = [
     nameBn: 'AP Gaming',
     provider: 'AP Gaming',
     category: 'sports',
-    image: 'https://images.unsplash.com/photo-1517649763962-0c623266ddc0?auto=format&fit=crop&w=500&q=85',
+    image: 'https://images.unsplash.com/photo-1546519638-68e109498ffc?auto=format&fit=crop&w=500&q=85',
     isHot: false,
     rtp: 97.7,
     playersCount: 12500
@@ -857,7 +857,7 @@ export const GAMES_DATA: GameItem[] = [
     nameBn: 'Poly Sports',
     provider: 'Poly Sports',
     category: 'sports',
-    image: 'https://images.unsplash.com/photo-1569517282132-25d22f4573e6?auto=format&fit=crop&w=500&q=85',
+    image: 'https://images.unsplash.com/photo-1574629810360-7efbbe195018?auto=format&fit=crop&w=500&q=85',
     isHot: false,
     rtp: 97.6,
     playersCount: 11400

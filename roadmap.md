@@ -1,5 +1,10 @@
 # Remaining work
 
+## 2026-11-03 09:24 request: v7 1:1 audit doc
+- [x] Desktop/mobile member walk (guest + new signed-up member), 44 images reviewed, live settings read; v7 text delivered with 16 mismatches.
+- [x] Fixed 4 broken sports game pictures.
+- [ ] Fix mismatches 1-16 (copy/images/live settings) — needs user decisions on rebate %, referral tier 1 amount, agent program, salary time.
+
 ## 2026-11-03 03:08 priority: requested whole-project live recheck
 - [ ] Audit v6 member/admin/source/artwork alignment and correct verified defects.
 - [ ] Verify live admin settings edits/readback and member desktop/mobile results with isolated data; restore shared settings.
