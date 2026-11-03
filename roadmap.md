@@ -1,5 +1,11 @@
 # Remaining work
 
+## 2026-11-03 wagering and automatic VIP cards
+- [ ] Revise plan: all new non-game-win wallet credits require base 1x; first-deposit bonus additionally requires 8x (total 9x), both admin-editable.
+- [ ] Implement and test ledger accounting and admin/member rule presentation.
+- [ ] Issue idempotent weekly/monthly VIP cash cards through resumable Dhaka-time cron using configured tier amounts; redeem once into wallet.
+- [ ] Verify local tests, live deployment/access where available, and deliver versioned plan with explicit remaining verification gaps.
+
 ## 2026-11-03 priority: every-minute resumable cron
 - [ ] Add authenticated external PHP scheduler, durable checkpoints, exclusive runner lock and bounded batches.
 - [ ] Show URL, cPanel command setup and last-run/progress/error status in admin promotion rules.

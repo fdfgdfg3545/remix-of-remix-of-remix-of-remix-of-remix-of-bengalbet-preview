@@ -99,7 +99,7 @@ function bbValidatePromoRules($c): array {
             'enabled' => bbPromoBool($c['withdrawal']['enabled'] ?? null, 'withdrawal.enabled'),
             'depositTurnover' => bbPromoNum($c['withdrawal']['depositTurnover'] ?? null, 0, 50, 'withdrawal.depositTurnover'),
             'depositBonusTurnover' => bbPromoNum($c['withdrawal']['depositBonusTurnover'] ?? null, 0, 50, 'withdrawal.depositBonusTurnover'),
-            'otherBonusTurnover' => bbPromoNum($c['withdrawal']['otherBonusTurnover'] ?? null, 0, 50, 'withdrawal.otherBonusTurnover'),
+            'otherBonusTurnover' => bbPromoNum($c['withdrawal']['depositTurnover'] ?? null, 0, 50, 'withdrawal.depositTurnover'),
         ],
         'missions' => [
             'enabled' => bbPromoBool($c['missions']['enabled'] ?? null, 'missions.enabled'),

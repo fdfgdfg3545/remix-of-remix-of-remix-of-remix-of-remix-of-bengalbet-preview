@@ -1515,10 +1515,18 @@ export const api = {
       if (category && category !== 'all') params.append('category', category);
       if (status && status !== 'all') params.append('status', status);
       const query = params.toString() ? `?${params.toString()}` : '';
-      return request<{ success: boolean; tickets: any[]; total: number }>(`/api/tickets${query}`);
+      const [legacy, salary] = await Promise.allSettled([
+        request<{ success: boolean; tickets: any[]; total: number }>(`/api/tickets${query}`),
+        request<{ success: boolean; tickets: any[] }>('/api/rewards.php?action=vip-salary-cards'),
+      ]);
+      if (legacy.status === 'rejected' && salary.status === 'rejected') throw legacy.reason;
+      const cards = salary.status === 'fulfilled' && salary.value.success ? salary.value.tickets.filter(t => (!category || category === 'all' || category === 'vip_salary') && (!status || status === 'all' || t.status === status)) : [];
+      const tickets = [...(legacy.status === 'fulfilled' && legacy.value.success ? legacy.value.tickets : []), ...cards];
+      return { success: true, tickets, total: tickets.length };
     },
 
     async useTicket(ticketId: string) {
+      if (ticketId.startsWith('vips-')) return request('/api/rewards.php?action=vip-salary-redeem', { method: 'POST', body: JSON.stringify({ ticketId }) });
       return request<{ success: boolean; message: string; ticket: any }>('/api/tickets/use', {
         method: 'POST',
         body: JSON.stringify({ ticketId })

@@ -41,7 +41,7 @@ export function liveRulesFor(iconType: string, live: LiveRules | null | undefine
         `${o.firstDepositOnly ? 'শুধু প্রথম জমায়' : 'প্রতিটি জমায়'} ${pct(o.bonusPercent)} বোনাস${o.maxBonus > 0 ? `, সর্বোচ্চ ${tk(o.maxBonus)}` : ''}।`,
         `বোনাসের জন্য ন্যূনতম জমা ${tk(o.minDepositForBonus)}; জমার সীমা ${tk(live.limits.minDeposit)}–${tk(live.limits.maxDeposit)}।`,
         'জমা পেইজে বোনাস বেছে নিন; অ্যাডমিন জমা অনুমোদন করলে বোনাস যোগ হয়।',
-        w?.enabled ? `তোলার আগে জমার ${w.depositTurnover} গুণ ও বোনাসের ${w.depositBonusTurnover} গুণ বাজি লাগবে।` : 'তোলার আগে বাজির শর্ত নেই।',
+        w?.enabled ? `সব নতুন জমা/বোনাসে ${w.depositTurnover} গুণ; প্রথম জমা বোনাসে অতিরিক্ত ${w.depositBonusTurnover} গুণ (মোট ${Number(w.depositTurnover) + Number(w.depositBonusTurnover)} গুণ) বাজি লাগবে।` : 'তোলার আগে বাজির শর্ত নেই।',
       ];
     }
     case 'referral': {
@@ -67,7 +67,7 @@ export function liveRulesFor(iconType: string, live: LiveRules | null | undefine
       const top = t.reduce((a, b) => Math.max(a, b.upgradeBonus, b.monthlyBonus), 0);
       return [
         `প্রতি ৳১ বাজিতে ১ ভিআইপি পয়েন্ট; লেভেল ${t[0]?.level ?? 1}–${t[t.length - 1]?.level ?? 10}।`,
-        `সাপ্তাহিক বোনাস প্রতি ${DAYS[r.vip?.weeklyClaimDay] || 'সোমবার'}, মাসিক বোনাস মাসের ${r.vip?.monthlyClaimDay ?? 1} তারিখে।`,
+        `প্রতি ${DAYS[r.vip?.weeklyClaimDay] || 'সোমবার'} সাপ্তাহিক এবং মাসের ${r.vip?.monthlyClaimDay ?? 1} তারিখে মাসিক নগদ কার্ড পুরস্কারের টিকিটে আসে; গ্রহণ করলে টাকা যোগ হয়।`,
         top > 0 ? `সর্বোচ্চ লেভেল-আপ/মাসিক বোনাস ${tk(top)}।` : 'ভিআইপি বোনাস অ্যাডমিন ঠিক করেন।',
       ];
     }

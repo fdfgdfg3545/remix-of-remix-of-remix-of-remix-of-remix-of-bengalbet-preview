@@ -116,7 +116,8 @@ function useChance(u: U) { while (u.eggs > 0) { u.eggs--; credit(u, pick([1, 2, 
 function remaining(u: U) {
   const w = rules.withdrawal; if (!w.enabled) return 0; const since = u.wds.length ? u.wds[u.wds.length - 1].t : -1;
   const dep = u.deps.filter((d) => d.t > since), oth = u.bonuses.filter((b) => b.t > since).reduce((s, b) => s + b.amt, 0);
-  const req = dep.reduce((s, d) => s + d.amt, 0) * w.depositTurnover + dep.reduce((s, d) => s + d.bonus, 0) * w.depositBonusTurnover + oth * w.otherBonusTurnover;
+  const firstBonus = u.deps[0] && u.deps[0].t > since ? u.deps[0].bonus : 0;
+  const req = (dep.reduce((s, d) => s + d.amt + d.bonus, 0) + oth) * w.depositTurnover + firstBonus * w.depositBonusTurnover;
   return Math.max(0, r2(req - sumBets(u, (b) => b.t > since)));
 }
 function withdraw(u: U, amt: number): string { if (amt < 500 || amt > 25000) return 'limit'; if (u.bal < amt) return 'balance'; if (remaining(u) > 0) return 'turnover'; u.bal = r2(u.bal - amt); u.wds.push({ amt, t: now }); bump('withdraws', amt); return 'ok'; }

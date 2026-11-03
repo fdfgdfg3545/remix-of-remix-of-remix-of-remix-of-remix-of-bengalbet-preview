@@ -14,6 +14,7 @@ BENGALBET কাজের তালিকা — প্রতিটি কাজ
 [x] তিনটি প্ল্যান ফাইল মূল ফোল্ডারে — ২০২৬-১১-০২
 
 বাকি (উপর থেকে ক্রমে করো)
+[ ] ১৬. ২০২৬-১১-০৩: সব নতুন non-game-win wallet credit-এ সাধারণ ১×; প্রথম জমা বোনাসে অতিরিক্ত ৮× (মোট ৯×), অ্যাডমিন সম্পাদনা; VIP সাপ্তাহিক/মাসিক নগদ কার্ড ক্রনে স্বয়ংক্রিয়, অঙ্ক বর্তমান VIP tier plan থেকে; একবার redemption ও পুনরায় ক্রন পরীক্ষা।
 [ ] ১৫. পূর্ণ ১:১ অডিট — ২০২৬-১১-০৩: v4 বিস্তারিত টেক্সট নথি ও ৪৪ ছবির inventory তৈরি; admin ৪৬% deposit→member title/rules, app ৫৩→member claim once, red packet off/open/duplicate পাস; সব settings exact restored। callback missing, fake promo code, ৪৮,৬৫০ fallback, stale title/banner, chance readback equality, fake download দাবি ঠিক। ৬৮ tests ও ১৮,০০০ modeled-member simulation পাস। পূর্ণ action/concurrency, remaining baked/remote media, custom games ও actual app files এখনো সম্পূর্ণ নয়; v4 অংশ ১৭-এ তালিকা।
 [x] ১৪. সর্বশেষ সদস্য-পপআপ/অ্যাডমিন পরিবর্তনের পুনঃপরীক্ষা — ২০২৬-১১-০৩: ১০ সদস্য বিভাগ ও ১৩ অ্যাডমিন বিভাগ খুলেছে, কোনো page error নেই। শূন্য-বোনাস ব্যক্তিগত টেস্ট বার্তা তৈরি → সদস্য ইনবক্সে দেখা → শুধু সেই বার্তা মোছা → readback পাস। বার্তা snake_case mapping, create/delete confirmation, নমুনার ভুল পুরস্কার/সময় প্রতিশ্রুতি ও local reset feedback ঠিক; ৬৭ টেস্ট পাস। #১৩-এর পূর্ণ সব action/permission পরীক্ষা এখনো শেষ নয়।
 [x] ১. রেফার দুই পেইজ থেকে নমুনা রেকর্ড/বন্ধু তালিকা ও এলোমেলো চলমান পুরস্কার সরানো (ReferSectionView, InviteFriendsMobileView)

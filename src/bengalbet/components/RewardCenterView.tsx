@@ -37,6 +37,7 @@ import { refreshSettledReward } from '../services/settledReward';
 import { mayClaimMemberTask } from '../services/memberTaskState';
 import { memberTaskLabel } from '../services/memberTaskConfig';
 import { MysteryRewardModal } from './MysteryRewardModal';
+import { Button } from '@/components/ui/button';
 
 interface RewardCenterViewProps {
   user: UserAccount;
@@ -257,7 +258,7 @@ export const RewardCenterView: React.FC<RewardCenterViewProps> = ({
         setClaimedPromos(formatted);
       }
 
-      if (ticketRes && ticketRes.success && ticketRes.tickets && ticketRes.tickets.length > 0) {
+      if (ticketRes && ticketRes.success && ticketRes.tickets) {
         setRealTickets(ticketRes.tickets);
       }
     } catch (e) {
@@ -381,6 +382,15 @@ export const RewardCenterView: React.FC<RewardCenterViewProps> = ({
   };
 
   const handleUseTicketRecord = async (item: any) => {
+    if (item.targetAction === 'vip_salary') {
+      if (item.status !== 'active') return;
+      try {
+        const result = await api.tickets.useTicket(item.id);
+        await refreshSettledReward(result, onSettledReward);
+        await loadRewardBackendData();
+      } catch (e) { window.alert(e instanceof Error ? e.message : 'নগদ কার্ড গ্রহণ করা যায়নি।'); }
+      return;
+    }
     if (item.status === 'active') {
       try {
         await api.tickets.useTicket(item.id);
@@ -2259,18 +2269,18 @@ export const RewardCenterView: React.FC<RewardCenterViewProps> = ({
             </div>
             <div>
               <span className="text-[10px] text-purple-200 font-bengali block">মোট অর্জিত বোনাস মান</span>
-              <span className="text-sm sm:text-base font-black font-mono text-yellow-300">৳ ১,২৭০.০০</span>
+              <span className="text-sm sm:text-base font-black font-mono text-yellow-300">৳ {realTickets.reduce((sum, item) => sum + (Number(item.amount) || 0), 0).toLocaleString('en-US', { minimumFractionDigits: 2 })}</span>
             </div>
           </div>
           <div className="flex items-center gap-3 text-[11px] font-bengali">
             <div className="text-right">
               <span className="text-purple-200 text-[10px] block">সক্রিয় ভাউচার</span>
-              <span className="font-bold text-emerald-300">১টি ভাউচার</span>
+              <span className="font-bold text-emerald-300">{realTickets.filter(item => item.status === 'active').length}টি ভাউচার</span>
             </div>
             <div className="h-6 w-px bg-white/20" />
             <div className="text-right">
               <span className="text-purple-200 text-[10px] block">দাবি সম্পন্ন</span>
-              <span className="font-bold text-yellow-300">৬টি টিকিট</span>
+              <span className="font-bold text-yellow-300">{realTickets.filter(item => item.status === 'claimed' || item.status === 'used').length}টি টিকিট</span>
             </div>
           </div>
         </div>
@@ -2358,7 +2368,8 @@ export const RewardCenterView: React.FC<RewardCenterViewProps> = ({
                           {item.usedTime}
                         </td>
                         <td className="p-3.5 text-right">
-                          {item.status === 'claimed' && (
+                          {item.targetAction === 'vip_salary' && <Button size="sm" disabled={item.status !== 'active'} onClick={() => handleUseTicketRecord(item)}><Coins />{item.status === 'active' ? 'নগদ গ্রহণ' : 'গৃহীত'}</Button>}
+                          {item.targetAction !== 'vip_salary' && item.status === 'claimed' && (
                             <button
                               onClick={() => handleUseTicketRecord(item)}
                               className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-emerald-50 hover:bg-emerald-100 border border-emerald-200 text-emerald-700 font-bold text-[11px] cursor-pointer transition-all active:scale-95 shadow-2xs"
@@ -2373,7 +2384,7 @@ export const RewardCenterView: React.FC<RewardCenterViewProps> = ({
                               ব্যবহৃত
                             </span>
                           )}
-                          {item.status === 'active' && (
+                          {item.targetAction !== 'vip_salary' && item.status === 'active' && (
                             <button
                               onClick={() => handleUseTicketRecord(item)}
                               className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-amber-50 hover:bg-amber-100 border border-amber-300 text-amber-700 font-bold text-[11px] animate-pulse cursor-pointer transition-all active:scale-95 shadow-2xs"
@@ -2424,7 +2435,8 @@ export const RewardCenterView: React.FC<RewardCenterViewProps> = ({
                         {item.type}
                       </span>
 
-                      {item.status === 'claimed' && (
+                      {item.targetAction === 'vip_salary' && <Button size="sm" disabled={item.status !== 'active'} onClick={() => handleUseTicketRecord(item)}><Coins />{item.status === 'active' ? 'নগদ গ্রহণ' : 'গৃহীত'}</Button>}
+                      {item.targetAction !== 'vip_salary' && item.status === 'claimed' && (
                         <button
                           onClick={() => handleUseTicketRecord(item)}
                           className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-emerald-50 hover:bg-emerald-100 border border-emerald-200 text-emerald-700 font-bold text-[10px] font-bengali cursor-pointer active:scale-95 transition-all shadow-2xs"
@@ -2438,7 +2450,7 @@ export const RewardCenterView: React.FC<RewardCenterViewProps> = ({
                           ব্যবহৃত
                         </span>
                       )}
-                      {item.status === 'active' && (
+                      {item.targetAction !== 'vip_salary' && item.status === 'active' && (
                         <button
                           onClick={() => handleUseTicketRecord(item)}
                           className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-amber-50 hover:bg-amber-100 border border-amber-300 text-amber-700 font-bold text-[10px] font-bengali cursor-pointer active:scale-95 transition-all shadow-2xs"

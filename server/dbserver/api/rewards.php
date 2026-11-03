@@ -11,6 +11,18 @@ require_once __DIR__ . '/reward_grants.php';
 
 $userId = Database::requireUser();
 $input = Database::getJsonInput();
+if (in_array($_GET['action'] ?? '', ['vip-salary-cards','vip-salary-redeem'], true)) {
+    require_once __DIR__.'/vip_salary.php';
+    if($_GET['action']==='vip-salary-cards' && $_SERVER['REQUEST_METHOD']==='GET') {
+        $rows=Database::fetchAll('SELECT * FROM vip_salary_cards WHERE user_id=? ORDER BY created_at DESC',[$userId]);
+        Database::jsonResponse(['success'=>true,'tickets'=>array_map('bbSalaryCardView',$rows)]);
+    }
+    if($_GET['action']==='vip-salary-redeem' && $_SERVER['REQUEST_METHOD']==='POST') {
+        try {Database::jsonResponse(bbSalaryRedeem($userId,(string)($input['ticketId']??'')));}
+        catch(Throwable $e){Database::errorResponse($e instanceof RuntimeException && !($e instanceof PDOException)?$e->getMessage():'VIP কার্ড গ্রহণ করা যায়নি।',400);}
+    }
+    Database::errorResponse('Method Not Allowed',405);
+}
 $type = trim((string)($input['type'] ?? ''));
 $counters = ['spin' => 'free_spins', 'golden_egg' => 'golden_eggs_available', 'red_envelope' => 'red_packets_available'];
 

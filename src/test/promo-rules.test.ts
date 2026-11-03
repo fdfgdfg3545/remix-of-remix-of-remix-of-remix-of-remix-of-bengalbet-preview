@@ -43,10 +43,18 @@ describe('promotion rules', () => {
   it('member day is the 13th by default', () => {
     expect(PROMO_RULE_DEFAULTS.memberDay.day).toBe(13);
   });
-  it('withdrawal needs deposit ×1 and first-deposit bonus ×8 in bets', () => {
+  it('first-deposit bonus adds base 1x plus extra 8x, total 9x', () => {
     const w = PROMO_RULE_DEFAULTS.withdrawal;
-    expect(remainingTurnover(w, 1000, 470, 0, 0)).toBe(4760);
-    expect(remainingTurnover(w, 1000, 470, 0, 4760)).toBe(0);
+    expect(remainingTurnover(w, 1000, 470, 0, 0)).toBe(5230);
+    expect(remainingTurnover(w, 1000, 470, 0, 5230)).toBe(0);
     expect(remainingTurnover({ ...w, enabled: false }, 1000, 470, 0, 0)).toBe(0);
+  });
+  it('every new ordinary bonus or deposit adds base 1x, later deposit bonus has no extra 8x', () => {
+    expect(remainingTurnover(PROMO_RULE_DEFAULTS.withdrawal, 500, 50, 100, 0, 0)).toBe(650);
+  });
+  it('admin controls base and additional multipliers independently', () => {
+    const w = validatePromoRules({ ...PROMO_RULE_DEFAULTS, withdrawal: { ...PROMO_RULE_DEFAULTS.withdrawal, depositTurnover: 2, depositBonusTurnover: 3 } }).withdrawal;
+    expect(w.otherBonusTurnover).toBe(2);
+    expect(remainingTurnover(w, 1000, 470, 100, 0)).toBe(4550);
   });
 });
