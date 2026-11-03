@@ -6,6 +6,7 @@
 require_once __DIR__ . '/../config.php';
 require_once __DIR__ . '/../db.php';
 require_once __DIR__ . '/reward_grants.php';
+require_once __DIR__ . '/turnover_math.php';
 
 Database::requireAdmin();
 $method = $_SERVER['REQUEST_METHOD'];
@@ -207,6 +208,7 @@ switch ($section) {
             unset($user['password_hash'], $user['transaction_password']);
             Database::jsonResponse(['success' => true, 'details' => $user]);
         } elseif ($action === 'update') {
+            if(array_key_exists('balance',$input)) Database::errorResponse('Use the audited balance adjustment action',422);
             unset($input['id'], $input['password_hash']);
             Database::update('users', $input, "`id` = ?", [$targetId]);
             $updated = Database::fetchOne("SELECT * FROM `users` WHERE `id` = ?", [$targetId]);
@@ -221,15 +223,13 @@ switch ($section) {
             $type = $input['type'] ?? 'add';
             $note = $input['note'] ?? 'অ্যাডমিন ব্যালেন্স সমন্বয়';
 
-            $user = Database::fetchOne("SELECT * FROM `users` WHERE `id` = ?", [$targetId]);
-            if (!$user) Database::errorResponse('User not found', 404);
-
-            $currentBal = (float)$user['balance'];
-            $newBal = $currentBal;
-            if ($type === 'add') $newBal += $amount;
-            elseif ($type === 'deduct') $newBal = max(0, $newBal - $amount);
-            elseif ($type === 'set') $newBal = $amount;
-
+            $pdo=Database::getConnection();
+            try {
+            $pdo->beginTransaction();
+            $user = Database::fetchOne("SELECT * FROM `users` WHERE `id` = ? FOR UPDATE", [$targetId]);
+            if (!$user) throw new RuntimeException('User not found');
+            $change=bbBalanceAdjustment((float)$user['balance'],$amount,$type);
+            $newBal=$change['balance'];
             Database::update('users', ['balance' => $newBal], "`id` = ?", [$targetId]);
 
             // Transaction log
@@ -238,8 +238,8 @@ switch ($section) {
                 'user_id' => $targetId,
                 'username' => $user['username'],
                 'user_phone' => $user['phone'],
-                'type' => $type === 'deduct' ? 'adjustment' : 'bonus',
-                'amount' => $amount,
+                'type' => $change['type'],
+                'amount' => $change['amount'],
                 'channel' => 'system',
                 'trx_id' => 'ADM' . date('YmdHis') . rand(100, 999),
                 'status' => 'success',
@@ -247,6 +247,8 @@ switch ($section) {
                 'created_at' => date('Y-m-d H:i:s')
             ]);
 
+            $pdo->commit();
+            } catch(Throwable $e) {if($pdo->inTransaction())$pdo->rollBack(); Database::errorResponse('Balance adjustment failed',400);}
             Database::jsonResponse(['success' => true, 'message' => 'ব্যালেন্স সফলভাবে আপডেট হয়েছে', 'newBalance' => $newBal]);
         } elseif ($action === 'vip') {
             $level = (int)($input['vipLevel'] ?? 1);
