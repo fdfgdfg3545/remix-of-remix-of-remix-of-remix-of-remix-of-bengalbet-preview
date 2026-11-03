@@ -13,11 +13,13 @@ export type LiveRules = {
 };
 
 let cache: Promise<{ promotions: any[] | null; live: LiveRules | null }> | null = null;
+let cachedAt = 0;
 export function loadPromoLive(force = false) {
-  if (!cache || force) {
+  if (!cache || force || Date.now() - cachedAt > 15000) {
+    cachedAt = Date.now();
     cache = api.settings.getPublicSettings()
       .then((r: any) => ({ promotions: Array.isArray(r?.settings?.promotions) ? r.settings.promotions : null, live: r?.settings?.live ?? null }))
-      .catch(() => ({ promotions: null, live: null }));
+      .catch(() => { cache = null; return { promotions: null, live: null }; });
   }
   return cache;
 }
@@ -121,7 +123,14 @@ export function liveRulesFor(iconType: string, live: LiveRules | null | undefine
 import { useEffect as _ue, useState as _us } from 'react';
 export function useLiveRules(): LiveRules | null {
   const [live, setLive] = _us<LiveRules | null>(null);
-  _ue(() => { let on = true; loadPromoLive().then((r) => { if (on) setLive(r.live); }); return () => { on = false; }; }, []);
+  _ue(() => {
+    let on = true;
+    const refresh = () => { void loadPromoLive(true).then(r => { if (on) setLive(r.live); }); };
+    refresh();
+    const timer = window.setInterval(refresh, 30000);
+    window.addEventListener('focus', refresh);
+    return () => { on = false; window.clearInterval(timer); window.removeEventListener('focus', refresh); };
+  }, []);
   return live;
 }
 export const weekdayName = (d?: number) => DAYS[d || 1] || 'সোমবার';

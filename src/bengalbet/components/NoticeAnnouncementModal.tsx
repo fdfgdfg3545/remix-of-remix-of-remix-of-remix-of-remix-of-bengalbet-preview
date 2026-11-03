@@ -21,6 +21,7 @@ import noticePartner from '../assets/images/bn_notice_partner_1790010575654.jpg'
 import noticeMystery from '../assets/images/bn_notice_mystery_1790010600259.jpg';
 import noticeDailyLogin from '../assets/images/bn_notice_daily_login_1790010613724.jpg';
 import { api } from '../services/api';
+import { LiveRewardArtwork } from './LiveRewardArtwork';
 
 interface NoticeAnnouncementModalProps {
   isOpen: boolean;
@@ -125,10 +126,10 @@ export const NoticeAnnouncementModal: React.FC<NoticeAnnouncementModalProps> = (
     },
     {
       id: 'member-day',
-      shortBn: '👑 সুপার মেম্বার ডে ১৩ তারিখ',
-      shortEn: '👑 Super Member Day 13th',
-      titleBn: '👑 প্রতি মাসের ১৩ তারিখ সুপার মেম্বার ডে মেগা বোনাস',
-      titleEn: '👑 Monthly Super Member Day 13th Mega Bonus',
+      shortBn: '👑 সদস্য দিবস',
+      shortEn: '👑 Member Day',
+      titleBn: '👑 সদস্য দিবস বোনাস',
+      titleEn: '👑 Member Day Bonus',
       badgeBn: 'মেম্বার ডে',
       badgeEn: 'MEMBER DAY',
       imageUrl: noticeMemberDay,
@@ -179,14 +180,14 @@ export const NoticeAnnouncementModal: React.FC<NoticeAnnouncementModalProps> = (
       id: 'daily-login',
       shortBn: '🔥 দৈনিক লগইন হাতুড়ি',
       shortEn: '🔥 Daily Login Hammer',
-      titleBn: '🔥 প্রতিদিন লগইনে ১টি হাতুড়ি, সোনার ডিম ভেঙে পুরস্কার',
-      titleEn: '🔥 1 Hammer Every Daily Login, Crack Golden Eggs',
+      titleBn: '🔥 দৈনিক লগইন হাতুড়ি ও সোনার ডিম',
+      titleEn: '🔥 Daily Login Hammer & Golden Eggs',
       badgeBn: 'দৈনিক',
       badgeEn: 'DAILY',
       imageUrl: noticeDailyLogin,
-      actionTextBn: 'ভাগ্যের চাকা দেখুন',
-      actionTextEn: 'View Lucky Wheel',
-      onAction: onOpenSpin
+      actionTextBn: 'ডিপোজিট করে যোগ্যতা অর্জন করুন',
+      actionTextEn: 'Deposit to Qualify',
+      onAction: onOpenDeposit
     }
   ];
   // Admin-edited notice (Site Notice tab) is shown first when enabled
